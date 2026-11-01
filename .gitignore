@@ -1,3 +1,6 @@
+# downloaded reference PDFs (re-downloadable; cited by name in reports/)
+refs/*.pdf
+
 # agent scratch space: literature downloads, build intermediates
 .scratch/
 
