@@ -717,7 +717,7 @@ The other infimum-over-metrics construction, Roth–Roth (2020), is listed under
 - **R. Arens, J. Dugundji**, "Remark on the concept of compactness," *Portugaliae Math.* **9** (1950), 141–143.
 - **G. Birkhoff**, *Lattice Theory*, 3rd ed., American Mathematical Society Colloquium Publications **25**, Providence, RI, 1967 (free distributive lattices and antichains, p. 63).
 - **M. De Wulf, L. Doyen, T. A. Henzinger, J.-F. Raskin**, "Antichains: a new algorithm for checking universality of finite automata," in *Computer Aided Verification (CAV 2006)*, Lecture Notes in Comput. Sci. **4144**, Springer, 2006, 17–30.
-- **D. Kleitman**, "On Dedekind's problem: the number of monotone Boolean functions," *Proc. Amer. Math. Soc.* **21** (1969), 677–682.
+- **D. J. Kleitman**, "On Dedekind's problem: the number of monotone Boolean functions," *Proc. Amer. Math. Soc.* **21** (1969), no. 3, 677–682; DOI 10.1090/S0002-9939-1969-0241334-6; MR 0241334.
 - **G. Markowsky**, "Chain-complete posets and directed sets with applications," *Algebra Universalis* **6** (1976), 53–68.
 - **J. Mayer-Kalkschmidt, E. Steiner**, "Some theorems in set theory and applications in the ideal theory of partially ordered sets," *Duke Math. J.* **31** (1964), 287–289.
 - **J. B. Nation**, *Notes on Lattice Theory*, Ch. 3 (Theorem 3.1), `https://math.hawaii.edu/~jb/math618/os3uh.pdf`.
