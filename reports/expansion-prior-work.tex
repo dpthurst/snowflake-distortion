@@ -1313,22 +1313,59 @@ open cover of a metacompact space has a minimal cover refining it.
 
 \textbf{The deletion half: deleting dominated sets.} Keeping only the
 members contained in no other member produces what combinatorics calls a
-\textbf{Sperner family}, an \textbf{antichain}, or a \textbf{clutter},
-and the map \(\mathcal U\mapsto\max\mathcal U\) is ``take the maximal
-members''. In order theory that map is a first-class operation: it is
-monotone, idempotent and contractive, i.e.~an interior operator on the
-lattice of subfamilies of \(\mathcal O(X)\); and on the set
-\(\mathcal A(P)\) of antichains of a poset \(P\), the rule ``unite, then
-delete the dominated members'' is the \textbf{join},
-\(\alpha\vee\beta=\max(\alpha\cup\beta)\), with \(\lceil\cdot\rceil\)
-the standard notation for the maximal members (De
-Wulf--Doyen--Henzinger--Raskin 2006). When \(P\) is the Boolean lattice
-on \(n\) atoms, \(\mathcal A(P)\) is the \textbf{free distributive
-lattice on \(n\) generators}, whose elements are the monotone Boolean
-functions and whose count is the Dedekind number (Birkhoff 1967, p.~63;
-Kleitman 1969). Kleitman's sentence is literally your step: an order
-ideal ``can be uniquely corresponded to an antichain (its maximal
-members)''.
+\textbf{Sperner family}, an \textbf{antichain}, or a \textbf{clutter}.
+The map \(\max\) (``take the maximal members'') needs no hypothesis to
+be \emph{defined}, and it is always monotone, idempotent and
+contractive, i.e.~an interior operator. What needs a hypothesis is
+\textbf{uniqueness}, and you were right to ask for one: the
+correspondence the counting literature states --- down-set
+\(\leftrightarrow\) antichain of its maximal members --- is a bijection
+only under a chain condition, and finiteness is the special case usually
+meant.
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{What holds without hypotheses.} For \emph{finitely many}
+  antichains, ``unite, then delete the dominated members'' is the join
+  in the order ``every member of \(\alpha\) lies in some member of
+  \(\beta\)'': \(\alpha\vee\beta=\max(\alpha\cup\beta)\), written
+  \(\lceil\cdot\rceil\) in the antichain literature (De
+  Wulf--Doyen--Henzinger--Raskin 2006). No finiteness of the ambient
+  poset is needed here, because a chain in a union of \(k\) antichains
+  has at most \(k\) elements, so nothing can be lost.
+\item
+  \emph{What needs the hypothesis.} Every member of the family must lie
+  below a \emph{maximal} member of the family. Finiteness, and more
+  generally the ascending chain condition, gives this. In general the
+  hypothesis is exactly the one you named --- every ascending chain in
+  the family has an upper bound in the family, which is Zorn's
+  hypothesis. Without it the maximal set carries no information: on
+  \([0,1]\), the families \(\{(0,1-1/n)\}_{n\ge2}\) and
+  \(\{(0,1-1/n)\}_{n\ge2}\cup\{(0,1/2)\}\) both have empty maximal set,
+  and the family \(\{\{0,\dots,n\}\}_{n\ge0}\) of finite subsets of
+  \(\mathbb N\) has no maximal member at all. For infinitely many
+  antichains the same failure kills the join: the antichains
+  \(\{\{0,\dots,n\}\}\) have no upper bound at all among the antichains
+  of the finite subsets of \(\mathbb N\), since no finite set contains
+  every \(\{0,\dots,n\}\), and therefore no least one.
+\item
+  \emph{Kleitman's conditions are exactly the finite case.} His objects
+  are the subsets of a finite \(n\)-element set \(S_n\), and his ideal
+  is a down-set (\(B\in I\) and \(A\subseteq B\) implies \(A\in I\)).
+  Then ``an ideal can be uniquely corresponded to an antichain (its
+  maximal members)'' holds --- in a finite poset every member of a
+  down-set lies below a maximal member \emph{of that down-set} --- and
+  the count is the Dedekind number. When \(P\) is the Boolean lattice on
+  \(n\) atoms, that lattice of antichains is the \textbf{free
+  distributive lattice on \(n\) generators}, whose elements are the
+  monotone Boolean functions (Birkhoff 1967, p.~63; Kleitman 1969). So
+  Kleitman's sentence is your step \emph{with a hypothesis supplied},
+  and the hypothesis he uses is finiteness, not a chain condition. That
+  is why the sentence does not transfer to covers of a compact space as
+  it stands: a cover of \([0,1]\) can contain an infinite ascending
+  chain with no top, and then its antichain has lost a member.
+\end{itemize}
 
 For covers, the standard reduction is stronger, and this is the part
 worth getting right in the paper. The literature's notion is not ``no
@@ -1353,16 +1390,16 @@ composite rather than each half, ``the antichain of maximal members of
 the chain-closure'' is accurate but not a term of art; there is nothing
 to cite, and one sentence saying so is the right amount. (2) The two
 steps are not independent conveniences: the chain step is what makes the
-deletion step legitimate. From \(\mathcal U\) alone the maximal members
-need not cover --- on \([0,1]\),
-\(\mathcal U=\{(0,1-1/n)\}_{n\ge2}\cup\{[0,1/2],\{1\}\}\) has maximal
-members \([0,1/2]\) and \(\{1\}\), which miss \((1/2,1)\) --- whereas
-with the chain-closure taken in the idempotent sense, Zorn's lemma puts
-every member below a maximal chain-union, so the maximal chain-unions do
-cover. (That argument is my reading of your definition, not a theorem
-quoted from a source.) (3) One caution about the definition as written:
-condition (1) quantifies over \(\mathcal U\), not over the
-chain-closure, and then the output need not be an antichain. On
+deletion step legitimate, by supplying precisely the chain condition
+above. From \(\mathcal U\) alone the maximal members need not cover ---
+on \([0,1]\), \(\mathcal U=\{(0,1-1/n)\}_{n\ge2}\cup\{[0,1/2],\{1\}\}\)
+has maximal members \([0,1/2]\) and \(\{1\}\), which miss \((1/2,1)\)
+--- whereas with the chain-closure taken in the idempotent sense, Zorn's
+lemma puts every member below a maximal chain-union, so the maximal
+chain-unions do cover. (That argument is my reading of your definition,
+not a theorem quoted from a source.) (3) One caution about the
+definition as written: condition (1) quantifies over \(\mathcal U\), not
+over the chain-closure, and then the output need not be an antichain. On
 \([0,1]\) take
 \(\mathcal U=\{(0,1/2)\}\cup\{(1/j,1)\}_{j\ge2}\cup\{\{0\},\{1/2\},\{1\}\}\);
 it is a cover, and both \((0,1/2)\) and \((0,1)=\bigcup_j(1/j,1)\)
