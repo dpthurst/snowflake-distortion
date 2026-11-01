@@ -853,7 +853,21 @@ asymptotic modulus is \(\theta_p=\lim_n (DQ_p(f^n,\iota^n))^{1/n}\),
 which is also \(\lim_n(\tilde E_{p,n})^{1/n}\) with \(\tilde E_{p,n}\)
 the infimum of graph \(p\)-energies ``following {[}Thu19{]}'' --- your
 \emph{Elastic graphs} --- and again
-\(\mathrm{ARCdim}=\inf\{p:\theta_p<1\}\).
+\(\mathrm{ARCdim}=\inf\{p:\theta_p<1\}\). Both equalities are versions
+of Carrasco Piaggio's theorem: for a compact, doubling, uniformly
+perfect metric space, \(\mathrm{ARCdim}(X)=\inf\{p>0:M_p(X,d)=0\}\),
+with \(M_p\) the combinatorial \(p\)-modulus of the curve families in a
+hyperbolic filling. If you want the proof rather than the citation,
+Esmayli--Schardine--Shanmugalingam (arXiv:2412.05549) give a
+self-contained exposition of it: the lower bound is that \(M_p>0\)
+forces every metric in the conformal gauge to have dimension at least
+\(p\), and the upper bound builds a density function on a level-skipping
+hyperbolic filling by an inductive weight construction, then verifies
+the four conditions that characterise the gauge --- that
+characterisation being the one ingredient they quote from the literature
+rather than reprove. It is an exposition and not a correction: no new
+theorems and no claim that the original argument fails. Its stated
+hypotheses are exactly compact, doubling, uniformly perfect.
 
 \emph{What the \(p=\infty\) corner is, and why it is your corner.} In
 both papers the conformal dimension is recovered as the finite-\(p\)
@@ -2432,10 +2446,18 @@ listed under D.
   Geometry}, EMS Monographs in Mathematics, European Mathematical
   Society, 2007.
 \item
+  \textbf{M. Carrasco Piaggio}, ``On the conformal gauge of a compact
+  metric space,'' \emph{Ann. Sci. \'{E}c. Norm. Sup\'{e}r.} (4)
+  \textbf{46} (2013), no. 3, 495--548.
+\item
   \textbf{S. Eriksson-Bique}, ``Equality of different definitions of
   conformal dimension for quasiself-similar and CLP spaces,''
   arXiv:2309.11447 (2023; v2 with a streamlined proof; no journal
   version found).
+\item
+  \textbf{B. Esmayli, R. Schardine, N. Shanmugalingam}, ``On Carrasco
+  Piaggio's theorem connecting combinatorial modulus and Ahlfors regular
+  conformal dimension,'' arXiv:2412.05549 (2024), 36 pp.
 \item
   \textbf{W. J. Floyd}, ``Group completions and limit sets of Kleinian
   groups,'' \emph{Invent. Math.} \textbf{57} (1980), 205--218.
