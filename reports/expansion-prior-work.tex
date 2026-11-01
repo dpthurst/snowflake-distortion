@@ -756,11 +756,15 @@ expanding conformal} (cxc) theory. For a topologically cxc map of degree
 \(d\), they construct visual metrics \(d_\epsilon\) in which small balls
 are sent homeomorphically and homothetically onto their images with
 expansion constant \(e^\epsilon\), and the Hausdorff dimension is
-\(q=\log d/\epsilon\). The \textbf{Ahlfors regular conformal dimension}
-\(\mathrm{ARCdim}\) is the infimum of Hausdorff dimensions over the
-conformal gauge; in the cxc setting it corresponds to the supremum of
-the admissible expansion exponents \(\epsilon\), i.e.~to
-\(\log d/\mathrm{ARCdim}\). Your \(\lambda_{\exp}\) is a supremum over
+\(q=\log d/\epsilon\). The \textbf{conformal dimension} is the infimum
+of Hausdorff dimensions over the conformal gauge; the \textbf{Ahlfors
+regular conformal dimension} \(\mathrm{ARCdim}\) restricts that infimum
+to the Ahlfors regular metrics in the gauge. In the cxc setting
+\(\mathrm{ARCdim}\) corresponds to the supremum of the admissible
+expansion exponents \(\epsilon\), i.e.~to
+\(\epsilon_{\max}=\log d/\mathrm{ARCdim}\). The restriction turns out to
+be removable on the class that matters here; see the two updates at the
+end of this subsection. Your \(\lambda_{\exp}\) is a supremum over
 \textbf{all} compatible metrics, not just the conformal gauge, so
 \(\lambda_{\exp}\ge e^{\epsilon_{\max}}\) in the cxc case; whether
 equality holds is a separate question (and not one to settle here).
@@ -790,6 +794,88 @@ the maximal expanding constant is the reciprocal of the
 dimension. (This is the user's own work; I am flagging the distinction,
 not claiming a new result. The draft's bibliography key for
 Ha\"{i}ssinsky--Pilgrim is \texttt{HP12:AlgExpanding}.)
+
+\textbf{Two updates from October 2026, both of which change how this
+paragraph should be cited.}
+
+\emph{The ``Ahlfors regular'' qualifier can be dropped.} Eriksson-Bique
+(arXiv:2309.11447, v2) proves that for a quasiself-similar and arcwise
+connected compact metric space the three known versions of conformal
+dimension coincide --- the conformal Hausdorff dimension, the conformal
+Assouad dimension and the Ahlfors regular conformal dimension --- and
+proves the same three-way equality for combinatorially \(p\)-Loewner
+spaces. Quasiself-similar includes all approximately self-similar
+spaces, and the standard Sierpi\'{n}ski carpet is an example. So on that
+class \(\mathrm{ARCdim}\) is the conformal dimension and not a
+restricted version of it, which is the sense in which the ``Ahlfors
+regular'' in your title with Pilgrim is no longer needed. What carries
+the theorem is the class, not the definition: your comb models are
+limits of finite self-similar structures, and the hypothesis to check is
+that such a limit is quasiself-similar, approximately self-similar being
+the sufficient condition used in the literature. Whether your models
+satisfy it is a computation from the structure, not something
+Eriksson-Bique's paper states for them. There is no journal version; the
+arXiv v2, which says it answers a question of Murugan, is the current
+text.
+
+\emph{Nekrashevych's two preprints, and the \(p=\infty\) end.} Both are
+recent, both are in your framework, and the second cites your work
+directly. \textbf{arXiv:2610.19260, ``Conformal dimension and
+self-similar groups''} (51 pp., 13 October 2026) works in exactly the
+Ha\"{i}ssinsky--Pilgrim setting: locally expanding self-coverings, the
+closeness function \(\ell_U(x,y)\), visual metrics \(d_\alpha\) with
+\(e^{-\alpha\ell_U(x,y)}\), the quasisymmetric gauge. Its main theorems
+are a version of Carrasco Piaggio's and a version of Bourdon--Kleiner's.
+With \(\theta_p\) the asymptotic \(p\)-modulus of the Schreier graphs of
+the iterated monodromy group --- \(M_p(n)\) the infimum of
+\(\sum_e\varphi(e)^p\) over functions \(\varphi\) summing to at least
+\(1\) along every essential path of \(\Gamma_n\), and
+\(\theta_p=\lim_n (n^pM_p(n))^{1/n}\) --- the first is \[
+\mathrm{ARCdim}=\inf\{p:\theta_p<1\}.
+\] The second is
+\(\mathrm{ARCdim}=\inf\{p:D_p\ \text{dense in}\ C(M)\}\), where \(D_p\)
+consists of the functions whose translates by the group have finite
+\(p\)-energy. Section 5 compares \(\theta_p\) with contraction
+coefficients \(\eta_p\), proving \(\eta_p\le\theta_p\) and
+\(\eta_\infty=\theta_\infty\); Section 7 introduces the \textbf{uniform
+dimension} \(u.\dim(G)=\log D/(-\log\theta_\infty)\), the infimum of
+Hausdorff dimensions of visual metrics, and gives conditions under which
+\(u.\dim=l.\dim=c.\dim\). He thanks Pilgrim and Thurston in the
+acknowledgments, but this paper does not cite your publications.
+\textbf{arXiv:2610.31530, ``Polytopal substitutions and conformal
+dimension''} (59 pp., 22 October 2026) is the higher-dimensional
+counterpart and states its relation to your work plainly: it
+characterizes \(\mathrm{ARCdim}\) of Julia sets of subhyperbolic
+branched coverings by \(\ell^p\)-contraction coefficients \(DQ_p\) of a
+polytopal substitution, and ``generalizes to higher dimensions a result
+of {[}PT25{]}, which treats the one-dimensional case''. There the
+asymptotic modulus is \(\theta_p=\lim_n (DQ_p(f^n,\iota^n))^{1/n}\),
+which is also \(\lim_n(\tilde E_{p,n})^{1/n}\) with \(\tilde E_{p,n}\)
+the infimum of graph \(p\)-energies ``following {[}Thu19{]}'' --- your
+\emph{Elastic graphs} --- and again
+\(\mathrm{ARCdim}=\inf\{p:\theta_p<1\}\).
+
+\emph{What the \(p=\infty\) corner is, and why it is your corner.} In
+both papers the conformal dimension is recovered as the finite-\(p\)
+threshold \(\inf\{p:\theta_p<1\}\), and in both papers \(p=\infty\) is
+kept as the maximal end with its own meaning. In the second the formula
+for \(\theta_p\) is stated under the hypothesis
+\(DQ_\infty(f,\iota)<1\), where \(DQ_\infty\) is the sup-norm,
+i.e.~maximal-stretch, coefficient of the branched map; in the first,
+\(\theta_\infty^{-1}=\lim_n L(n)^{1/n}\), where \(L(n)\) measures how
+far the nucleus can act without leaving itself, and
+\(\theta_\infty=\eta_\infty\) enters
+\(u.\dim=\log D/(-\log\theta_\infty)\). That is the shape of your
+\(\bar E^\infty\): \(-\log\theta_\infty\) plays the role the draft gives
+to \(-\log\bar E^\infty\), and \(u.\dim=\log D/(-\log\theta_\infty)\) is
+the ``\(\log(\text{degree})/\log\lambda\)'' formula with
+\(\lambda=1/\theta_\infty\). He does not discuss \(h_{\min}\) or your
+distance-growth invariants, and the normalizations differ --- his
+\(\log D\) against your \(\log d\), his \(\alpha\) against your
+\(\log\lambda\) --- so \(\theta_\infty\) and \(\bar E^\infty\) are to be
+compared, not identified. But if you want a published home for the
+\(\infty\)-energy coefficient the draft uses, this is where it now
+lives, and it postdates the draft.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -2346,6 +2432,11 @@ listed under D.
   Geometry}, EMS Monographs in Mathematics, European Mathematical
   Society, 2007.
 \item
+  \textbf{S. Eriksson-Bique}, ``Equality of different definitions of
+  conformal dimension for quasiself-similar and CLP spaces,''
+  arXiv:2309.11447 (2023; v2 with a streamlined proof; no journal
+  version found).
+\item
   \textbf{W. J. Floyd}, ``Group completions and limit sets of Kleinian
   groups,'' \emph{Invent. Math.} \textbf{57} (1980), 205--218.
 \item
@@ -2354,6 +2445,12 @@ listed under D.
 \item
   \textbf{P. Ha\"{i}ssinsky, K. M. Pilgrim}, ``Coarse expanding
   conformal dynamics,'' \emph{Ast\'{e}risque} \textbf{325} (2009).
+\item
+  \textbf{V. Nekrashevych}, ``Conformal dimension and self-similar
+  groups,'' arXiv:2610.19260 (2026), 51 pp.
+\item
+  \textbf{V. Nekrashevych}, ``Polytopal substitutions and conformal
+  dimension,'' arXiv:2610.31530 (2026), 59 pp.
 \item
   \textbf{W. Parry, M. Pollicott}, ``Zeta functions and the periodic
   orbit structure of hyperbolic dynamics,'' \emph{Ast\'{e}risque}
