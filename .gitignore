@@ -1,0 +1,14 @@
+# agent scratch space: literature downloads, build intermediates
+.scratch/
+
+# compiled report output (regenerate from reports/*.md with scripts/build-report-tex.py)
+reports/*.pdf
+
+# LaTeX build artifacts from that compilation
+reports/*.aux
+reports/*.log
+reports/*.toc
+
+# python bytecode
+__pycache__/
+*.pyc
