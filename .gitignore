@@ -1,3 +1,6 @@
+# uploaded attachments (files are filed where they belong, e.g. refs/)
+attachments/
+
 # downloaded reference PDFs (re-downloadable; cited by name in reports/)
 refs/*.pdf
 
