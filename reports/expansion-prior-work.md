@@ -2,13 +2,13 @@
 
 *Prepared by Wren, an Open Math OS Agent.*
 
-**Scope.** I read the draft at `dpthurst/expansion`, commit `73fe2f1` (2026-10-18), including `alternatives.tex` and the unintegrated maximum-growth material in `clippings.tex`. This memo is a literature map for the two threads you named. Every work it cites is collected once, by thread, in the bibliography at the end (Section 9). One distinction runs through the whole report and is easy to lose: **topological** invariants (invariant under topological conjugacy — what your paper produces), **metric-bound** invariants (invariant only under bi-Lipschitz changes of the metric), and **smooth** invariants (which need a differentiable structure). Section 2.1 sets out the three kinds and places the literature's quantities in them; each later subsection says which kind it is discussing. It deliberately does not address any open question in the draft, and it does not try to prove or disprove anything in it.
+**Scope.** I read the draft at `dpthurst/expansion`, commit `73fe2f1` (2026-10-18), including `alternatives.tex` and the unintegrated maximum-growth material in `clippings.tex`. This memo is a literature map for the two threads you named and for the follow-up questions you asked afterwards. Every work it cites is collected once, by thread, in the bibliography at the end (Section 10). One distinction runs through the whole report and is easy to lose: **topological** invariants (invariant under topological conjugacy — what your paper produces), **metric-bound** invariants (invariant only under bi-Lipschitz changes of the metric), and **smooth** invariants (which need a differentiable structure). Section 2.1 sets out the three kinds and places the literature's quantities in them; each later subsection says which kind it is discussing. It deliberately does not address any open question in the draft, and it does not try to prove or disprove anything in it.
 
 **One-paragraph summary.** Both threads already have substantial literatures, and the two are more connected than the draft's separation suggests. As far as I found, the closest published invariant to your $h_{\min}$ is the exponential decay rate of **Lebesgue numbers** of the refined covers (Sun 2012): your in-radius $r(\mathcal U;\mathcal U^{(n)})$ is essentially the reciprocal of the Lebesgue number $\delta(\mathcal U^{(n)})$, so, up to the comparison between in-radius and Lebesgue number, $h_{\min}$ is minus Sun's $h_L$. The closest smooth invariant to your $\lambda_{\exp}$ is **Hirsch's logarithmic expansion rate** $E(f,K)=\sup_n \frac1n\log EC(f^n,K)$ and **Schreiber's theorem** that, for $C^1$ maps, $E$ is the infimum of the smallest Lyapunov exponent over ergodic invariant measures. The closest circle of ideas to your visual-metric theorem is the **entropy–dimension–expansion inequality** (Fathi 1989; Dai–Zhou–Geng 1998; Misiurewicz 2004; Fujita–Kato–Matsumoto 2010; Roth–Roth 2020). In its sharp form it says that for a metric in which $f$ expands small distances by exactly $\lambda$,
 $$
 \dim X\cdot\log\lambda \;\le\; D_d(X)\log\lambda \;\le\; h_{\mathrm{top}}(f) \;\le\; D_d(X)\log\operatorname{Lip}_d(f),
 $$
-where $D_d(X)$ is the box dimension in the metric $d$. Your $h_{\min}$ is the topological minimal distance growth, $h_{\mathrm{top}}$ is the volume growth, and $\lambda_{\exp}=e^{h_{\min}}$ is the maximal expanding constant. The draft's theorem $\log\lambda_{\exp}=h_{\min}$ is the topological counterpart of Schreiber's smooth theorem. At the other end, the closest published objects are Kifer's pointwise maximum and minimum characteristic exponents in metric spaces (1983) — the pointwise analogue of your $h_{\max}$, but depending on the metric — and the infimum of the Lipschitz constant in a conjugacy class of interval maps (Bobok–Roth 2019), the closest relative of $\lambda_{\mathrm{Lip}}$; Section 8 maps that side, and nothing I found asserts or denies $h_{\max}=\log\lambda_{\mathrm{Lip}}$.
+where $D_d(X)$ is the box dimension in the metric $d$. Your $h_{\min}$ is the topological minimal distance growth, $h_{\mathrm{top}}$ is the volume growth, and $\lambda_{\exp}=e^{h_{\min}}$ is the maximal expanding constant. The draft's theorem $\log\lambda_{\exp}=h_{\min}$ is the topological counterpart of Schreiber's smooth theorem. At the other end, the closest published objects are Kifer's pointwise maximum and minimum characteristic exponents in metric spaces (1983) — the pointwise analogue of your $h_{\max}$, but depending on the metric — and the infimum of the Lipschitz constant in a conjugacy class of interval maps (Bobok–Roth 2019), the closest relative of $\lambda_{\mathrm{Lip}}$; Section 8 maps that side, and nothing I found asserts or denies $h_{\max}=\log\lambda_{\mathrm{Lip}}$. Section 9 is a separate follow-up, on simplicial complexes rather than dynamics: the $\ell^1$ (barycentric) metric, Mole's theorem that on the vertices it is the graph metric, the $\sqrt n$ comparison with the Euclidean metric, and the polytope $\mathrm{conv}(\Delta\cup-\Delta)$.
 
 ---
 
@@ -410,6 +410,7 @@ To be explicit about the boundary of this search:
 - I did **not** find a paper that defines your $h_{\mathrm{diam}}$ or $h_{\max}$ in the cover-chain sense, nor one that asserts or denies $h_{\max}=\log\lambda_{\mathrm{Lip}}$. The closest are Kifer's pointwise maximum/minimum characteristic exponents (metric-dependent, no supremum over metrics) and the adapted-metric theorems behind the smooth analogue; see §8.
 - I did **not** find a paper that studies the infimum of the Lipschitz constant over *length* metrics, as opposed to over all compatible metrics (where it is trivially $\le1$), over a conjugacy class of Euclidean metrics (Bobok–Roth), or over metrics in a product with Hausdorff dimension (Roth–Roth).
 - I did **not** find any paper that treats the composite operation of your `intro.tex` — close a cover under unions of ascending chains, then keep the maximal members — as an object with a name, or that uses it. The two halves are separately standard and separately named (Section 5.7); the composite is not.
+- I did **not** find an earlier statement of Mole's vertex theorem (Section 9.2), nor a published form of the sharp $\sqrt n$ comparison between the $\ell^1$ (barycentric) and the Euclidean metric on a simplex (Section 9.3).
 - I did **not** read every paper in full. The statements above are from the abstracts, introductions, and the specific theorems I cite; I have not verified every proof. The Fujita–Kato–Matsumoto inequality is from their Proposition 4.1/Remark 4.4; the Sun inequalities are from the two Sun papers; the Schreiber theorem is from Schreiber's paper. The comparisons labelled "my own" are just that.
 
 ---
@@ -619,7 +620,91 @@ Two things are worth extracting. First, $R(f)$ **is** a diameter-growth quantity
 
 ---
 
-## 9. Bibliography
+## 9. Follow-up: the $\ell^1$ metric on a simplicial complex, the Euclidean metric, and the polytope $\mathrm{conv}(\Delta\cup-\Delta)$
+
+*You asked for this separately and said it bears on Section 5 of the draft. It is a third thread: nothing here is about entropy or expansion, and the topological / metric-bound / smooth distinction of Section 2.1 does not organise it. It has four parts: the name and provenance of the metric usually called the **barycentric metric** (9.1); the one sharp theorem about it that I could find, and why I think it is as recent as it is (9.2); the comparison with the Euclidean metric, whose constant is about $\sqrt n$ and whose proof is Cauchy–Schwarz (9.3); and the polytope $\mathrm{conv}(\Delta\cup-\Delta)$, which is the unit ball of the norm that comparison measures (9.4). Quotations carry a citation; statements marked "computation" are my own elementary derivations, included because they fix normalisations the literature leaves implicit.*
+
+### 9.1 The metric has a name: the barycentric metric
+
+For a simplicial complex $X$ with vertex set $V$ and barycentric coordinates $(b_v)_{v\in V}$ — so $x=\sum_v b_v(x)\,v$, $\sum_v b_v(x)=1$, $b_v(x)\ge 0$, and the sum is finite — the **barycentric metric** is
+$$
+d(x,y)=\sum_{v\in V}\lvert b_v(x)-b_v(y)\rvert .
+$$
+Authors who want adjacent vertices at distance $1$ insert a factor $\tfrac12$; Mole (2013) does, and I follow him below. This is the metric that retract theory attaches to a polyhedron: it is in **Borsuk**, *Theory of Retracts* (1967), and **Hu**, *Theory of Retracts* (1965), and in the ANR literature a polyhedron carrying it is called the *metric complex* $|P|_m$. Two cautions when you cite it. First, the same name is used for the $\ell^2$ version $\sqrt{\sum_v(b_v(x)-b_v(y))^2}$, which is what some modern authors mean; write "$\ell^1$ in barycentric coordinates" if you need to be unambiguous. Second, it is normally used in that literature only up to uniform equivalence — which is precisely why the sharp vertex-level facts of 9.2 were not recorded.
+
+Modern home: an **$\ell^p$ complex** is a simplicial complex metrised so that each cell is isometric to a simplex of $(\mathbb R^n,\ell^p)$ — **Haettel, Hoda, Petyt**, "$\ell^p$ metrics on cell complexes", *J. London Math. Soc.* (2024), arXiv:2302.03801. The $p=1$ case is this metric. The textbook treatment of piecewise $\ell^p$ metrics on cells is **Bridson–Haefliger**, *Metric Spaces of Non-Positive Curvature*, Chapter I.7.
+
+### 9.2 Mole's theorem: on the vertices, the metric is the graph metric
+
+**Adam Mole**, "Extending a metric on a simplicial complex", arXiv:1309.0981 (2013), 17 pp., Section 2.2 and Lemma 2.4. He defines, on a simplex $\sigma$,
+$$
+d_\sigma(x,y):=\tfrac12\sum_{u\in V(\sigma)}\lvert x_u-y_u\rvert
+$$
+("the factor $\tfrac12$ is to ensure that the distance between vertices is $1$"), extends it to a length metric $d_X$ on $X$ by minimising $\sum_i d_{\sigma_i}(a_{i-1},a_i)$ over polygonal paths, and proves:
+
+> **Lemma 2.4.** Let $X$ be a simplicial complex, and let $\mathcal G$ be the 1-skeleton of $X$. For any $u,v\in V:=V(X)$ we have $d_X(u,v)=d_{\mathcal G}(u,v)$.
+
+So the answer to the question is yes, for *all* vertex pairs, and it is an equality. The $\tfrac12$ is what removes the factor $2$: with the un-normalised $\ell^1$ metric every edge has length $2$, and the vertex statement reads $d_X=2d_{\mathcal G}$. The companion Lemma 2.3 gives (i) $d_X$ restricted to a simplex is $d_\sigma$; (ii) every simplex has diameter $1$; (iii) points with disjoint supports are at distance $\ge 1$ — in fact exactly $1$, which is immediate from (i).
+
+*The proof, because the idea is worth having.* One inequality is trivial: a path in the 1-skeleton is a path in $X$. For the other, let $a_0=u,\dots,a_r=v$ be a path and $d=d_{\mathcal G}(u,v)$; let $S_k=\{z: d_{\mathcal G}(u,z)=k\}$ and $w_k(a)=\sum_{z\in S_k}a_z$ the weight of $a$ on the $k$-th sphere. Since $\sum_z\lvert\Delta a_z\rvert\ge\lvert\sum_{z\in S_k}\Delta a_z\rvert$,
+$$
+\operatorname{length}(a)\ \ge\ \tfrac12\sum_{k=0}^{d}\sum_{i=1}^{r}\lvert w_k(a_{i-1})-w_k(a_i)\rvert .
+$$
+The $k=0$ and $k=d$ terms are each $\ge 1$ (the weight starts on $S_0$ and ends on $S_d$); for $1\le k\le d-1$ some intermediate point carries all its weight on $S_k$, because consecutive points lie in a common simplex, so their supports are pairwise adjacent and one step moves a point at most one sphere outwards. That term contributes $2$, and the total is $\ge\tfrac12(1+2(d-1)+1)=d$. **The display in the arXiv version reads $\tfrac12(1+2(d-2)+1)=d$, which is an off-by-one slip** — there are $d-1$ intermediate spheres, and for $d=1$ the printed formula gives $0$. The argument is correct.
+
+**On priority.** I could find no earlier statement of Lemma 2.4. Mole proves it from scratch with no citation, introducing it as "adding higher dimensional simplices to a graph does not change the $\ell^1$-path metric on vertices" — the phrasing of someone with no reference to hand. I think the late date has a structural reason, worth one sentence in your Section 5: in topology the barycentric metric is used only up to uniform (or topological) equivalence, since one needs *a* metric making $|K|$ an ANR and any two metrics inducing the topology will do, so the exact vertex distances are invisible there. The statement matters only when the metric is used quantitatively, which is Mole's situation. **Contrast the cube-complex case, where the analogue is old and easy:** with the $\ell^1$ metric on cubes, $\ell^1$-geodesics between vertices run along edges, so "$\ell^1$ metric = combinatorial metric on the vertices" is standard (Caprace–Sageev, "Rank rigidity for CAT(0) cube complexes", *Geom. Funct. Anal.* 21 (2011), 851–891, Lemma 2.2, records the quasi-isometry version).
+
+**Why the paper exists** (it is not about the metric). Mineyev's flow space, in "Flows and joins of metric spaces", *Geom. Topol.* 9 (2005), 403–482, extends a vertex metric by the *bilinear* formula $\widehat D(x,y)=\sum_{u,v}x_uy_v\,\hat d(u,v)$, which is not a metric: $\widehat D(x,x)>0$ off the vertices. Mole replaces it by $\tilde d(x,y)=\min\{\widehat D(x,y),\,3C\,d_X(x,y)\}$ whenever $\hat d\le C\,d_{\mathcal G}$ (Definition 2.7, Theorem 2.8), and Lemma 2.4 is what makes the minimum restrict to $\hat d$ on the vertices. That repairs a step copied into Bartels–Lück–Reich, "Equivariant covers for hyperbolic groups", *Geom. Topol.* 12 (2008), 1799–1882, Section 6.1, and hence a gap in the $K$-theoretic Farrell–Jones conjecture for hyperbolic groups. **Status: arXiv only** — the abstract page carries no journal reference and ADS records it as an e-print.
+
+### 9.3 The comparison with the Euclidean metric: the constant is about $\sqrt n$, and the proof is Cauchy–Schwarz
+
+(computation.) Let $\sigma$ be a **regular** $n$-simplex with unit edges, vertices $p_0,\dots,p_n$, centroid $c$, and $u_i=p_i-c$. Then $\lvert u_i\rvert^2=R^2=n/(2(n+1))$ and $u_i\cdot u_j=-1/(2(n+1))$ for $i\ne j$, so the Gram matrix has $R^2-g=\tfrac12$ with $g=-1/(2(n+1))$. For $x,y\in\sigma$ put $\alpha=\lambda(x)-\lambda(y)$, so that $\sum_i\alpha_i=0$ and $x-y=\sum_i\alpha_i u_i$. Then
+$$
+\lvert x-y\rvert^2=\tfrac12\sum_i\alpha_i^2,\qquad d_1(x,y)=\tfrac12\sum_i\lvert\alpha_i\rvert,
+$$
+and therefore
+$$
+\lvert x-y\rvert\ \le\ d_1(x,y)\ \le\ \sqrt{\frac{n+1}{2}}\;\lvert x-y\rvert\qquad (n\ \text{odd}),
+$$
+with $\sqrt{\bigl((n+1)-\frac{1}{n+1}\bigr)/2}$ in place of $\sqrt{(n+1)/2}$ when $n$ is even. The lower bound is sharp exactly on edges, where both metrics equal $1$. The upper bound is sharp: the extremal configuration is the pair of **centroids of two complementary faces** ($n$ odd), for which $\alpha_i=\pm1/(n+1)$. Values of the constant for $n=1,\dots,7$: $1$, $1.155$, $1.414$, $1.549$, $1.732$, $1.852$, $2$, i.e. about $\sqrt{n/2}$.
+
+Three remarks that matter for how you state it.
+
+- **It is Cauchy–Schwarz and nothing more.** The upper bound is $\lVert v\rVert_1\le\sqrt m\,\lVert v\rVert_2$ with $m=n+1$ applied to $\alpha$, and the identity $\lvert x-y\rvert^2=\tfrac12\sum_i\alpha_i^2$ is the regular simplex's Gram matrix. I found no paper that states the sharp $\sqrt{(n+1)/2}$ as a lemma; it is the kind of estimate that is absorbed into a constant $C(n)$. If you want a citation, Cauchy–Schwarz is the honest one, and the two-line lemma is better stated than cited.
+- **Normalisation.** With the un-normalised $\ell^1$ metric (edges of length $2$) the same statement reads $\sqrt{2(n+1)}$; with the quotient norm of 9.4 it reads $\sqrt n$ or $n/\sqrt{n+1}$. These are the same phenomenon up to $\sqrt2$, and "approximately $\sqrt n$" is right in every convention — but the constant must match the convention, so fix it explicitly.
+- **Eccentricity is separate from dimension.** The bound above uses regularity. For a simplex of eccentricity $E$ (say longest edge over smallest altitude) the comparison constant is $E\sqrt n$, and a flat simplex can be arbitrarily bad. The general statement is "$\sqrt{\dim}\times$ eccentricity", not "$\sqrt{\dim}$".
+
+Dimension-dependent constants of this type do appear in print, though not in this sharp form: Mole's Section 2.3 (the constant $3C$), **Bartels–Farrell–Lück**, "The Farrell–Jones conjecture for cocompact lattices in virtually connected Lie groups", arXiv:1101.0469, Lemma 3.16 (the $\ell^1$ metric changes by at most $D_N$ under barycentric subdivision, $N$ a dimension bound), and the quantitative-simplicial-approximation literature with "the standard simplexwise linear metric" (Chambers–Dotterrer–Manin–Weinberger, "Quantitative null-cobordism", arXiv:1610.04888; Brady–Guth–Manin, "A hardness of approximation result in metric geometry", arXiv:1908.02824).
+
+### 9.4 The polytope $\mathrm{conv}(\Delta\cup-\Delta)$: the diplo-simplex
+
+Let $H_0=\{x\in\mathbb R^{n+1}:\sum_i x_i=0\}$, $v_i=e_i-\bar e\in H_0$, $\Delta=\mathrm{conv}\{v_0,\dots,v_n\}$ and $Q_n=\mathrm{conv}(\Delta\cup-\Delta)=\mathrm{conv}\{\pm v_i\}$. **The name is the diplo-simplex**: **Conway and Sloane**, "The cell structures of certain lattices", in *Miscellanea Mathematica*, Springer, 1991, 71–107, p. 88. The identification is confirmed from Sloane's own later paper: **Conway and Sloane**, "Low-dimensional lattices. VII. Coordination sequences", *Proc. Roy. Soc. London Ser. A* 453 (1997), 2369–2389, writes that "the contact polytope for $A_d^*$ is a diplo-simplex (Conway & Sloane 1991, p. 88) with $2d+2$ vertices $\pm v_i$". So $Q_n$ is the **contact polytope of the dual root lattice $A_n^*$**, the convex hull of its minimal vectors.
+
+Equivalent descriptions, both checked against the coordinates:
+
+- $Q_n^\circ=H_0\cap[-1,1]^{n+1}$: the polar is the central section of the $(n+1)$-cube by the hyperplane $\sum_i x_i=0$. This is the "dual diplo-simplex" of Conway–Sloane's naming. When $n$ is odd, so that $n+1=2k$ is even, it is a translate of twice the hypersimplex $\Delta_{k,2k}=\{x\in[0,1]^{2k}:\sum_i x_i=k\}$; dual hypersimplices and the coordinator numbers of the $A^*$ lattices are computed in **Wang and Yu**, "Toric $h$-vectors and Chow Betti numbers of dual hypersimplices", arXiv:1707.04581 (2017).
+- $Q_n$ is the orthogonal projection of the $(n+1)$-dimensional cross-polytope onto $H_0$.
+
+**Facets** (computation, checked with Qhull for $n\le 10$). They are exactly $\langle\mathbf 1_S-\mathbf 1_T,x\rangle\le 1$, i.e. "average over $S$ minus average over $T$ is at most $1$", over disjoint $S,T$ with $\lvert S\rvert=\lvert T\rvert=k$, where $S\cup T$ is all of $[n+1]$ if $n$ is odd ($k=(n+1)/2$) and all but one point if $n$ is even ($k=n/2$). The counts are $\binom{n+1}{(n+1)/2}$ for odd $n$ and $(n+1)\binom{n}{n/2}$ for even $n$, i.e. $6,6,30,20,140,70,630$ for $n=2,\dots,8$.
+
+**Radii** (computation). All vertices are at distance $R=\sqrt{n/(n+1)}$ from the centre, and every facet is at distance $r=1/\sqrt{n+1}$ (odd $n$) or $1/\sqrt n$ (even $n$); so $Q_n$ is cyclic and tangential at once, and
+$$
+\frac{R_{\text{out}}}{R_{\text{in}}}=\begin{cases}\sqrt n, & n\ \text{odd},\\[2pt] n/\sqrt{n+1}, & n\ \text{even}.\end{cases}
+$$
+That is about $\sqrt n$ — the same order as 9.3, and for the same reason, since both are the elementary $\ell^1$–$\ell^2$ comparison in $n+1$ coordinates; the exact values differ because here the minimum runs over representatives. Precisely: $Q_n$ is the unit ball of the **quotient** $\ell^1$ norm $\lVert y\rVert=\min\{\sum_i\lvert\alpha_i\rvert : y=\sum_i\alpha_i v_i\}$, the minimum over all representatives (equivalently, modulo adding a constant to $\alpha$), so $R/r$ is exactly the distortion between that norm and the Euclidean norm on $H_0$.
+
+**Regularity.** $Q_n$ is regular only for $n\le3$: interval, regular hexagon, cube. For $n=4$ it is the **bidecachoron**, the dual of the bitruncated 5-cell (decachoron) — $10$ vertices, $40$ edges, $60$ triangles, $30$ disphenoid cells of edge ratio $\sqrt3:\sqrt5$; vertex- and facet-transitive ("noble"), but not regular, its vertex figure being a triakis tetrahedron. For $n\ge5$, $2(n+1)$ is not the number of vertices of a regular $n$-polytope, which is $n+1$, $2n$ or $2^n$.
+
+### 9.5 What I did not find
+
+- No statement of Lemma 2.4 earlier than Mole (2013), and none at all in the topology literature; 9.2 gives what I take to be the reason.
+- No source for the sharp $\sqrt{(n+1)/2}$ bound of 9.3 as a named lemma. It is folklore Cauchy–Schwarz.
+- No standard name for $\mathrm{conv}(\Delta\cup-\Delta)$ other than "diplo-simplex"; the polar is the "dual diplo-simplex" in Conway–Sloane's usage, or the hypersimplex when $n$ is odd.
+- **Coverage caveat.** These negative claims rest on a theorem-level index (arXiv plus Lean, ProofWiki, the Stacks Project and five smaller corpora: about 8.1M statements) and on targeted web searches. Pre-1990 books and journals outside those corpora are not covered, so absence in the index is evidence, not proof — and the retract-theory literature of 9.1 is exactly the kind that a theorem index does not see.
+
+---
+
+## 10. Bibliography
 
 Every work cited in this memo, collected once and grouped by thread. Within each theme the order is alphabetical by first author. A work that belongs to two threads is listed under the primary one and named in the other theme's lead sentence. Passing mentions in the text that carry no year — the multifractal papers of Barreira–Pesin–Schmeling, Pesin–Weiss and Iommi–Jordan in §3.7, Kozlovski's theorem on expansion entropy, Osipenko's computational method, Conley's chain recurrence — are not indexed here.
 
@@ -740,3 +825,20 @@ The other infimum-over-metrics construction, Roth–Roth (2020), is listed under
 - **J. B. Nation**, *Notes on Lattice Theory*, Ch. 3 (Theorem 3.1), `https://math.hawaii.edu/~jb/math618/os3uh.pdf`.
 - **J. Picado, A. Pultr**, *Frames and Locales: Topology without Points*, Frontiers in Mathematics, Birkhäuser/Springer, Basel, 2012.
 - **M. L. J. van de Vel**, *Theory of Convex Structures*, North-Holland Mathematical Library **50**, North-Holland, Amsterdam, 1993.
+
+**L. Simplicial complexes: the $\ell^1$ (barycentric) metric, the diplo-simplex, and combinatorial versus Euclidean distance**
+
+- **A. Bartels, F. T. Farrell, W. Lück**, "The Farrell–Jones conjecture for cocompact lattices in virtually connected Lie groups," arXiv:1101.0469.
+- **A. Bartels, W. Lück, H. Reich**, "Equivariant covers for hyperbolic groups," *Geom. Topol.* **12** (2008), 1799–1882.
+- **K. Borsuk**, *Theory of Retracts*, Monografie Matematyczne **44**, PWN, Warszawa, 1967, 251 pp.
+- **Z. Brady, L. Guth, F. Manin**, "A hardness of approximation result in metric geometry," arXiv:1908.02824.
+- **M. R. Bridson, A. Haefliger**, *Metric Spaces of Non-Positive Curvature*, Grundlehren der mathematischen Wissenschaften **319**, Springer, 1999 (Chapter I.7).
+- **P.-E. Caprace, M. Sageev**, "Rank rigidity for CAT(0) cube complexes," *Geom. Funct. Anal.* **21** (2011), no. 4, 851–891.
+- **G. R. Chambers, D. Dotterrer, F. Manin, S. Weinberger**, "Quantitative null-cobordism," arXiv:1610.04888.
+- **J. H. Conway, N. J. A. Sloane**, "The cell structures of certain lattices," in *Miscellanea Mathematica*, Springer, Berlin, 1991, 71–107 (p. 88).
+- **J. H. Conway, N. J. A. Sloane**, "Low-dimensional lattices. VII. Coordination sequences," *Proc. Roy. Soc. London Ser. A* **453** (1997), 2369–2389.
+- **T. Haettel, N. Hoda, H. Petyt**, "$\ell^p$ metrics on cell complexes," *J. London Math. Soc.* (2024); arXiv:2302.03801.
+- **S.-T. Hu**, *Theory of Retracts*, Wayne State University Press, Detroit, 1965, 234 pp.
+- **I. Mineyev**, "Flows and joins of metric spaces," *Geom. Topol.* **9** (2005), 403–482.
+- **A. Mole**, "Extending a metric on a simplicial complex," arXiv:1309.0981 (2013), 17 pp.
+- **C. Wang, J. Yu**, "Toric $h$-vectors and Chow Betti numbers of dual hypersimplices," arXiv:1707.04581 (2017).
