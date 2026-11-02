@@ -2562,6 +2562,91 @@ which is \(n+1\), \(2n\) or \(2^n\).
   index does not see.
 \end{itemize}
 
+\subsection{Stable lengths of closed curves: what is, and what is not,
+in the
+literature}\label{stable-lengths-of-closed-curves-what-is-and-what-is-not-in-the-literature}
+
+\emph{You expected no prior work here. Half of the statement has none;
+the other half is in print, and one paper is in almost exactly this
+setting.}
+
+Two statements should be separated, because only the second needs proof.
+
+\textbf{(a) One curve, two metrics.} If the combinatorial length of a
+closed curve is its \(\ell^1\) barycentric length (Mole's \(d_X\), 9.2),
+then both metrics are defined on the same curves, and 9.3 applies curve
+by curve: \(\ell_E(\gamma)\le\ell_C(\gamma)\le C\,\ell_E(\gamma)\), with
+\(C\) the constant of 9.3, because both lengths are integrals of the
+corresponding pointwise norms. Taking infima over a free homotopy class,
+or limits of \(\ell(\gamma^n)/n\), preserves the inequality. So for
+stable lengths in this sense the comparison is a corollary of 9.3 and
+has no separate source. Two remarks. For a \emph{fixed} curve the stable
+length \(\lim_n\ell(\gamma^n)/n\) is just \(\ell(\gamma)\) in either
+metric, since length is additive under concatenation; and the invariant
+version, \(\inf\{\ell(\gamma'):\gamma'\sim\gamma\}\) over the free
+homotopy class, is the standard stable length --- the translation length
+of the corresponding deck transformation, and for homology classes the
+stable norm on \(H_1\). Whether the infimum is \emph{attained} is a
+separate question: a locally CAT(0) complex has a (unique) geodesic
+representative, and in general the comparison of infima holds without
+attainment.
+
+\textbf{(b) Straightening a curve to the 1-skeleton.} If the
+combinatorial length counts \emph{edges of simplicial loops}, the two
+lengths are no longer defined on the same objects, and the comparison
+needs a lemma: every geometric closed curve in the class is homotopic to
+a simplicial one with controlled edge count. This is where the prior
+work is.
+
+\textbf{Guth--Parlier--Young}, ``Pants decompositions of random
+surfaces'', \emph{Geom. Funct. Anal.} \textbf{21} (2011), 1069--1090,
+\textbf{Lemma 5}. Their setting is a surface obtained by gluing
+Euclidean triangles of unit side length --- exactly the metric
+simplicial complex of 9.2 in dimension 2 --- and their length on the
+combinatorial side is the number of edges. They prove:
+
+\begin{quote}
+Let \(\alpha:S^1\to\Sigma\) be a Lipschitz curve on a triangulated
+surface \(\Sigma\). There is a simplicial curve \(\lambda\) on
+\(\Sigma\) which is homotopic to \(\alpha\) and whose length satisfies
+\(\ell(\lambda)\le2\,\ell(\alpha)\).
+\end{quote}
+
+The proof is the one to imitate: perturb \(\alpha\) to be transverse to
+the edges, cut it into arcs each lying in one triangle, homotope each
+arc to the shorter of the two boundary arcs of its triangle (at most
+twice as long, by elementary Euclidean geometry), and delete the
+backtracking. The constant \(2\) is not claimed to be sharp.
+
+\textbf{Wu--Zhu}, ``Length of a shortest closed geodesic in manifolds of
+dimension four'', \emph{J. Differential Geom.} \textbf{122} (2022),
+519--564, Lemma 3.12, is the four-dimensional analogue: a curve of
+length \(l\) in a ball of radius \(r\) yields a curve of simplicial
+length \(\le64\,l/r\). So the straightening is available in higher
+dimensions too, with dimension-dependent constants and worse values.
+
+These constants should not be confused with those of 9.3: straightening
+to the 1-skeleton is strictly stronger than re-measuring the same curve,
+and its constant is larger --- \(2\) in dimension 2, against the sharp
+\(\sqrt{3/2}\approx1.22\) of 9.3.
+
+\textbf{The stable-norm literature on polyhedra} is adjacent but does
+something else. \textbf{Babenko--Massart}, ``On systolic zeta
+functions'', arXiv:1612.01672 (2017), Lemma 4.2, shows that on a finite
+Riemannian polyhedron the length \(l_\theta\) of a shortest curve in a
+homology class is within a bounded additive constant of the stable norm
+\(\lVert\theta\rVert_{st}\); see also \textbf{Babenko--Sabourau},
+``Volume entropy semi-norm'', arXiv:1909.10803 (2019), and
+\textbf{Babenko--Balacheff}, ``Systolic volume of homology classes'',
+\emph{Algebr. Geom. Topol.} \textbf{15} (2015), 733--767. All of these
+compare lengths within one metric, not a combinatorial metric with a
+Euclidean one.
+
+\textbf{Bottom line.} I found no paper stating the two-metric comparison
+for stable lengths. Assert (a) as a corollary of 9.3; cite
+Guth--Parlier--Young for (b), with Wu--Zhu for the higher-dimensional
+analogue.
+
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \section{Bibliography}\label{bibliography}
@@ -2966,6 +3051,15 @@ the diplo-simplex, and combinatorial versus Euclidean distance}
 \begin{itemize}
 \tightlist
 \item
+  \textbf{I. Babenko, F. Balacheff}, ``Systolic volume of homology
+  classes,'' \emph{Algebr. Geom. Topol.} \textbf{15} (2015), 733--767.
+\item
+  \textbf{I. Babenko, D. Massart}, ``On systolic zeta functions,''
+  arXiv:1612.01672 (2017).
+\item
+  \textbf{I. Babenko, S. Sabourau}, ``Volume entropy semi-norm,''
+  arXiv:1909.10803 (2019).
+\item
   \textbf{A. Bartels, F. T. Farrell, W. L\"{u}ck}, ``The Farrell--Jones
   conjecture for cocompact lattices in virtually connected Lie groups,''
   arXiv:1101.0469.
@@ -2999,6 +3093,10 @@ the diplo-simplex, and combinatorial versus Euclidean distance}
   VII. Coordination sequences,'' \emph{Proc. Roy. Soc. London Ser. A}
   \textbf{453} (1997), 2369--2389.
 \item
+  \textbf{L. Guth, H. Parlier, R. Young}, ``Pants decompositions of
+  random surfaces,'' \emph{Geom. Funct. Anal.} \textbf{21} (2011), no.
+  5, 1069--1090; DOI 10.1007/s00039-011-0131-x.
+\item
   \textbf{T. Haettel, N. Hoda, H. Petyt}, ``\(\ell^p\) metrics on cell
   complexes,'' \emph{J. London Math. Soc.} (2024); arXiv:2302.03801.
 \item
@@ -3013,6 +3111,10 @@ the diplo-simplex, and combinatorial versus Euclidean distance}
 \item
   \textbf{C. Wang, J. Yu}, ``Toric \(h\)-vectors and Chow Betti numbers
   of dual hypersimplices,'' arXiv:1707.04581 (2017).
+\item
+  \textbf{N. Wu, Z. Zhu}, ``Length of a shortest closed geodesic in
+  manifolds of dimension four,'' \emph{J. Differential Geom.}
+  \textbf{122} (2022), no. 3, 519--564; DOI 10.4310/jdg/1675712997.
 \end{itemize}
 
 \end{document}

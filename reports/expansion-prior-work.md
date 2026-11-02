@@ -709,6 +709,30 @@ The first row is $\sqrt n$ for odd $n$ and $n/\sqrt{n+1}$ for even $n$; the seco
 - No standard name for $\mathrm{conv}(\Delta\cup-\Delta)$ other than "diplo-simplex"; the polar is the "dual diplo-simplex" in Conway–Sloane's usage, or the hypersimplex when $n$ is odd.
 - **Coverage caveat.** These negative claims rest on a theorem-level index (arXiv plus Lean, ProofWiki, the Stacks Project and five smaller corpora: about 8.1M statements) and on targeted web searches. Pre-1990 books and journals outside those corpora are not covered, so absence in the index is evidence, not proof — and the retract-theory literature of 9.1 is exactly the kind that a theorem index does not see.
 
+### 9.6 Stable lengths of closed curves: what is, and what is not, in the literature
+
+*You expected no prior work here. Half of the statement has none; the other half is in print, and one paper is in almost exactly this setting.*
+
+Two statements should be separated, because only the second needs proof.
+
+**(a) One curve, two metrics.** If the combinatorial length of a closed curve is its $\ell^1$ barycentric length (Mole's $d_X$, 9.2), then both metrics are defined on the same curves, and 9.3 applies curve by curve: $\ell_E(\gamma)\le\ell_C(\gamma)\le C\,\ell_E(\gamma)$, with $C$ the constant of 9.3, because both lengths are integrals of the corresponding pointwise norms. Taking infima over a free homotopy class, or limits of $\ell(\gamma^n)/n$, preserves the inequality. So for stable lengths in this sense the comparison is a corollary of 9.3 and has no separate source. Two remarks. For a *fixed* curve the stable length $\lim_n\ell(\gamma^n)/n$ is just $\ell(\gamma)$ in either metric, since length is additive under concatenation; and the invariant version, $\inf\{\ell(\gamma'):\gamma'\sim\gamma\}$ over the free homotopy class, is the standard stable length — the translation length of the corresponding deck transformation, and for homology classes the stable norm on $H_1$. Whether the infimum is *attained* is a separate question: a locally CAT(0) complex has a (unique) geodesic representative, and in general the comparison of infima holds without attainment.
+
+**(b) Straightening a curve to the 1-skeleton.** If the combinatorial length counts *edges of simplicial loops*, the two lengths are no longer defined on the same objects, and the comparison needs a lemma: every geometric closed curve in the class is homotopic to a simplicial one with controlled edge count. This is where the prior work is.
+
+**Guth–Parlier–Young**, "Pants decompositions of random surfaces", *Geom. Funct. Anal.* **21** (2011), 1069–1090, **Lemma 5**. Their setting is a surface obtained by gluing Euclidean triangles of unit side length — exactly the metric simplicial complex of 9.2 in dimension 2 — and their length on the combinatorial side is the number of edges. They prove:
+
+> Let $\alpha:S^1\to\Sigma$ be a Lipschitz curve on a triangulated surface $\Sigma$. There is a simplicial curve $\lambda$ on $\Sigma$ which is homotopic to $\alpha$ and whose length satisfies $\ell(\lambda)\le2\,\ell(\alpha)$.
+
+The proof is the one to imitate: perturb $\alpha$ to be transverse to the edges, cut it into arcs each lying in one triangle, homotope each arc to the shorter of the two boundary arcs of its triangle (at most twice as long, by elementary Euclidean geometry), and delete the backtracking. The constant $2$ is not claimed to be sharp.
+
+**Wu–Zhu**, "Length of a shortest closed geodesic in manifolds of dimension four", *J. Differential Geom.* **122** (2022), 519–564, Lemma 3.12, is the four-dimensional analogue: a curve of length $l$ in a ball of radius $r$ yields a curve of simplicial length $\le64\,l/r$. So the straightening is available in higher dimensions too, with dimension-dependent constants and worse values.
+
+These constants should not be confused with those of 9.3: straightening to the 1-skeleton is strictly stronger than re-measuring the same curve, and its constant is larger — $2$ in dimension 2, against the sharp $\sqrt{3/2}\approx1.22$ of 9.3.
+
+**The stable-norm literature on polyhedra** is adjacent but does something else. **Babenko–Massart**, "On systolic zeta functions", arXiv:1612.01672 (2017), Lemma 4.2, shows that on a finite Riemannian polyhedron the length $l_\theta$ of a shortest curve in a homology class is within a bounded additive constant of the stable norm $\lVert\theta\rVert_{st}$; see also **Babenko–Sabourau**, "Volume entropy semi-norm", arXiv:1909.10803 (2019), and **Babenko–Balacheff**, "Systolic volume of homology classes", *Algebr. Geom. Topol.* **15** (2015), 733–767. All of these compare lengths within one metric, not a combinatorial metric with a Euclidean one.
+
+**Bottom line.** I found no paper stating the two-metric comparison for stable lengths. Assert (a) as a corollary of 9.3; cite Guth–Parlier–Young for (b), with Wu–Zhu for the higher-dimensional analogue.
+
 ---
 
 ## 10. Bibliography
@@ -835,6 +859,9 @@ The other infimum-over-metrics construction, Roth–Roth (2020), is listed under
 
 **L. Simplicial complexes: the $\ell^1$ (barycentric) metric, the diplo-simplex, and combinatorial versus Euclidean distance**
 
+- **I. Babenko, F. Balacheff**, "Systolic volume of homology classes," *Algebr. Geom. Topol.* **15** (2015), 733–767.
+- **I. Babenko, D. Massart**, "On systolic zeta functions," arXiv:1612.01672 (2017).
+- **I. Babenko, S. Sabourau**, "Volume entropy semi-norm," arXiv:1909.10803 (2019).
 - **A. Bartels, F. T. Farrell, W. Lück**, "The Farrell–Jones conjecture for cocompact lattices in virtually connected Lie groups," arXiv:1101.0469.
 - **A. Bartels, W. Lück, H. Reich**, "Equivariant covers for hyperbolic groups," *Geom. Topol.* **12** (2008), 1799–1882.
 - **K. Borsuk**, *Theory of Retracts*, Monografie Matematyczne **44**, PWN, Warszawa, 1967, 251 pp.
@@ -844,8 +871,10 @@ The other infimum-over-metrics construction, Roth–Roth (2020), is listed under
 - **G. R. Chambers, D. Dotterrer, F. Manin, S. Weinberger**, "Quantitative null-cobordism," arXiv:1610.04888.
 - **J. H. Conway, N. J. A. Sloane**, "The cell structures of certain lattices," in *Miscellanea Mathematica*, Springer, Berlin, 1991, 71–107 (p. 88).
 - **J. H. Conway, N. J. A. Sloane**, "Low-dimensional lattices. VII. Coordination sequences," *Proc. Roy. Soc. London Ser. A* **453** (1997), 2369–2389.
+- **L. Guth, H. Parlier, R. Young**, "Pants decompositions of random surfaces," *Geom. Funct. Anal.* **21** (2011), no. 5, 1069–1090; DOI 10.1007/s00039-011-0131-x.
 - **T. Haettel, N. Hoda, H. Petyt**, "$\ell^p$ metrics on cell complexes," *J. London Math. Soc.* (2024); arXiv:2302.03801.
 - **S.-T. Hu**, *Theory of Retracts*, Wayne State University Press, Detroit, 1965, 234 pp.
 - **I. Mineyev**, "Flows and joins of metric spaces," *Geom. Topol.* **9** (2005), 403–482.
 - **A. Mole**, "Extending a metric on a simplicial complex," arXiv:1309.0981 (2013), 17 pp.
 - **C. Wang, J. Yu**, "Toric $h$-vectors and Chow Betti numbers of dual hypersimplices," arXiv:1707.04581 (2017).
+- **N. Wu, Z. Zhu**, "Length of a shortest closed geodesic in manifolds of dimension four," *J. Differential Geom.* **122** (2022), no. 3, 519–564; DOI 10.4310/jdg/1675712997.
