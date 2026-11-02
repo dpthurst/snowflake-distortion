@@ -727,7 +727,7 @@ The proof is the one to imitate: perturb $\alpha$ to be transverse to the edges,
 
 **Wu–Zhu**, "Length of a shortest closed geodesic in manifolds of dimension four", *J. Differential Geom.* **122** (2022), 519–564, Lemma 3.12, is the four-dimensional analogue: a curve of length $l$ in a ball of radius $r$ yields a curve of simplicial length $\le64\,l/r$. So the straightening is available in higher dimensions too, with dimension-dependent constants and worse values.
 
-These constants should not be confused with those of 9.3: straightening to the 1-skeleton is strictly stronger than re-measuring the same curve, and its constant is larger — $2$ in dimension 2, against the sharp $\sqrt{3/2}\approx1.22$ of 9.3.
+These constants should not be confused with those of 9.3: straightening to the 1-skeleton is strictly stronger than re-measuring the same curve, and its constant is larger — $2$ in dimension 2, against the sharp $2/\sqrt3\approx1.155$ of 9.3.
 
 **The stable-norm literature on polyhedra** is adjacent but does something else. **Babenko–Massart**, "On systolic zeta functions", arXiv:1612.01672 (2017), Lemma 4.2, shows that on a finite Riemannian polyhedron the length $l_\theta$ of a shortest curve in a homology class is within a bounded additive constant of the stable norm $\lVert\theta\rVert_{st}$; see also **Babenko–Sabourau**, "Volume entropy semi-norm", arXiv:1909.10803 (2019), and **Babenko–Balacheff**, "Systolic volume of homology classes", *Algebr. Geom. Topol.* **15** (2015), 733–767. All of these compare lengths within one metric, not a combinatorial metric with a Euclidean one.
 
