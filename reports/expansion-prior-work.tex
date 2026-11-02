@@ -2630,6 +2630,51 @@ to the 1-skeleton is strictly stronger than re-measuring the same curve,
 and its constant is larger --- \(2\) in dimension 2, against the sharp
 \(2/\sqrt3\approx1.155\) of 9.3.
 
+\textbf{The constant \(2\) is attained.} Take the M\"{o}bius band made
+from one unit equilateral triangle: glue two edges by the flip
+\(A\mapsto C\), \(B\mapsto A\). All three vertices coalesce, so \(V=1\),
+\(E=2\), \(F=1\) and \(\chi=0\). The two glued edges meet at their
+midpoints \(M_1=\tfrac12(A+B)\) and \(M_2=\tfrac12(C+A)\), which are
+identified, so the segment \(M_1M_2\) closes up. It is a closed geodesic
+of length \(\tfrac12\) --- the gluing is a reflection whose axis is the
+direction of \(M_1M_2\), so the curve passes straight through the base
+point --- and it is the shortest loop in its class. Its barycentric
+\(\ell^1\) length is also \(\tfrac12\), since
+\(\lambda(M_1)=(\tfrac12,\tfrac12,0)\) and
+\(\lambda(M_2)=(\tfrac12,0,\tfrac12)\). But the shortest
+\emph{simplicial} loop in the class is a single edge, of length \(1\),
+so the straightening ratio is \(2\). Guth--Parlier--Young's argument is
+an equality here: the two boundary arcs from \(M_1\) to \(M_2\) have
+lengths \(\tfrac12+\tfrac12=1\) and \(\tfrac12+1+\tfrac12=2\). Their
+constant is therefore sharp in dimension \(2\).
+
+\textbf{Infimum versus simplicial infimum.} The comparison of
+\emph{infima} never needs straightening: on any complex,
+\(\inf\ell_C\le C\inf\ell_E\) follows by evaluating \(\ell_C\) along a
+minimising sequence, so the constant of 9.3 always applies to stable
+lengths --- orientable or not, and whether or not the infimum is
+attained. What the M\"{o}bius band shows is only that the infimum over
+\emph{simplicial} loops can be larger than the infimum over all curves.
+Whether orientability rules that out is a separate question. On the flat
+equilateral torus the analogous computation gives exactly \(2/\sqrt3\):
+for the class \(e_1+e_2\) the shortest simplicial loop has two edges
+while the geodesic has length \(\sqrt3\), and over all classes
+\(a e_1+b e_2\) the ratio \((a+b)/\sqrt{a^2+b^2+ab}\) is maximised at
+\(a=b\). So \(2\) looks like a feature of non-orientability, though I
+found no statement in the literature either way.
+
+\textbf{Attainment} --- which is what ``stable length equals actual
+length'' means --- does hold on all closed surfaces, orientable or not.
+\textbf{Freedman--Hass--Scott}, ``Closed geodesics on surfaces'',
+\emph{Bull. London Math. Soc.} \textbf{14} (1982), 385--391, state at
+the outset that every non-trivial free homotopy class of loops on a
+closed Riemannian surface contains a shortest loop, which may be taken
+smooth and is a closed geodesic; their Theorem 2.1 characterises it ---
+a shortest loop is an embedding, or a double cover of a one-sided
+embedded curve, and in the second case the class bounds a M\"{o}bius
+band. For Finsler metrics the corresponding existence statement is
+standard.
+
 \textbf{The stable-norm literature on polyhedra} is adjacent but does
 something else. \textbf{Babenko--Massart}, ``On systolic zeta
 functions'', arXiv:1612.01672 (2017), Lemma 4.2, shows that on a finite
@@ -3092,6 +3137,10 @@ the diplo-simplex, and combinatorial versus Euclidean distance}
   \textbf{J. H. Conway, N. J. A. Sloane}, ``Low-dimensional lattices.
   VII. Coordination sequences,'' \emph{Proc. Roy. Soc. London Ser. A}
   \textbf{453} (1997), 2369--2389.
+\item
+  \textbf{M. Freedman, J. Hass, P. Scott}, ``Closed geodesics on
+  surfaces,'' \emph{Bull. London Math. Soc.} \textbf{14} (1982),
+  385--391; DOI 10.1112/blms/14.5.385.
 \item
   \textbf{L. Guth, H. Parlier, R. Young}, ``Pants decompositions of
   random surfaces,'' \emph{Geom. Funct. Anal.} \textbf{21} (2011), no.
