@@ -2677,13 +2677,25 @@ equal the length of the shortest loop: the stable length is the
 translation length \(\lim_n d(x,g^nx)/n\), which vanishes for a torsion
 class. The generator of \(\pi_1(\mathbb{RP}^2)=\mathbb{Z}/2\) is the
 example --- its shortest loop is a projective line of positive length,
-while \(g^2=1\) forces stable length \(0\). Since \(\mathbb{RP}^2\) is
-the only closed surface whose fundamental group has torsion, for every
-other closed surface the stable length of a non-trivial class does equal
-the length of its shortest loop. None of this affects the constant of
-9.3, which bounds \(\inf\ell_C\) by \(C\inf\ell_E\) for every class,
-torsion or not; for \(\mathbb{RP}^2\) the stable length is \(0\) and the
-inequality is vacuous.
+while \(g^2=1\) forces stable length \(0\). Torsion is thus one way for
+the two to differ, but not the only conceivable one. What holds in
+general is only \(\tau\le L\), where \(L\) is the length of the shortest
+loop in the class, since \(n\) copies of a loop of length \(L\) give
+\(d(x,g^nx)\le nL\). Equality \(\tau=L\) is what an axis gives: when the
+universal cover is CAT(0) --- in particular for a flat Klein bottle,
+glide-reflection classes included --- the deck transformation translates
+along a geodesic line (for a glide reflection the axis is translated by
+the glide length), and the projection of that line is a closed geodesic
+of length \(\tau\) which is shortest in its class. For a general Finsler
+metric with positive curvature somewhere I have no proof either way, and
+the multiplicativity \(L(g^n)=nL(g)\) that equality would give is not
+formal: Freedman--Hass--Scott's structure theorem for shortest loops
+requires the class to be represented by a two-sided embedded loop, and a
+shortest loop in the class of \(g^n\) need not be a power of one in the
+class of \(g\). None of this affects the constant of 9.3, which bounds
+\(\inf\ell_C\) by \(C\inf\ell_E\) for every class, torsion or not; for
+\(\mathbb{RP}^2\) the stable length is \(0\) and the inequality is
+vacuous.
 
 \textbf{The stable-norm literature on polyhedra} is adjacent but does
 something else. \textbf{Babenko--Massart}, ``On systolic zeta
