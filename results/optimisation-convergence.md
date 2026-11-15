@@ -1,4 +1,4 @@
-# Converging the $m=400$ configuration, and what it did to the overlaps
+# Converging a configuration, and what it does to the overlaps
 
 The question this was meant to settle: when the overlap search finds poorer
 matches at larger $m$, is that because the finer configurations are less
@@ -6,7 +6,7 @@ converged, or because finer detail is genuinely different?
 
 ## The run
 
-`scripts/optimise_m400.py`, starting from `s_m400.npy`
+`scripts/optimise_m400.py --m 400` (the script takes `--m`), starting from `s_m400.npy`
 ($D=1.5422713964$), five rounds of $\beta$-annealed L-BFGS followed by the
 exact-minimax SLP (200 iterations, $\rho_0=0.01$). Three minutes in total.
 
@@ -51,14 +51,40 @@ converged  0.0566    185      799     4591
 Essentially unchanged — the counts move by a few per cent, the best residual
 shifts within the scatter of the grid.
 
+## The same at $m=800$
+
+The run takes 19 minutes at $m=800$ (1.2 s per SLP iteration):
+
+```
+start:  D=1.5910519607  stress=2   (1+1 tight pairs)
+round 0: D=1.5924480930 stress=2   (1+1)        <- L-BFGS only
+round 0: D=1.5900725043 stress=0   (143+1403)
+round 1: D=1.5900396023 stress=0   (148+1409)
+round 2: D=1.5900382880 stress=0   (148+1410)
+round 3: D=1.5900336157 stress=0   (142+1407)
+round 4: D=1.5900261898 stress=0   (147+1408)
+```
+
+$D$ improves by $0.065\%$, the shape moves by $0.0107$ of the diameter (size
+ratio 1.004, rotation $-0.4^\circ$), and the overlaps are again unchanged:
+
+```
+           best    #<0.12   #<0.15   #<0.20
+stored     0.0785     70      418     3386
+converged  0.0800     69      412     3426
+```
+
+Comparing the two *certified* configurations at the same relative grid, the
+thinning is still there: $787 \to 412$ below $0.15$ from $m=400$ to $m=800$.
+
 ## What this says
 
-At $m=400$, the deficiency in optimisation is **not** what the overlaps were
-measuring. The stored point was technically non-stationary but already within
-$0.8\%$ of a certified stationary point, and the overlaps survive that move
-intact. So the thinning of overlaps as $m$ grows is not explained by the
-optimiser having stopped early — at this $m$ at least, and the $m=400$ point is
-the one with the *largest* documented defect.
+At both $m=400$ and $m=800$ the deficiency in optimisation is **not** what the
+overlaps were measuring. In each case the stored point was technically
+non-stationary — one tight max and one tight min pair, no multipliers — but
+already within about $1\%$ of a certified stationary point, and the overlaps
+survive that move intact. So the thinning of overlaps as $m$ grows is not
+explained by the optimiser having stopped early.
 
 That leaves the resolution explanation: finer configurations carry structure at
 scales the coarse ones do not have, and the coarse-shape comparison is degraded
@@ -67,17 +93,19 @@ suggests something beyond sampling, but it is not optimisation.
 
 ## Caveats
 
-* One $m$, one starting point. The converged point is a certified KKT point, not
-  a global optimum, and it sits in the basin of `s_m400.npy`.
+* One starting point per $m$. The converged points are certified KKT points, not
+  global optima, and each sits in the basin of the stored configuration it came
+  from.
 * The certificate is first-order only: no second-order or global claim.
 * The overlap comparison is on a coarse grid; small changes are below its
   resolution.
-* $m=800$ would test the same question closer to where the loss appears, at
-  roughly five times the cost (about 15–20 min).
+* The certificate is first-order; the stored points may still differ from the
+  converged ones in ways the overlap grid cannot see.
 
 ## Reproduce
 
 ```bash
-python3 scripts/optimise_m400.py --rounds 5 --minutes 20
+python3 scripts/optimise_m400.py --m 400 --rounds 5 --minutes 20
+python3 scripts/optimise_m400.py --m 800 --rounds 5 --minutes 40
 ```
-Writes `results/m400_converged.npy` and `results/m400_converged.json`.
+Writes `results/m{400,800}_converged.npy` and `.json`.

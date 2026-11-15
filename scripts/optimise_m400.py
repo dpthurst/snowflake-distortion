@@ -1,4 +1,4 @@
-"""Converge one m=400 configuration towards a stationary point of the minimax.
+"""Converge one configuration towards a stationary point of the minimax.
 
 The stored m=400 points are not stationary (the KKT check in
 `limiting_curve_directions.md` gives relative residuals 1.07 and 1.04), and four
@@ -30,7 +30,8 @@ from bigm import phi_grad, V_of, true_dist      # noqa: E402
 from core2 import Problem                       # noqa: E402
 from slp2 import slp, stress                    # noqa: E402
 
-START = ROOT / ".ultramath/smwhdqmht/m1/s_m400.npy"
+STARTS = {400: ROOT / ".ultramath/smwhdqmht/m1/s_m400.npy",
+          800: ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy"}
 
 
 def exact_D(v):
@@ -60,13 +61,16 @@ def main():
     ap.add_argument("--minutes", type=float, default=40.0)
     ap.add_argument("--slp-iters", type=int, default=200)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--start", default=None, help="configuration to start from")
     args = ap.parse_args()
 
     m = args.m
     t0 = time.time()
     deadline = t0 + 60 * args.minutes
     P = Problem(m)
-    v = to_v2(np.load(START))
+    start = Path(args.start) if args.start else STARTS[m]
+    v = to_v2(np.load(start))
+    print(f"start file: {start.name}", flush=True)
     D, nmax, nmin = exact_D(v)
     st = stress(P, v, tol=1e-8)
     log = [dict(round=-1, D=D, ties=[nmax, nmin], stress=int(st["status"]),
