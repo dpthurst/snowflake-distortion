@@ -38,7 +38,9 @@ drag control on *moves the copy* a drag translates it; set it to *rotates and
 scales it* (or hold Shift) and the same drag applies $k=z_1/z_0$ about the
 copy's centroid, so the gesture rotates and scales together. The overlay frame
 is fixed by the whole curve and the block, so the view does not chase the copy
-while it moves. The sliders remain, and *refit all six* re-runs the search. The readout ends with a line
+while it moves; when a parameter change would carry the copy out of view, the
+frame widens to take it in (but never during a drag, so the picture stays still
+under your hand). The sliders remain, and *refit all six* re-runs the search. The readout ends with a line
 `parameters  c=... d=... s0=... s1=...` at full precision, and **copy
 parameters** puts the same numbers, with the curves and the interval, on the
 clipboard — that is the unambiguous way to quote an alignment.

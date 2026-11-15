@@ -756,12 +756,34 @@ if (typeof document !== "undefined") {
       const w = blockAt(S.x, S.y, a, b, t);
       gx = g.x; gy = g.y; resX = w.x; resY = w.y;
     }
-    /* in copy mode the frame is set by the whole and the block, so that the copy
-       can be dragged around without the view chasing it */
-    const allx = copyMode ? Array.from(Wg.x).concat(Array.from(resX))
-                          : Array.from(gx).concat(Array.from(resX));
-    const ally = copyMode ? Array.from(Wg.y).concat(Array.from(resY))
-                          : Array.from(gy).concat(Array.from(resY));
+    /* The frame is set by the whole and the block, so a drag does not make the
+       view chase the copy. It is widened to take the copy in when a parameter
+       change would otherwise carry it off screen — but never during a drag. */
+    let allx = copyMode ? Array.from(Wg.x).concat(Array.from(resX))
+                        : Array.from(gx).concat(Array.from(resX));
+    let ally = copyMode ? Array.from(Wg.y).concat(Array.from(resY))
+                        : Array.from(gy).concat(Array.from(resY));
+    if (copyMode && !copyDrag) {
+      const box = (xs, ys) => {
+        let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+        for (let i = 0; i < xs.length; i++) {
+          if (xs[i] < x0) x0 = xs[i]; if (xs[i] > x1) x1 = xs[i];
+          if (ys[i] < y0) y0 = ys[i]; if (ys[i] > y1) y1 = ys[i];
+        }
+        return [x0, x1, y0, y1];
+      };
+      const A = box(resX, resY).map((v, i) => i % 2 ? v : v);      // block
+      const Aw = box(Array.from(Wg.x), Array.from(Wg.y));          // whole
+      const A0 = [Math.min(A[0], Aw[0]), Math.max(A[1], Aw[1]),
+                  Math.min(A[2], Aw[2]), Math.max(A[3], Aw[3])];
+      const B = box(Array.from(gx), Array.from(gy));               // copy
+      const mx = 0.12 * Math.max(A0[1] - A0[0], 1e-9);
+      const my = 0.12 * Math.max(A0[3] - A0[2], 1e-9);
+      if (B[0] < A0[0] - mx || B[1] > A0[1] + mx || B[2] < A0[2] - my || B[3] > A0[3] + my) {
+        allx = allx.concat(Array.from(gx));
+        ally = ally.concat(Array.from(gy));
+      }
+    }
     const map2 = fitView(allx, ally, cv2.width, cv2.height, 24);
     rightView = map2.view;
     if (copyMode) poly(c2, Wg.x, Wg.y, map2, "#e3e3e3", 1.0, 0.7);

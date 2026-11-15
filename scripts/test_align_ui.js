@@ -259,6 +259,49 @@ const copiedText = window._copied;
 check('the copy button produces a full parameter string',
       typeof copiedText === 'string' && /c=/.test(copiedText) && /s1=/.test(copiedText), copiedText);
 
+/* a parameter change must not leave the copy off screen */
+{
+  const view0 = app2.view();
+  app2.state.copy.dx += 12;                       // push it far away
+  app2.draw();
+  const view1 = app2.view();
+  const c = app2.state.copy;
+  const model = app2.copyModel(app2.state.whole, app2.state.source,
+                               app2.state.a, app2.state.b, c);
+  const inFrame = (x, y) => Math.abs(x - view1.cx) <= (view1.w / 2 - 24) / view1.s &&
+                            Math.abs(y - view1.cy) <= (view1.h / 2 - 24) / view1.s;
+  let worst = 0;
+  for (let i = 0; i < model.g.x.length; i++) {
+    if (!inFrame(model.g.x[i], model.g.y[i])) worst++;
+  }
+  check('the frame widens when the copy would leave it',
+        view1.s !== view0.s || view1.cx !== view0.cx,
+        `scale ${view0.s.toFixed(3)} -> ${view1.s.toFixed(3)}`);
+  check('every drawn point of the copy is inside the frame', worst === 0,
+        `${worst} of ${model.g.x.length} points outside`);
+  app2.state.copy.dx -= 12;
+  app2.draw();
+  /* a small nudge must not move the frame */
+  const view2 = app2.view();
+  app2.state.copy.dx += 0.02;
+  app2.draw();
+  const view3 = app2.view();
+  check('the frame stays put for a small move', view3.s === view2.s && view3.cx === view2.cx);
+  app2.state.copy.dx -= 0.02;
+  app2.draw();
+}
+/* but not while a drag is in progress: the frame stays put under the hand */
+{
+  app2.draw();
+  const viewA = app2.view();
+  cvR.dispatch('pointerdown', ptr(200, 200));
+  for (let i = 1; i <= 5; i++) cvR.dispatch('pointermove', ptr(200 + 60 * i, 200 + 40 * i));
+  const viewB = app2.view();
+  check('the frame is frozen during a drag', viewB.s === viewA.s && viewB.cx === viewA.cx,
+        `scale ${viewA.s.toFixed(3)} vs ${viewB.s.toFixed(3)}`);
+  cvR.dispatch('pointerup', ptr(500, 400));
+}
+
 /* shortening the copy's own arc keeps its placement */
 const s1El = nodes.get('#s1');
 const preSigma = { ...app2.state.copy };
