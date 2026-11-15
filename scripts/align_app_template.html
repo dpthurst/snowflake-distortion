@@ -41,6 +41,10 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
       <option value="revconj">reversal + conjugation</option>
     </select></div>
   <div><label for="preset">presets</label><select id="preset"></select></div>
+  <div><label for="metric">residual</label><select id="metric">
+      <option value="pointwise">gap at equal parameter</option>
+      <option value="setdist">distance to the other curve</option>
+    </select></div>
   <div><label for="mode">correspondence</label><select id="mode">
       <option value="index">index (parameter-aligned)</option>
       <option value="copy">copy of the whole + affine parameter</option>
@@ -74,7 +78,9 @@ with a freely chosen affine parameter — by a coarse grid followed by two local
 scale, the rotation and the parameter range, re-fitting the translation; <em>refit all six</em> re-runs the search.
 Note that with the block taken from the same curve the index correspondence matches exactly, so copy mode only
 says something when the two curves differ. <em>r/R</em> compares endpoint chord ratios; its percentile is taken
-among the chords of the same index gap.</div>
+among the chords of the same index gap. With <strong>distance to the other curve</strong> the residual is
+instead the distance from each curve to the piecewise-linear interpolant of the other, in both directions
+(601 sample points, so it is sampled rather than exact).</div>
 
 <script>
 const CURVES = __CURVES__;
@@ -404,6 +410,53 @@ function nelderMead2(f, x0, step, iters, tol) {
   return simplex[b];
 }
 
+/* ---------- distance to a polyline (piecewise-linear interpolant) ----------
+   point-to-segment distance, with a cheap midpoint pruning so that a few hundred
+   sample points against 1600 segments stays interactive */
+function pointSegDist(px, py, ax, ay, bx, by) {
+  const vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay;
+  const c1 = vx * wx + vy * wy;
+  if (c1 <= 0) return Math.hypot(px - ax, py - ay);
+  const c2 = vx * vx + vy * vy;
+  if (c2 <= c1) return Math.hypot(px - bx, py - by);
+  const s = c1 / c2;
+  return Math.hypot(px - (ax + s * vx), py - (ay + s * vy));
+}
+
+function bboxOf(X, Y, a, b) {
+  const out = [];
+  for (let i = a; i < b; i++) {
+    const x0 = Math.min(X[i], X[i + 1]), x1 = Math.max(X[i], X[i + 1]);
+    const y0 = Math.min(Y[i], Y[i + 1]), y1 = Math.max(Y[i], Y[i + 1]);
+    out.push({ x0, x1, y0, y1, mx: (X[i] + X[i + 1]) / 2, my: (Y[i] + Y[i + 1]) / 2,
+               r: Math.hypot(X[i + 1] - X[i], Y[i + 1] - Y[i]) / 2 });
+  }
+  return out;
+}
+
+function distToPolyline(px, py, X, Y, boxes) {
+  let best = Infinity;
+  for (let i = 0; i < boxes.length; i++) {
+    const b = boxes[i];
+    if (Math.hypot(px - b.mx, py - b.my) - b.r > best) continue;   // cannot improve
+    const d = pointSegDist(px, py, X[i], Y[i], X[i + 1], Y[i + 1]);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+/* one-sided distance from sampled points of one polyline to another, both ways */
+function setDistance(ax, ay, bx, by, bxs) {
+  let sup = 0;
+  const out = new Float64Array(ax.length);
+  for (let i = 0; i < ax.length; i++) {
+    const d = distToPolyline(ax[i], ay[i], bx, by, bxs);
+    out[i] = d;
+    if (d > sup) sup = d;
+  }
+  return { d: out, sup };
+}
+
 function diamond(X, Y, a, b) {
   let hi = 0;
   for (let i = a; i <= b; i++) for (let j = i + 1; j <= b; j++) {
@@ -429,7 +482,7 @@ if (typeof document !== "undefined") {
   const preferred = "S-branch m=800";
   const startName = names.includes(preferred) ? preferred : names[0];
   const state = { whole: startName, source: startName, a: 0, b: 0,
-                  variant: "auto", mode: "index", copy: null };
+                  variant: "auto", mode: "index", metric: "pointwise", copy: null };
   const cache = new Map();
 
   const curve = name => CURVES[name];
@@ -616,31 +669,89 @@ if (typeof document !== "undefined") {
     poly(c2, gx, gy, map2, copyMode ? "#2c9c4a" : "#b9b9b9", 1.5, 1);
     poly(c2, resX, resY, map2, "#1f6fd0", 2.0, 1);
 
-    /* strip */
+    /* strip: either the parameter-aligned gap, or the distance from each curve
+       to the piecewise-linear interpolant of the other */
     const cv3 = $("#cvStrip"), c3 = cv3.getContext("2d");
     c3.clearRect(0, 0, cv3.width, cv3.height);
     const pad = 26, H = cv3.height - 2 * pad, Wd = cv3.width - 2 * pad;
-    const ts = copyMode ? model.ts : stripParams(W.x.length, b - a);
-    const ws = copyMode ? model.w : blockAt(S.x, S.y, a, b, ts);
-    const gs = copyMode ? model.g : wholeAt(Wg.x, Wg.y, ts, rep.kind);
-    const res = new Float64Array(ts.length);
-    let mx = 0;
-    for (let i = 0; i < ts.length; i++) {
-      res[i] = Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]);
-      if (res[i] > mx) mx = res[i];
+    const setMode = state.metric === "setdist";
+    const m0 = W.x.length;
+    let ts, ws, gs, res, resB = null, mx = 0, supF = 0, supB = 0;
+    if (setMode) {
+      const NS = 601;
+      ts = uniform(NS);
+      ws = blockAt(S.x, S.y, a, b, ts);
+      let GX, GY, BX, BY;
+      if (copyMode) {
+        const cp = state.copy, ss = new Float64Array(m0), kx = [], ky = [];
+        for (let k = 0; k < m0; k++) {
+          const tk = (k / (m0 - 1) - cp.s0) / cp.s1;
+          ss[k] = k / (m0 - 1);
+          if (tk >= 0 && tk <= 1) {
+            const z = interpAt(Wg.x, Wg.y, Float64Array.from([k / (m0 - 1)]));
+            kx.push(cp.cx * z.x[0] - cp.cy * z.y[0] + cp.dx);
+            ky.push(cp.cx * z.y[0] + cp.cy * z.x[0] + cp.dy);
+          }
+        }
+        GX = Float64Array.from(kx); GY = Float64Array.from(ky);
+        gs = { x: new Float64Array(NS), y: new Float64Array(NS) };
+        const sss = new Float64Array(NS);
+        for (let i = 0; i < NS; i++) sss[i] = cp.s0 + cp.s1 * ts[i];
+        const q = interpAt(Wg.x, Wg.y, sss);
+        for (let i = 0; i < NS; i++) {
+          gs.x[i] = cp.cx * q.x[i] - cp.cy * q.y[i] + cp.dx;
+          gs.y[i] = cp.cx * q.y[i] + cp.cy * q.x[i] + cp.dy;
+        }
+      } else {
+        const tv = new Float64Array(m0);
+        for (let k = 0; k < m0; k++) tv[k] = k / (m0 - 1);
+        const gverts = wholeAt(Wg.x, Wg.y, tv, rep.kind);
+        GX = gverts.x; GY = gverts.y;
+        gs = wholeAt(Wg.x, Wg.y, ts, rep.kind);
+      }
+      const boxG = bboxOf(GX, GY, 0, GX.length - 1);
+      const bt = new Float64Array(b - a + 1);
+      for (let k = 0; k <= b - a; k++) bt[k] = k / (b - a);
+      const bverts = blockAt(S.x, S.y, a, b, bt);
+      BX = bverts.x; BY = bverts.y;
+      const boxB = bboxOf(BX, BY, 0, BX.length - 1);
+      const fwd = setDistance(ws.x, ws.y, GX, GY, boxG);
+      const bwd = setDistance(gs.x, gs.y, BX, BY, boxB);
+      res = fwd.d; resB = bwd.d;
+      supF = fwd.sup; supB = bwd.sup;
+      mx = Math.max(supF, supB);
+    } else {
+      ts = copyMode ? model.ts : stripParams(W.x.length, b - a);
+      ws = copyMode ? model.w : blockAt(S.x, S.y, a, b, ts);
+      gs = copyMode ? model.g : wholeAt(Wg.x, Wg.y, ts, rep.kind);
+      res = new Float64Array(ts.length);
+      for (let i = 0; i < ts.length; i++) {
+        res[i] = Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]);
+        if (res[i] > mx) mx = res[i];
+      }
     }
     c3.strokeStyle = "#ddd"; c3.lineWidth = 1;
     c3.beginPath(); c3.moveTo(pad, pad + H); c3.lineTo(pad + Wd, pad + H); c3.stroke();
-    c3.strokeStyle = "#c8342a"; c3.lineWidth = 1.4; c3.beginPath();
-    for (let i = 0; i < ts.length; i++) {
-      const x = pad + ts[i] * Wd, y = pad + H - (mx > 0 ? res[i] / mx : 0) * H;
-      i ? c3.lineTo(x, y) : c3.moveTo(x, y);
-    }
-    c3.stroke();
+    const drawTrace = (arr, colour, dashed) => {
+      c3.save();
+      c3.strokeStyle = colour; c3.lineWidth = 1.3;
+      c3.setLineDash(dashed ? [4, 3] : []);
+      c3.beginPath();
+      for (let i = 0; i < ts.length; i++) {
+        const x = pad + ts[i] * Wd, y = pad + H - (mx > 0 ? arr[i] / mx : 0) * H;
+        i ? c3.lineTo(x, y) : c3.moveTo(x, y);
+      }
+      c3.stroke(); c3.restore();
+    };
+    drawTrace(res, "#c8342a", false);
+    if (resB) drawTrace(resB, "#2c9c4a", true);
     c3.fillStyle = "#666"; c3.font = "11px sans-serif";
     c3.fillText("t = 0", pad, pad + H + 16); c3.fillText("t = 1", pad + Wd - 26, pad + H + 16);
-    c3.fillText("max " + mx.toFixed(6) + (copyMode ? " (copy model, at its breakpoints)"
-                                                      : " (= sup, exact at the knots)"), pad + 4, pad - 8);
+    c3.fillText(setMode
+      ? "block to the other curve " + supF.toFixed(5) + "   other to block " + supB.toFixed(5) +
+        "   symmetric " + mx.toFixed(5) + "  (601 samples)"
+      : "max " + mx.toFixed(6) + (copyMode ? " (copy model, at its breakpoints)"
+                                           : " (= sup, exact at the knots)"), pad + 4, pad - 8);
 
     /* readout */
     const f = n => n.toFixed(6);
@@ -649,7 +760,10 @@ if (typeof document !== "undefined") {
       "interval            [" + a + ", " + b + "]   index length " + (b - a) + "   relative " + ((b - a) / (S.x.length - 1)).toFixed(4),
       "correspondence      " + (copyMode ? "copy of the whole, affine parameter" : "index (parameter-aligned)"),
       "orientation         " + (copyMode ? "free similarity (conj. not used)" : rep.kind + (state.variant === "auto" ? "   (best of four)" : "   (chosen)")),
-      "residual sup        " + f(copyMode ? model.sup : rep.sup) + "     rms " + f(copyMode ? model.rms : rep.rms) + "   (block endpoint chord = 1)",
+      setMode
+        ? "distance sup        block to the curve " + f(supF) + "   curve to block " + f(supB) +
+          "   symmetric " + f(mx) + "   (block endpoint chord = 1)"
+        : "residual sup        " + f(copyMode ? model.sup : rep.sup) + "     rms " + f(copyMode ? model.rms : rep.rms) + "   (block endpoint chord = 1)",
       copyMode
         ? "similarity          |c| " + Math.hypot(state.copy.cx, state.copy.cy).toExponential(4) +
           "   arg " + (Math.atan2(state.copy.cy, state.copy.cx) * 180 / Math.PI).toFixed(2) + " deg" +
@@ -733,6 +847,7 @@ if (typeof document !== "undefined") {
   $("#an").oninput = e => setInterval(+e.target.value, state.b);
   $("#bn").oninput = e => setInterval(state.a, +e.target.value);
   $("#variant").onchange = e => { state.variant = e.target.value; draw(); };
+  $("#metric").onchange = e => { state.metric = e.target.value; draw(); };
   $("#preset").onchange = e => {
     const list = PRESETS[state.whole] || [];
     if (!list.length || e.target.value === "") return;

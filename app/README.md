@@ -9,6 +9,10 @@ curve, in two modes:
 
 * **index correspondence** — overlay at the same parameter, endpoint-gauged,
   with the four symmetries available; residual in units of the endpoint chord;
+* **residual metric** — either the gap at equal parameter (affine between
+  knots, hence V-shaped where the curves cross), or the distance from each
+  curve to the piecewise-linear interpolant of the other, taken in both
+  directions and reported as a symmetric maximum;
 * **copy mode** — fit ``w(t) ~ c W(s0 + s1 t) + d``: a similarity image of the
   whole with a free affine parameter. Six free parameters, found by a coarse
   grid over the parameter range followed by two local refinements; the sliders
@@ -28,6 +32,7 @@ Checks (see `scripts/`):
     ~/node/bin/node scripts/test_align_ui.js   # wiring in a DOM stub, not a GUI test
     python3 scripts/preview_align_app.py      # static PNG, index mode
     python3 scripts/preview_align_copy.py     # static PNG, copy mode
+    python3 scripts/preview_residual_metrics.py  # the two metrics side by side
 
 There is no browser on this machine, so drawing, dragging and layout have not
 been tested; only the geometry and the event wiring have.

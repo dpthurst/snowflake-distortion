@@ -253,3 +253,44 @@ def fit_copy_multires(whole, a, b, source):
     nat = profile_at(Wg, t2, w2, a / (m - 1), (b - a) / (m - 1))
     return dict(s0=s0, s1=s1, c=pr["c"], d=pr["d"], sup=pr["sup"],
                 natural_sup=nat["sup"], natural_c=nat["c"], natural_d=nat["d"])
+
+
+# ---------------------------------------------------------------- set distance
+def _dist_point_segment(px, py, ax, ay, bx, by):
+    vx, vy = bx - ax, by - ay
+    wx, wy = px - ax, py - ay
+    c1 = vx * wx + vy * wy
+    c2 = vx * vx + vy * vy
+    t = np.where(c2 > 0, np.clip(c1 / np.where(c2 > 0, c2, 1.0), 0.0, 1.0), 0.0)
+    return np.hypot(px - (ax + t * vx), py - (ay + t * vy))
+
+
+def dist_to_polyline(px, py, PX, PY):
+    """Distance from points (px,py) to the polyline through (PX,PY); brute force."""
+    px = np.atleast_1d(px)[:, None]
+    py = np.atleast_1d(py)[:, None]
+    out = np.full(px.shape[0], np.inf)
+    for i in range(len(PX) - 1):
+        d = _dist_point_segment(px[:, 0], py[:, 0], PX[i], PY[i], PX[i + 1], PY[i + 1])
+        out = np.minimum(out, d)
+    return out
+
+
+def set_distance_sup(whole, a, b, source=None, kind="id", n=601):
+    """Symmetric supremum of the distance between the two polylines.
+
+    Returns (block_to_curve, curve_to_block, max).
+    """
+    v = np.asarray(whole, dtype=complex)
+    src = v if source is None else np.asarray(source, dtype=complex)
+    W = gauge(v)
+    t = np.linspace(0.0, 1.0, n)
+    w = block(src, a, b, t)
+    g = whole_at(W, t, kind)
+    tv = np.arange(len(v)) / (len(v) - 1.0)
+    gv = whole_at(W, tv, kind)
+    bt = np.arange(b - a + 1) / (b - a)
+    bv = block(src, a, b, bt)
+    fwd = dist_to_polyline(w.real, w.imag, gv.real, gv.imag)
+    bwd = dist_to_polyline(g.real, g.imag, bv.real, bv.imag)
+    return float(fwd.max()), float(bwd.max()), float(max(fwd.max(), bwd.max()))

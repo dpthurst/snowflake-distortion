@@ -60,7 +60,8 @@ def run_node(core_js, curves, cases):
     SCRATCH.mkdir(exist_ok=True)
     exports = ("\nmodule.exports = {ALPHA, VARIANTS, gauge, interpAt, blockAt, wholeAt, knots,\n"
                "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond,\n"
-               "  stripParams, fitCopy, copyResidual, profileAt, fitTranslation};\n")
+               "  stripParams, fitCopy, copyResidual, profileAt, fitTranslation,\n"
+               "  bboxOf, setDistance, pointSegDist};\n")
     (SCRATCH / "align_core.js").write_text(core_js + exports)
     driver = """
 const core = require('./align_core.js');
@@ -101,7 +102,24 @@ for (const [w, s, a, b] of CASES) {
   const ws = core.blockAt(S.x, S.y, a, b, tp);
   let smax = 0;
   for (let i = 0; i < tp.length; i++) smax = Math.max(smax, Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]));
-  out.push({ strip_max: smax,
+  /* symmetric distance between the two polylines, as the page computes it */
+  const NS = 601, tsd = new Float64Array(NS);
+  for (let i = 0; i < NS; i++) tsd[i] = i / (NS - 1);
+  const wsd = core.blockAt(S.x, S.y, a, b, tsd);
+  const Wgd = core.gauge(W.x, W.y);
+  const gsd = core.wholeAt(Wgd.x, Wgd.y, tsd, best);
+  const tv = new Float64Array(W.x.length);
+  for (let k = 0; k < tv.length; k++) tv[k] = k / (W.x.length - 1);
+  const gv = core.wholeAt(Wgd.x, Wgd.y, tv, best);
+  const bt = new Float64Array(b - a + 1);
+  for (let k = 0; k <= b - a; k++) bt[k] = k / (b - a);
+  const bv = core.blockAt(S.x, S.y, a, b, bt);
+  const boxG = core.bboxOf(gv.x, gv.y, 0, gv.x.length - 1);
+  const boxB = core.bboxOf(bv.x, bv.y, 0, bv.x.length - 1);
+  const sdF = core.setDistance(wsd.x, wsd.y, gv.x, gv.y, boxG).sup;
+  const sdB = core.setDistance(gsd.x, gsd.y, bv.x, bv.y, boxB).sup;
+  out.push({ setdist: [sdF, sdB, Math.max(sdF, sdB)],
+             strip_max: smax,
              sup: Object.fromEntries(core.VARIANTS.map(k => [k, res[k].sup])),
              rms: Object.fromEntries(core.VARIANTS.map(k => [k, res[k].rms])),
              best, free_sup: fit.sup, absC: fit.absC, argC: fit.argC,
@@ -133,7 +151,8 @@ def python_side(curves, case):
     rho = abs(S[b] - S[a])
     lad = core.ladder(S, b - a)
     r_ab = rho / (b - a) ** core.ALPHA
-    return dict(strip_max=res[best]["sup"], sup={k: res[k]["sup"] for k in core.VARIANTS},
+    sd = core.set_distance_sup(W, a, b, src, kind=best)
+    return dict(setdist=list(sd), strip_max=res[best]["sup"], sup={k: res[k]["sup"] for k in core.VARIANTS},
                 rms={k: res[k]["rms"] for k in core.VARIANTS},
                 best=best, free_sup=free_sup, absC=abs(c), argC=float(np.angle(c)),
                 D_block=core.distortion(seg),
@@ -149,6 +168,9 @@ def compare(js, py, case, tol=1e-9, report=None):
             a, b = js[key][k], py[key][k]
             if abs(a - b) > tol * max(1.0, abs(b)):
                 bad.append(f"{key}[{k}] js={a!r} py={b!r}")
+    for i, v in enumerate(js.get("setdist", [])):
+        if abs(v - py["setdist"][i]) > tol * max(1.0, abs(py["setdist"][i])):
+            bad.append(f"setdist[{i}] js={v!r} py={py['setdist'][i]!r}")
     for key in ("strip_max", "free_sup", "absC", "D_block", "s_block", "pct", "r_ab"):
         if js[key] is None and py[key] is None:
             continue
@@ -269,6 +291,21 @@ def main():
           f"{'PASS' if caught2 else 'FAIL'}")
     if not caught2:
         raise SystemExit("a uniform-only strip went unnoticed")
+    # the distance metric must notice a truncated polyline search
+    one_seg = core_js.replace("for (let i = 0; i < boxes.length; i++) {\n    const b = boxes[i];",
+                              "for (let i = 0; i < 1; i++) {\n    const b = boxes[i];")
+    if one_seg == core_js:
+        one_seg = core_js.replace("for (let i = 0; i < boxes.length; i++) {", "for (let i = 0; i < 1; i++) {")
+    assert one_seg != core_js, "set-distance corruption target not found"
+    js_one = run_node(one_seg, curves, CASES)["cases"]
+    caught_sd = []
+    for case, j in zip(CASES, js_one):
+        compare(j, python_side(curves, case), case, report=caught_sd)
+    print(f"set-distance test: {len(caught_sd)} mismatches with only the first segment "
+          f"searched -> {'PASS' if caught_sd else 'FAIL'}")
+    if not caught_sd:
+        raise SystemExit("a truncated polyline search went unnoticed")
+
     # and the copy fit must notice a broken parameter correspondence
     bad_sigma = core_js.replace("specific", "specific")
     bad_sigma = core_js.replace("for (let i = 0; i < n; i++) ss[i] = s0 + s1 * w.t[i];",

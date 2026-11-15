@@ -110,6 +110,17 @@ variant.onchange({ target: variant });
 check('variant switch keeps a readout', readout().includes('reversal') || readout().includes('rev'),
       readout().split('\n')[1]);
 
+/* residual metric switch */
+const metric = nodes.get('#metric');
+const beforeMetric = readout();
+metric.value = 'setdist';
+metric.onchange({ target: metric });
+check('distance metric changes the readout', readout() !== beforeMetric &&
+      /distance sup/.test(readout()), readout().split('\n')[3]);
+metric.value = 'pointwise';
+metric.onchange({ target: metric });
+check('switching back restores the gap readout', /residual sup/.test(readout()));
+
 /* copy mode: similarity + affine parameter */
 const mode = nodes.get('#mode');
 mode.value = 'copy';
