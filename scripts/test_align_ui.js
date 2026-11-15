@@ -165,6 +165,63 @@ let refitThrew = null;
 try { nodes.get('#refit').onclick({}); } catch (e) { refitThrew = e; }
 check('refit does not throw', !refitThrew, refitThrew && refitThrew.message);
 
+/* dragging the copy on the overlay */
+const app2 = window.__app;
+const srcSel = nodes.get('#source');
+srcSel.value = 'S-branch m=40'; srcSel.onchange({ target: srcSel });
+const cvR = nodes.get('#cvRight');
+function ptr(x, y, extra) { return Object.assign({ clientX: x, clientY: y, pointerId: 3,
+                                                  preventDefault() {} }, extra || {}); }
+const c0 = { ...app2.state.copy };
+cvR.dispatch('pointerdown', ptr(200, 200));
+cvR.dispatch('pointermove', ptr(240, 210));
+cvR.dispatch('pointerup', ptr(240, 210));
+const c1 = { ...app2.state.copy };
+check('dragging translates the copy', Math.hypot(c1.dx - c0.dx, c1.dy - c0.dy) > 1e-6 &&
+      Math.hypot(c1.cx - c0.cx, c1.cy - c0.cy) < 1e-12,
+      `d moved by ${Math.hypot(c1.dx - c0.dx, c1.dy - c0.dy).toExponential(2)}, ` +
+      `|c| ${Math.hypot(c0.cx, c0.cy).toFixed(4)} -> ${Math.hypot(c1.cx, c1.cy).toFixed(4)}`);
+cvR.dispatch('pointerdown', ptr(200, 200));
+cvR.dispatch('pointermove', ptr(240, 210));
+cvR.dispatch('pointerup', ptr(240, 210));
+const c2 = { ...app2.state.copy };
+check('the frame stays put while dragging (same pixel move, same shift)',
+      Math.abs((c2.dx - c1.dx) - (c1.dx - c0.dx)) < 1e-9 &&
+      Math.abs((c2.dy - c1.dy) - (c1.dy - c0.dy)) < 1e-9,
+      `${(c1.dx - c0.dx).toFixed(6)} vs ${(c2.dx - c1.dx).toFixed(6)}`);
+
+/* transform: check the algebra exactly, not just that something changed */
+const view = app2.view(), pivot = app2.pivot();
+const toData = (px, py) => [view.cx + (px - view.w / 2) / view.s,
+                            view.cy - (py - view.h / 2) / view.s];
+const p0d = toData(260, 240), p1d = toData(300, 260);
+const z0 = [p0d[0] - pivot[0], p0d[1] - pivot[1]];
+const z1 = [p1d[0] - pivot[0], p1d[1] - pivot[1]];
+const kd = z0[0] * z0[0] + z0[1] * z0[1];
+const kx = (z1[0] * z0[0] + z1[1] * z0[1]) / kd, ky = (z1[1] * z0[0] - z1[0] * z0[1]) / kd;
+const cPre = { ...app2.state.copy };
+const dm = nodes.get('#dragmode');
+dm.value = 'transform';
+const scaleBefore = Math.hypot(app2.state.copy.cx, app2.state.copy.cy);
+cvR.dispatch('pointerdown', ptr(260, 240));
+cvR.dispatch('pointermove', ptr(300, 260));
+cvR.dispatch('pointerup', ptr(300, 260));
+const scaleAfter = Math.hypot(app2.state.copy.cx, app2.state.copy.cy);
+check('transform mode changes the scale', Math.abs(scaleAfter - scaleBefore) > 1e-6,
+      `|c| ${scaleBefore.toFixed(4)} -> ${scaleAfter.toFixed(4)}`);
+check('transform mode keeps the copy finite', Number.isFinite(app2.state.copy.dx) &&
+      scaleAfter > 1e-3 && scaleAfter < 1e3, `|c| ${scaleAfter}`);
+{
+  const cNow = app2.state.copy;
+  const expC = [cPre.cx * kx - cPre.cy * ky, cPre.cx * ky + cPre.cy * kx];
+  const dx = cPre.dx - pivot[0], dy = cPre.dy - pivot[1];
+  const expD = [pivot[0] + (kx * dx - ky * dy), pivot[1] + (kx * dy + ky * dx)];
+  const errC = Math.hypot(cNow.cx - expC[0], cNow.cy - expC[1]);
+  const errD = Math.hypot(cNow.dx - expD[0], cNow.dy - expD[1]);
+  check('the transform is k = z1/z0 about the copy centroid', errC < 1e-9 && errD < 1e-9,
+        `errors ${errC.toExponential(2)}, ${errD.toExponential(2)}`);
+}
+
 /* pointer drag on the left canvas */
 const cv = nodes.get('#cvLeft');
 let threw = null;

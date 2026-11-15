@@ -26,6 +26,13 @@ curve, in two modes:
 With the block taken from the same curve the index correspondence matches it
 exactly, so copy mode is informative only when the two curves differ.
 
+In copy mode the green copy can be dragged directly on the overlay: with the
+drag control on *moves the copy* a drag translates it; set it to *rotates and
+scales it* (or hold Shift) and the same drag applies $k=z_1/z_0$ about the
+copy's centroid, so the gesture rotates and scales together. The overlay frame
+is fixed by the whole curve and the block, so the view does not chase the copy
+while it moves. The sliders remain, and *refit all six* re-runs the search.
+
 The page is generated from `scripts/align_app_template.html` plus the saved
 arrays; rebuild it after changing either:
 
