@@ -61,6 +61,7 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
       <option value="transform">rotates and scales it</option>
     </select></div>
   <div><button id="refit">refit all six</button></div>
+  <div><button id="copyparams">copy parameters</button><span id="copied" style="font-size:11px;color:#276b2f"></span></div>
 </div>
 
 <div class="panes">
@@ -933,6 +934,14 @@ if (typeof document !== "undefined") {
         : (copyMode ? "block diam / chord  " + rep.s_block.toFixed(6) : ""),
       "r_ab / R_full       " + rep.r_over_R.toFixed(6) + (rep.pct === undefined ? "" : "     percentile in gap " + (100 * rep.pct).toFixed(1) + "%")
     ];
+    if (copyMode) {
+      const cp = state.copy;
+      lines.push("parameters          c=" + cp.cx.toPrecision(10) + (cp.cy >= 0 ? "+" : "-") +
+                 Math.abs(cp.cy).toPrecision(10) + "i  d=" + cp.dx.toPrecision(10) +
+                 (cp.dy >= 0 ? "+" : "-") + Math.abs(cp.dy).toPrecision(10) + "i  s0=" +
+                 cp.s0.toPrecision(10) + "  s1=" + cp.s1.toPrecision(10) +
+                 "   (whole " + state.whole + ", block " + state.source + " [" + a + "," + b + "])");
+    }
     if (copyMode && state.whole === state.source) {
       lines.push("");
       lines.push("note: the block is a piece of this same curve, so the shape fit is exact by");
@@ -1018,6 +1027,30 @@ if (typeof document !== "undefined") {
   for (const id of ["#lscale", "#rot"]) $(id).oninput = () => applyCopySliders("transform");
   for (const id of ["#s0", "#s1"]) $(id).oninput = () => applyCopySliders("sigma");
   $("#refit").onclick = () => { runFullFit(); draw(); };
+  $("#copyparams").onclick = () => {
+    if (!state.copy) return;
+    const cp = state.copy;
+    const text = "whole=" + state.whole + " block=" + state.source + " a=" + state.a +
+                 " b=" + state.b + " c=" + cp.cx.toPrecision(12) + "," + cp.cy.toPrecision(12) +
+                 " d=" + cp.dx.toPrecision(12) + "," + cp.dy.toPrecision(12) +
+                 " s0=" + cp.s0.toPrecision(12) + " s1=" + cp.s1.toPrecision(12);
+    const done = () => { $("#copied").textContent = " copied"; setTimeout(() => { $("#copied").textContent = ""; }, 1500); };
+    const clip = (typeof navigator !== "undefined" && navigator.clipboard &&
+                  navigator.clipboard.writeText) ? navigator.clipboard : null;
+    if (clip) {
+      clip.writeText(text).then(done, done);
+    } else {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch (e) { /* no clipboard here: the readout line still shows them */ }
+      done();
+    }
+  };
 
   /* drag handles */
   const cvL = $("#cvLeft");

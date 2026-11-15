@@ -59,8 +59,9 @@ const document = {
   createElement(tag) { return el(tag); },
 };
 const window = { addEventListener(t, f) { (window._l = window._l || {})[t] = f; } };
+const navigator = { clipboard: { writeText: t => { window._copied = t; return { then: ok => ok() }; } } };
 
-const ctx = vm.createContext({ document, window, console, Math, Float64Array, Float32Array, Array, Object, Number, JSON, Uint8ClampedArray });
+const ctx = vm.createContext({ document, window, navigator, setTimeout: () => 0, console, Math, Float64Array, Float32Array, Array, Object, Number, JSON, Uint8ClampedArray });
 
 const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 if (blocks.length !== 3) { console.error(`expected 3 script blocks, found ${blocks.length}`); process.exit(1); }
@@ -249,6 +250,14 @@ const afterRefit = { ...app2.state.copy };
 check('refit all six still recomputes it',
       Math.abs(afterRefit.cx - placed.cx) > 1e-9 || Math.abs(afterRefit.s1 - placed.s1) > 1e-9,
       `c ${placed.cx.toFixed(4)} -> ${afterRefit.cx.toFixed(4)}`);
+
+/* the parameters can be read out and copied */
+check('readout carries a copy-pasteable parameter line', /parameters\s+c=/.test(readout()),
+      readout().split('\n').filter(l => /parameters/.test(l))[0] || '(missing)');
+nodes.get('#copyparams').onclick({});
+const copiedText = window._copied;
+check('the copy button produces a full parameter string',
+      typeof copiedText === 'string' && /c=/.test(copiedText) && /s1=/.test(copiedText), copiedText);
 
 /* shortening the copy's own arc keeps its placement */
 const s1El = nodes.get('#s1');
