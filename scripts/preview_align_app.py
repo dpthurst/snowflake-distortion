@@ -28,7 +28,9 @@ def main():
     b = int(sys.argv[2]) if len(sys.argv) > 2 else 511
     v = core.gauge(np.load(SRC))
     rep = core.interval_report(v, a, b)
-    t = np.linspace(0, 1, 1201)
+    # same parameters as the page: both knot sets plus a fine grid, so the plotted
+    # maximum is the exact sup
+    t = np.unique(np.concatenate([core.knots(len(v), b - a), np.linspace(0, 1, 1201)]))
     W = core.gauge(v)
     g = core.whole_at(W, t, rep["best"])
     w = core.block(v, a, b, t)

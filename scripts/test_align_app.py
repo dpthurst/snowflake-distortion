@@ -59,7 +59,8 @@ def script_bodies(html):
 def run_node(core_js, curves, cases):
     SCRATCH.mkdir(exist_ok=True)
     exports = ("\nmodule.exports = {ALPHA, VARIANTS, gauge, interpAt, blockAt, wholeAt, knots,\n"
-               "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond};\n")
+               "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond,\n"
+               "  stripParams};\n")
     (SCRATCH / "align_core.js").write_text(core_js + exports)
     driver = """
 const core = require('./align_core.js');
@@ -79,7 +80,16 @@ for (const [w, s, a, b] of CASES) {
   const r_ab = rho / Math.pow(b - a, core.ALPHA);
   let below = 0; for (let i = 0; i < lad.length; i++) if (i !== a && lad[i] < r_ab) below++;
   const pct = lad.length > 1 ? below / (lad.length - 1) : null;
-  out.push({ sup: Object.fromEntries(core.VARIANTS.map(k => [k, res[k].sup])),
+  /* the residual strip must be drawn on a set containing both knot sets, so that
+     its plotted maximum is the exact sup and not a sampled one */
+  const tp = core.stripParams(W.x.length, b - a);
+  const Wg = core.gauge(W.x, W.y);
+  const gs = core.wholeAt(Wg.x, Wg.y, tp, best);
+  const ws = core.blockAt(S.x, S.y, a, b, tp);
+  let smax = 0;
+  for (let i = 0; i < tp.length; i++) smax = Math.max(smax, Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]));
+  out.push({ strip_max: smax,
+             sup: Object.fromEntries(core.VARIANTS.map(k => [k, res[k].sup])),
              rms: Object.fromEntries(core.VARIANTS.map(k => [k, res[k].rms])),
              best, free_sup: fit.sup, absC: fit.absC, argC: fit.argC,
              D_block: core.distortion(seg.x, seg.y),
@@ -109,7 +119,7 @@ def python_side(curves, case):
     rho = abs(S[b] - S[a])
     lad = core.ladder(S, b - a)
     r_ab = rho / (b - a) ** core.ALPHA
-    return dict(sup={k: res[k]["sup"] for k in core.VARIANTS},
+    return dict(strip_max=res[best]["sup"], sup={k: res[k]["sup"] for k in core.VARIANTS},
                 rms={k: res[k]["rms"] for k in core.VARIANTS},
                 best=best, free_sup=free_sup, absC=abs(c), argC=float(np.angle(c)),
                 D_block=core.distortion(seg),
@@ -125,7 +135,7 @@ def compare(js, py, case, tol=1e-9, report=None):
             a, b = js[key][k], py[key][k]
             if abs(a - b) > tol * max(1.0, abs(b)):
                 bad.append(f"{key}[{k}] js={a!r} py={b!r}")
-    for key in ("free_sup", "absC", "D_block", "s_block", "pct", "r_ab"):
+    for key in ("strip_max", "free_sup", "absC", "D_block", "s_block", "pct", "r_ab"):
         if js[key] is None and py[key] is None:
             continue
         if js[key] is None or py[key] is None:
@@ -177,6 +187,19 @@ def main():
           f"free-fit numerator -> {'PASS' if caught else 'FAIL'}")
     if not caught:
         raise SystemExit("the comparison did not notice a deliberate sign flip")
+
+    # and the strip must not silently fall back to a uniform grid
+    coarse = core_js.replace("const all = Array.from(k).concat(Array.from(u)).sort((p, q) => p - q);",
+                             "const all = Array.from(u).sort((p, q) => p - q);")
+    assert coarse != core_js, "strip corruption target not found"
+    js_coarse = run_node(coarse, curves, CASES[:4])
+    caught2 = []
+    for case, j in zip(CASES[:4], js_coarse):
+        compare(j, python_side(curves, case), case, report=caught2)
+    print(f"strip test: {len(caught2)} mismatches when the knots are dropped from the strip -> "
+          f"{'PASS' if caught2 else 'FAIL'}")
+    if not caught2:
+        raise SystemExit("a uniform-only strip went unnoticed")
     print("all comparisons agree")
 
 

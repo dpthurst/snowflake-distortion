@@ -141,6 +141,16 @@ function knots(m, L) {
 
 function uniform(n) { const t = new Float64Array(n); for (let i = 0; i < n; i++) t[i] = i / (n - 1); return t; }
 
+/* Knots of both curves plus a fine grid: the grid draws a smooth-looking curve,
+   the knots make the plotted maximum equal to the exact supremum. */
+function stripParams(m, L) {
+  const k = knots(m, L), u = uniform(N_RMS);
+  const all = Array.from(k).concat(Array.from(u)).sort((p, q) => p - q);
+  const out = [all[0]];
+  for (let i = 1; i < all.length; i++) if (all[i] - out[out.length - 1] > 1e-15) out.push(all[i]);
+  return Float64Array.from(out);
+}
+
 function supDiff(p, q) {
   let best = 0;
   for (let i = 0; i < p.x.length; i++) {
@@ -342,21 +352,26 @@ if (typeof document !== "undefined") {
     const cv3 = $("#cvStrip"), c3 = cv3.getContext("2d");
     c3.clearRect(0, 0, cv3.width, cv3.height);
     const pad = 26, H = cv3.height - 2 * pad, Wd = cv3.width - 2 * pad;
+    /* the strip is drawn on the knots of both curves plus a fine grid, so its
+       maximum is the exact sup printed above rather than a sampled one */
+    const ts = stripParams(W.x.length, b - a);
+    const gs = wholeAt(Wg.x, Wg.y, ts, rep.kind);
+    const ws = blockAt(S.x, S.y, a, b, ts);
     let mx = 0;
-    const res = new Float64Array(t.length);
-    for (let i = 0; i < t.length; i++) res[i] = Math.hypot(w.x[i] - g.x[i], w.y[i] - g.y[i]);
+    const res = new Float64Array(ts.length);
+    for (let i = 0; i < ts.length; i++) res[i] = Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]);
     for (let i = 0; i < res.length; i++) if (res[i] > mx) mx = res[i];
     c3.strokeStyle = "#ddd"; c3.lineWidth = 1;
     c3.beginPath(); c3.moveTo(pad, pad + H); c3.lineTo(pad + Wd, pad + H); c3.stroke();
     c3.strokeStyle = "#c8342a"; c3.lineWidth = 1.4; c3.beginPath();
-    for (let i = 0; i < t.length; i++) {
-      const x = pad + t[i] * Wd, y = pad + H - (mx > 0 ? res[i] / mx : 0) * H;
+    for (let i = 0; i < ts.length; i++) {
+      const x = pad + ts[i] * Wd, y = pad + H - (mx > 0 ? res[i] / mx : 0) * H;
       i ? c3.lineTo(x, y) : c3.moveTo(x, y);
     }
     c3.stroke();
     c3.fillStyle = "#666"; c3.font = "11px sans-serif";
     c3.fillText("t = 0", pad, pad + H + 16); c3.fillText("t = 1", pad + Wd - 26, pad + H + 16);
-    c3.fillText("max " + mx.toFixed(4), pad + 4, pad - 8);
+    c3.fillText("max " + mx.toFixed(6) + " (= sup, exact at the knots)", pad + 4, pad - 8);
 
     /* readout */
     const f = n => n.toFixed(6);
