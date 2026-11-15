@@ -26,6 +26,13 @@ curve, in two modes:
 With the block taken from the same curve the index correspondence matches it
 exactly, so copy mode is informative only when the two curves differ.
 
+Changing the interval or either curve leaves the copy where you put it: the
+placement is independent of which block is being matched, and only *refit all
+six* recomputes it. The same holds for the parameter-range sliders — shortening
+the copy's arc keeps its scale and position. The scale and rotation sliders do
+re-anchor the translation, so that a change of size keeps the copy over the
+block rather than swinging it away.
+
 In copy mode the green copy can be dragged directly on the overlay: with the
 drag control on *moves the copy* a drag translates it; set it to *rotates and
 scales it* (or hold Shift) and the same drag applies $k=z_1/z_0$ about the

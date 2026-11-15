@@ -222,6 +222,51 @@ check('transform mode keeps the copy finite', Number.isFinite(app2.state.copy.dx
         `errors ${errC.toExponential(2)}, ${errD.toExponential(2)}`);
 }
 
+/* a new interval must not discard a hand-made placement */
+const placed = { ...app2.state.copy };
+const bEl = nodes.get('#b');
+bEl.value = '120';
+bEl.oninput({ target: bEl });
+const afterShorten = { ...app2.state.copy };
+check('shortening the segment keeps the placement',
+      Math.abs(afterShorten.cx - placed.cx) < 1e-12 &&
+      Math.abs(afterShorten.dx - placed.dx) < 1e-12 &&
+      Math.abs(afterShorten.s0 - placed.s0) < 1e-12,
+      `c ${placed.cx.toFixed(4)} -> ${afterShorten.cx.toFixed(4)}, ` +
+      `d ${placed.dx.toFixed(4)} -> ${afterShorten.dx.toFixed(4)}`);
+/* switching the source keeps it too, and then a longer block is accepted */
+const srcBack = nodes.get('#source');
+srcBack.value = 'S-branch m=800'; srcBack.onchange({ target: srcBack });
+const afterSwitch = { ...app2.state.copy };
+check('switching the source curve keeps the placement',
+      Math.abs(afterSwitch.cx - placed.cx) < 1e-12 && Math.abs(afterSwitch.dx - placed.dx) < 1e-12);
+const b2 = nodes.get('#b');
+b2.value = '120'; b2.oninput({ target: b2 });
+check('the residual is recomputed against the new block',
+      /interval\s+\[0, 120\]/.test(readout()), readout().split('\n')[0]);
+nodes.get('#refit').onclick({});
+const afterRefit = { ...app2.state.copy };
+check('refit all six still recomputes it',
+      Math.abs(afterRefit.cx - placed.cx) > 1e-9 || Math.abs(afterRefit.s1 - placed.s1) > 1e-9,
+      `c ${placed.cx.toFixed(4)} -> ${afterRefit.cx.toFixed(4)}`);
+
+/* shortening the copy's own arc keeps its placement */
+const s1El = nodes.get('#s1');
+const preSigma = { ...app2.state.copy };
+s1El.value = String(Math.max(0.05, Math.abs(preSigma.s1) * 0.6));
+s1El.oninput({ target: s1El });
+const postSigma = { ...app2.state.copy };
+check('shortening the copy arc keeps translation and scale',
+      Math.abs(postSigma.dx - preSigma.dx) < 1e-12 && Math.abs(postSigma.dy - preSigma.dy) < 1e-12 &&
+      Math.abs(postSigma.cx - preSigma.cx) < 1e-12 && Math.abs(postSigma.s1 - preSigma.s1) > 1e-6,
+      `s1 ${preSigma.s1.toFixed(4)} -> ${postSigma.s1.toFixed(4)}, d unchanged`);
+const lEl = nodes.get('#lscale');
+lEl.value = String(Number(lEl.value) + 0.1);
+lEl.oninput({ target: lEl });
+const postScale = { ...app2.state.copy };
+check('the scale slider still re-anchors the translation',
+      Math.abs(postScale.dx - postSigma.dx) > 1e-9 || Math.abs(postScale.dy - postSigma.dy) > 1e-9);
+
 /* pointer drag on the left canvas */
 const cv = nodes.get('#cvLeft');
 let threw = null;

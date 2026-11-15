@@ -83,7 +83,8 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
 with a freely chosen affine parameter — by a coarse grid followed by two local refinements.
 <strong>Drag the green copy on the overlay</strong> to move it; set the drag control to
 <em>rotates and scales it</em> (or hold Shift) to transform it about its centre instead. The sliders set the
-scale, the rotation and the parameter range; <em>refit all six</em> re-runs the search.
+scale, the rotation and the parameter range; <em>refit all six</em> re-runs the search. Changing the interval or the curves keeps your placement;
+only <em>refit all six</em> recomputes it.
 Note that with the block taken from the same curve the index correspondence matches exactly, so copy mode only
 says something when the two curves differ. <em>r/R</em> compares endpoint chord ratios; its percentile is taken
 among the chords of the same index gap. With <strong>distance to the other curve</strong> the residual is
@@ -626,17 +627,28 @@ if (typeof document !== "undefined") {
 
   /* user moves the scale, the rotation or the parameter range; the translation is
      then the least-squares one for that correspondence */
-  function applyCopySliders() {
+  /* Scale and rotation re-fit the translation, so the copy stays anchored where
+     it is; changing the covered parameter range does not — that would move a
+     placement the user has already made. */
+  function applyCopySliders(kind) {
     const cp = state.copy; if (!cp) return;
-    const abs = Math.pow(10, +$("#lscale").value), ang = +$("#rot").value * Math.PI / 180;
-    cp.cx = abs * Math.cos(ang); cp.cy = abs * Math.sin(ang);
+    const refitTranslation = kind === "transform";
+    /* only read the scale and rotation back from their sliders when those are
+       what moved; otherwise the rounding of the slider positions would nudge a
+       placement the user has already made */
+    if (refitTranslation) {
+      const abs = Math.pow(10, +$("#lscale").value), ang = +$("#rot").value * Math.PI / 180;
+      cp.cx = abs * Math.cos(ang); cp.cy = abs * Math.sin(ang);
+    }
     cp.s0 = +$("#s0").value; cp.s1 = +$("#s1").value;
     if (Math.abs(cp.s1) < 1e-3) cp.s1 = cp.s1 < 0 ? -1e-3 : 1e-3;
-    const W = curve(state.whole), S = curve(state.source);
-    const w = sampleBlock(S.x, S.y, state.a, state.b, 301);
-    const Wg = gauge(W.x, W.y);
-    const ls = fitTranslation(Wg.x, Wg.y, w, cp.cx, cp.cy, cp.s0, cp.s1);
-    cp.dx = ls.dx; cp.dy = ls.dy;
+    if (refitTranslation) {
+      const W = curve(state.whole), S = curve(state.source);
+      const w = sampleBlock(S.x, S.y, state.a, state.b, 301);
+      const Wg = gauge(W.x, W.y);
+      const ls = fitTranslation(Wg.x, Wg.y, w, cp.cx, cp.cy, cp.s0, cp.s1);
+      cp.dx = ls.dx; cp.dy = ls.dy;
+    }
     syncCopySliders(); draw();
   }
 
@@ -957,7 +969,9 @@ if (typeof document !== "undefined") {
     a = Math.max(0, Math.min(a, m - 2));
     b = Math.max(a + 1, Math.min(b, m - 1));
     state.a = a; state.b = b;
-    if (state.mode === "copy") runFullFit();
+    /* the copy's position is independent of which block is being matched, so a
+       new interval must not throw away a placement the user has made */
+    if (state.mode === "copy" && !state.copy) runFullFit();
     clampRange(); draw();
   }
   function fillSelects() {
@@ -998,10 +1012,11 @@ if (typeof document !== "undefined") {
   $("#mode").onchange = e => {
     state.mode = e.target.value;
     $("#copyctl").style.display = state.mode === "copy" ? "flex" : "none";
-    if (state.mode === "copy") runFullFit();
+    if (state.mode === "copy" && !state.copy) runFullFit();
     draw();
   };
-  for (const id of ["#lscale", "#rot", "#s0", "#s1"]) $(id).oninput = applyCopySliders;
+  for (const id of ["#lscale", "#rot"]) $(id).oninput = () => applyCopySliders("transform");
+  for (const id of ["#s0", "#s1"]) $(id).oninput = () => applyCopySliders("sigma");
   $("#refit").onclick = () => { runFullFit(); draw(); };
 
   /* drag handles */
