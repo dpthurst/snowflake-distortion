@@ -105,3 +105,14 @@ calling the weak positive signal structural.
   output in `results/extremal-shortenings-calibration.out`.
 - The best $[277,479]$ match was independently recomputed without importing the
   checker; all four variant errors agreed to floating-point precision.
+
+## Follow-up
+
+Independent exhaustive and cross-resolution checks refine this conclusion.
+Approximate long-index maximisers are a useful empirical ranking screen, but
+no tested nontrivial block comes close to the genuine-copy controls. Extremality
+is neither necessary nor sufficient. All $205{,}120$ blocks of index gap at least
+$160$ have restricted $D$ within relative error $2.8613\times10^{-6}$ of the
+whole $D$, so this preservation is qualitatively vacuous for distinguishing
+shape. See [the verified follow-up](extremal-shortenings-followup.md), including
+the exact scope, corrected correlations and reproduction commands.
