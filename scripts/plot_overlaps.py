@@ -39,17 +39,23 @@ def main():
         wc, qc = w - w.mean(), q - q.mean()
         dw, dq = np.abs(wc).max(), np.abs(qc).max()
         s = np.vdot(wc / dw, qc / dq) / np.vdot(wc / dw, wc / dw).real
+        # both curves normalised by their own diameter; the arc is then turned
+        # back by the fitted rotation so that the two can be compared directly.
+        # (An earlier version of this figure plotted s*block, i.e. the block
+        # against its own rotation, which of course agreed.)
+        arc = qc / dq / s
+        shown = float(np.abs(arc - wc / dw).max())
         a_.plot(wc.real / dw, wc.imag / dw, "-", color="#1f6fd0", lw=1.6, label="block")
-        a_.plot((s * wc / dw).real, (s * wc / dw).imag, "--", color="#c8342a", lw=1.0,
-                label="arc, normalised")
+        a_.plot(arc.real, arc.imag, "--", color="#c8342a", lw=1.0,
+                label="arc, turned back")
         a_.set_aspect("equal"); a_.set_xticks([]); a_.set_yticks([])
         a_.set_title(f"[{a:.0f},{a + L:.0f}] vs [{c:.0f},{c + K:.0f}]\n"
-                     f"resid {r['residual']:.3f}, size {r['size']:.2f}, "
-                     f"angle {r['argC']:+.0f}°", fontsize=8)
+                     f"resid {r['residual']:.3f} (drawn {shown:.3f}), size {r['size']:.2f}, "
+                     f"block->arc rotation {r['argC']:+.0f}°", fontsize=8)
         if k == 0:
             a_.legend(fontsize=7, loc="lower right")
-    fig.suptitle("partial overlaps in the m=1600 curve: shapes normalised to unit "
-                 "diameter, fitted rotation applied", fontsize=9, y=1.0)
+    fig.suptitle("partial overlaps in the m=1600 curve: each shape normalised to unit "
+                 "diameter, the arc turned back by the fitted rotation", fontsize=9, y=1.0)
     fig.tight_layout()
     out = ROOT / "figures/overlaps-m1600.png"
     fig.savefig(out, dpi=120, facecolor="white", bbox_inches="tight",

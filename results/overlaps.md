@@ -73,8 +73,12 @@ resid   block            arc              size   angle
 0.111   [ 238, 490]      [  48, 254]      0.88   +31°
 ```
 
-Figure: `figures/overlaps-m1600.png` (shapes normalised, fitted rotation
-applied). Several of these are the same coincidence found at slightly different
+Figure: `figures/overlaps-m1600.png` — each shape normalised to unit diameter
+and the arc turned back by the fitted rotation, so the two curves drawn are the
+block and (a rotation of) the arc itself. An earlier version of this figure
+plotted the block against its own rotation, so the arc's data never appeared and
+the agreement it showed was spurious; the numbers in the tables were unaffected
+and the angles were re-checked independently (they agree to $0.1^\circ$). Several of these are the same coincidence found at slightly different
 bounds: the region around indices $730$–$1200$ is where most of them live.
 
 Note the column `size`: the strongest hits mostly have $K/L\approx0.5$ with
