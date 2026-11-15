@@ -10,8 +10,19 @@ configurations, both at chord 1 so the fields are comparable:
 | Koch arc, level 5 | 1025 | $[0.483459,\ 1.013719]$ | $2.096805161$ |
 | $m=800$ S-branch | 800 | $[0.712611,\ 1.133801]$ | $1.591051961$ |
 
-Figure: `figures/distortion-heatmap.png` (log colour scale, shared), with the
-pairs within $1\%$ of each extreme marked underneath.
+Figure: `figures/distortion-heatmap.png`, with the pairs within $1\%$ of each
+extreme marked underneath.
+
+Colour convention: a shared linear scale whose limits are **exactly** the global
+minimum and maximum over both panels, $[0.483459,\ 1.133801]$, so no value is
+clipped (the script asserts it). Pale is the minimum, dark red the maximum; the
+black contour is the level set $r=1$, the $\alpha$-power law itself. The
+diagonal $x=y$, where $r$ is undefined, is masked and drawn as a thin line.
+
+An earlier rendering of the same field used `magma` on a log scale, whose low
+end is black: the pixels for $r\approx0.48$–$0.55$ then came out black and read
+as missing data. They were the minima. On that scale those values occupy only
+the first $15\%$ of the map, which is why the low band looked like holes.
 
 ## Why the node level, not the continuum
 

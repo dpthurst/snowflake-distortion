@@ -26,7 +26,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.colors import LogNorm
+from matplotlib.colors import Normalize
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -76,18 +76,33 @@ def main():
 
     vmin = min(s["lo"] for s in st)
     vmax = max(s["hi"] for s in st)
+    # r = 1 is the alpha-power law itself, so centre the diverging scale there;
+    # the limits are exactly the extremes over both panels, so nothing is clipped
+    for (name, r, _), s in zip(data, st):
+        assert np.nanmin(r) >= vmin and np.nanmax(r) <= vmax
+    assert vmin < 1.0 < vmax, (vmin, vmax)
+    norm = Normalize(vmin=vmin, vmax=vmax)
+    print(f"shared linear scale [{vmin:.6f}, {vmax:.6f}]: nothing falls outside it, "
+          f"so nothing is clipped")
     fig, ax = plt.subplots(2, 2, figsize=(11.6, 10.8))
 
     for col, ((name, r, x), s) in enumerate(zip(data, st)):
         a0 = ax[0, col]
-        im = a0.imshow(r, origin="lower", extent=[0, 1, 0, 1], cmap="magma",
-                       norm=LogNorm(vmin=vmin, vmax=vmax), interpolation="nearest")
+        im = a0.imshow(r, origin="lower", extent=[0, 1, 0, 1], cmap="YlOrRd",
+                       norm=norm, interpolation="nearest")
+        # the level set r = 1 is the alpha-power law itself
+        a0.contour(np.linspace(0, 1, r.shape[1]), np.linspace(0, 1, r.shape[0]),
+                   np.nan_to_num(r, nan=1.0), levels=[1.0], colors="k", linewidths=0.5)
         a0.set_title(f"{name}\n"
                      f"r in [{s['lo']:.4f}, {s['hi']:.4f}],  D = {s['D']:.4f}", fontsize=9)
         a0.set_xlabel("x", fontsize=8); a0.set_ylabel("y", fontsize=8)
         a0.tick_params(labelsize=7)
-        cb = fig.colorbar(im, ax=a0, fraction=0.046, pad=0.02)
-        cb.set_label("r(x,y)", fontsize=8); cb.ax.tick_params(labelsize=7)
+        cb = fig.colorbar(im, ax=a0, fraction=0.046, pad=0.02,
+                          ticks=[vmin, 0.8, 1.0, vmax])
+        cb.set_label("r(x,y);  contour and tick at the power law r = 1", fontsize=7)
+        cb.ax.tick_params(labelsize=7)
+        cb.ax.axhline(1.0, color="k", lw=0.8)
+        a0.plot([0, 1], [0, 1], color="0.35", lw=0.4, alpha=0.7)
 
         a1 = ax[1, col]
         a1.imshow(r, origin="lower", extent=[0, 1, 0, 1], cmap="Greys",
