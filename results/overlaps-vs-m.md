@@ -81,6 +81,42 @@ correspondence the curves still match at $0.06$–$0.09$, an order of magnitude
 better than against shuffled arcs: the self-overlap structure is *shared*
 between neighbouring rungs of the ladder.
 
+## Two confounds in the ladder, found afterwards
+
+**The ladder is not one family.** Checking the macro-morphology (whether the
+curve crosses its own endpoint chord):
+
+```
+curve              min Im w   max Im w   morphology
+m=100 final         -0.2049    +0.2338    S, crosses its chord
+m=200 descended     -0.0019    +0.5435    arc, one side
+m=400 s_m400        -0.2444    +0.2268    S
+m=800 s_m800_plain  -0.2470    +0.2281    S
+m=1600 s_m1600_plain -0.2479   +0.2302    S
+```
+
+The stored $m=200$ curve is an *arc*; the rest of the S-branch rungs were seeded
+from the S shape at $m=100$ and carried upward by upsampling. So the $m=200$ row
+of the tables above compares different morphologies, not different resolutions.
+The trend from $m=400$ to $1600$ is within one branch and stands; the $m=200$
+entry should not be read as the bottom of it.
+
+**The chain is inherited by construction.** `morph.py` builds the S shape at
+$m=400$ from the $m=100$ S shape; `m800.py` starts from that and upsamples to
+$m=800$; `m1600.py` starts from `s_m800_plain` and upsamples to $m=1600$, each
+followed by a local descent. The persistence of an alignment from $m=400$ to
+$m=1600$ is therefore partly inherited rather than independently found at each
+rung.
+
+**Where the optima actually sit.** At $m=400$ four stored configurations give
+$D=1.5423,\ 1.5488,\ 1.5491,\ 1.5526$ — a spread of $0.67\%$; at $m=800$ three
+give $1.5911,\ 1.5940,\ 1.5946$; at $m=1600$ two give $1.6355,\ 1.6316$. And the
+KKT check recorded in `limiting_curve_directions.md` gives relative residuals
+$1.07$ and $1.04$ for the $m=400$ and $m=800$ points, i.e. they are not
+stationary. These configurations are accordingly not samples of "the optimum" at
+their resolution, and their fine structure in particular is whatever the
+upsampling and local descent produced.
+
 ## What this says about a limiting object
 
 * Self-overlaps are real at every $m$: hundreds below $0.15$, against $0$–$6$
@@ -110,3 +146,28 @@ project. None of these is a near-copy.
 ```bash
 python3 scripts/overlaps_vs_m.py        # writes results/overlaps-vs-m.json and .out
 ```
+
+## One alignment followed up the ladder
+
+`figures/overlap-ladder-1.png` and `-2.png`: the same pair of intervals, with
+indices rescaled by $(m-1)/799$, at $m=200,400,800,1600$; the block in blue and
+the arc normalised and turned back by the fitted rotation.
+
+```
+block [120,209] vs arc [24,100] (m=800 units)     block [533,594] vs arc [648,678]
+   m     resid(401)  resid(24 samples)                resid(401)  resid(24)
+  200      0.242        0.223                          0.310       0.267
+  400      0.109        0.101                          0.086       0.067
+  800      0.102        0.078                          0.092       0.088
+ 1600      0.119        0.106                          0.113       0.104
+```
+
+Two readings:
+
+* At every rung the residual falls when only the coarse shape is sampled — fine
+  detail costs something.
+* But the coarse residual also *grows* from $m=400$ to $m=1600$
+  ($0.067\to0.088\to0.104$ for the second alignment). So "more detail is
+  visible" is not the whole story: the coarse correspondence itself degrades.
+* At $m=200$ the alignment is simply absent, which is explained by the
+  morphology confound above rather than by resolution.
