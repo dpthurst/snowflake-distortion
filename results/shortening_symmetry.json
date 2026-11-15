@@ -1,0 +1,69 @@
+{
+  "source": ".ultramath/smwhdqmht/m1/s_m800_plain.npy",
+  "alpha": 0.7924812503605781,
+  "definitions": {
+    "D": "max |w_i-w_j|/(j-i)^alpha divided by the corresponding min",
+    "point_sup": "max |w_i+w_(N-1-i)-1| / diam(w)",
+    "point_rms": "sqrt(mean |w_i+w_(N-1-i)-1|^2) / diam(w)",
+    "mirror_sup": "max |w_i-(1-conj(w_(N-1-i)))| / diam(w)",
+    "mirror_rms": "sqrt(mean |w_i-(1-conj(w_(N-1-i)))|^2) / diam(w)"
+  },
+  "whole": {
+    "node_range_inclusive": [
+      0,
+      799
+    ],
+    "parameter_interval": [
+      0.0,
+      1.0
+    ],
+    "relative_parameter_length": 1.0,
+    "number_of_nodes": 800,
+    "diameter": 1.0078468725430088,
+    "D": 1.5910519607023,
+    "rmin": 0.0035697578695640967,
+    "rmin_pair_original_indices": [
+      509,
+      599
+    ],
+    "rmax": 0.0056796702576024215,
+    "rmax_pair_original_indices": [
+      455,
+      689
+    ],
+    "point_sup": 0.14319980312746697,
+    "point_sup_original_index": 384,
+    "point_rms": 0.06638460846864941,
+    "mirror_sup": 0.44738822961748365,
+    "mirror_rms": 0.3017448095792864
+  },
+  "shortened": {
+    "node_range_inclusive": [
+      25,
+      739
+    ],
+    "parameter_interval": [
+      0.03128911138923655,
+      0.9249061326658323
+    ],
+    "relative_parameter_length": 0.8936170212765957,
+    "number_of_nodes": 715,
+    "diameter": 1.0006878424343313,
+    "D": 1.5910519607022988,
+    "rmin": 0.0037484335705741463,
+    "rmin_pair_original_indices": [
+      509,
+      599
+    ],
+    "rmax": 0.005963952582024314,
+    "rmax_pair_original_indices": [
+      455,
+      689
+    ],
+    "point_sup": 0.03798490719722219,
+    "point_sup_original_index": 267,
+    "point_rms": 0.023753532005663706,
+    "mirror_sup": 0.42997593229534536,
+    "mirror_rms": 0.26806651965090805
+  }
+}
