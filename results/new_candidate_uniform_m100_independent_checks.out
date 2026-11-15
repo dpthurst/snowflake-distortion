@@ -1,0 +1,4 @@
+unperturbed D 1.442827884059453 rmin+rmax 0.020047901424456883 0.02892567119208162 tight 24 167 residual 1.0297318553398327e-14 nearest cloud 9 D(old) 1.4392148630436101 dist 0.03050120083598343 initial D checked separately
+perturb_1e-5_seed_41 D 1.443915703810181 rmin+rmax 0.020024067922734465 0.028913066127798 tight 28 164 residual 1.0941247907680918e-13 nearest cloud 9 D(old) 1.4392148630436101 dist 0.045606508148300494 initial D checked separately
+perturb_1e-5_seed_73 D 1.443869802194832 rmin+rmax 0.02020087305221906 0.029167430578070443 tight 28 168 residual 2.914335439641036e-15 nearest cloud 9 D(old) 1.4392148630436101 dist 0.057614889545951876 initial D checked separately
+record JSON validation OK; vertices each: [('unperturbed', 100), ('perturb_1e-5_seed_41', 100), ('perturb_1e-5_seed_73', 100)]

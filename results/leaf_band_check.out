@@ -1,0 +1,8 @@
+number of consecutive distinct-parameter pairs: 39366
+rho min: 0.9999999995717364
+rho max: 1.0745699320766973
+argmax raw records: 27336 27337
+parameter values: np.float64(0.4913778731294849) np.float64(0.49137805533128426)
+parameter gap: np.float64(1.8220179937022962e-07)
+complex coordinates: np.complex128(0.4861032073599455+0.24867856862947954j) np.complex128(0.48610797775959014+0.2486796956631858j)
+The ratio is NOT identically 1 on this saved alpha-similarity arc.
