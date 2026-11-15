@@ -1,0 +1,34 @@
+== within-curve search, same relative grid ==
+    m     curve    best  #<0.12  #<0.15  #<0.20
+  200    stored  0.0559     142     664    3442
+  200  shuffled  0.1324       0       3      50
+  400    stored  0.0481     176     787    4578
+  400  shuffled  0.1389       0       6     127
+  800    stored  0.0785      70     418    3386
+  800  shuffled  0.1418       0       1      41
+ 1600    stored  0.0862      35     271    2574
+ 1600  shuffled  0.1639       0       0      11
+
+== every curve decimated to 200 nodes, identical grid ==
+    m    best  #<0.12  #<0.15  #<0.20
+  200  0.0709      97     550    3008
+  400  0.0741      52     298    1899
+  800  0.0772      30     212    1534
+ 1600  0.0677      18     151    1293
+
+== do overlaps found at m=800 survive at m=1600? ==
+  m=800 [   120,   209] [    24,   100] resid 0.0926  ->  m=1600 resid 0.1252 (shuffled 0.911, percentile 0.0%)
+  m=800 [   696,   756] [     6,    48] resid 0.1053  ->  m=1600 resid 0.1380 (shuffled 0.814, percentile 0.0%)
+  m=800 [   541,   629] [   457,   519] resid 0.1220  ->  m=1600 resid 0.1463 (shuffled 0.549, percentile 0.0%)
+  m=800 [   474,   562] [   384,   428] resid 0.1148  ->  m=1600 resid 0.1261 (shuffled 0.733, percentile 0.0%)
+  m=800 [   660,   752] [   538,   640] resid 0.0962  ->  m=1600 resid 0.1171 (shuffled 0.823, percentile 0.0%)
+  m=800 [     5,    89] [   193,   303] resid 0.1187  ->  m=1600 resid 0.1576 (shuffled 0.800, percentile 0.0%)
+  m=800 [    38,   121] [   132,   239] resid 0.1048  ->  m=1600 resid 0.1384 (shuffled 0.911, percentile 0.0%)
+  m=800 [   533,   594] [   648,   678] resid 0.0888  ->  m=1600 resid 0.1142 (shuffled 0.600, percentile 0.0%)
+
+== cross-m search: block from one curve, arc from another ==
+  800->1600: best 0.0879   best away from the correspondence 0.0879   (#<0.15 away: 326)   [corresponding piece scores 0.0166; shuffled arcs best 0.183]
+  400->800: best 0.0635   best away from the correspondence 0.0635   (#<0.15 away: 616)   [corresponding piece scores 0.0296; shuffled arcs best 0.144]
+  800->400: best 0.0794   best away from the correspondence 0.0794   (#<0.15 away: 572)   [corresponding piece scores 0.0300; shuffled arcs best 0.128]
+
+wrote results/overlaps-vs-m.json
