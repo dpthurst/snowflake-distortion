@@ -61,7 +61,7 @@ def run_node(core_js, curves, cases):
     exports = ("\nmodule.exports = {ALPHA, VARIANTS, gauge, interpAt, blockAt, wholeAt, knots,\n"
                "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond,\n"
                "  stripParams, fitCopy, copyResidual, profileAt, fitTranslation,\n"
-               "  bboxOf, setDistance, pointSegDist};\n")
+               "  bboxOf, setDistance, pointSegDist, heatStats, rampRGB, heatU, RDBU};\n")
     (SCRATCH / "align_core.js").write_text(core_js + exports)
     driver = """
 const core = require('./align_core.js');
@@ -81,6 +81,15 @@ for (const [w, s, a, b] of COPY_CASES) {
   outCopy.push({ s0: fit.s0, s1: fit.s1, cx: fit.cx, cy: fit.cy, dx: fit.dx, dy: fit.dy,
                  sup: inside.sup, rms: inside.rms, natural_sup: fit.natural.sup });
 }
+const outHeat = {};
+for (const name of Object.keys(CURVES)) {
+  const c = CURVES[name];
+  outHeat[name] = core.heatStats(Float64Array.from(c.x), Float64Array.from(c.y));
+}
+const rampCheck = {
+  low: core.rampRGB(0), high: core.rampRGB(1),
+  mid: core.rampRGB(core.heatU(Math.sqrt(0.5 * 2.0), 0.5, 2.0)),
+};
 const out = [];
 for (const [w, s, a, b] of CASES) {
   const W = arr(CURVES[w]), S = arr(CURVES[s]);
@@ -127,7 +136,7 @@ for (const [w, s, a, b] of CASES) {
              s_block: core.diamond(S.x, S.y, a, b) / rho,
              pct, r_ab });
 }
-process.stdout.write(JSON.stringify({ cases: out, copy: outCopy }));
+process.stdout.write(JSON.stringify({ cases: out, copy: outCopy, heat: outHeat, ramp: rampCheck }));
 """
     (SCRATCH / "align_run.js").write_text(driver)
     cases_in = {"CURVES": curves, "CASES": cases, "COPY_CASES": COPY_CASES}
@@ -179,8 +188,12 @@ def compare(js, py, case, tol=1e-9, report=None):
             continue
         if abs(js[key] - py[key]) > tol * max(1.0, abs(py[key])):
             bad.append(f"{key} js={js[key]!r} py={py[key]!r}")
+    # the orientation label can be tied: what matters is that the chosen variant
+    # is a minimiser, and its residual is compared above per variant
     if js["best"] != py["best"]:
-        bad.append(f"best js={js['best']} py={py['best']}")
+        if js["sup"][js["best"]] - min(py["sup"].values()) > 1e-9:
+            bad.append(f"best js={js['best']} py={py['best']} "
+                       f"(js sup {js['sup'][js['best']]:.12f} vs best {min(py['sup'].values()):.12f})")
     if abs(js["argC"] - py["argC"]) > 1e-9 and abs(abs(js["argC"] - py["argC"]) - 2 * np.pi) > 1e-9:
         bad.append(f"argC js={js['argC']} py={py['argC']}")
     if bad:
@@ -213,9 +226,31 @@ def build_copy_cases(curves):
     return out, cases
 
 
+def check_embedding_is_exact(curves):
+    """The page must carry the stored coordinates bit for bit.
+
+    Rounding them perturbs the shortest chords by about 1e-5 relative, which is
+    the size of the near-ties: at 7 decimals the m=800 arg-min moved from the
+    gap-90 pair (509,599) to a gap-1 pair.
+    """
+    import build_align_app as build
+    bad = []
+    for name, (path, field, index) in build.SOURCES.items():
+        if name not in curves or not path.exists():
+            continue
+        v = core.gauge(build.load(path, field, index))
+        emb = np.array(curves[name]["x"]) + 1j * np.array(curves[name]["y"])
+        if not np.array_equal(emb, v):
+            bad.append(f"{name}: max |difference| {np.abs(emb - v).max():.3e}")
+    if bad:
+        raise SystemExit("embedded coordinates differ from the stored arrays:\n  " + "\n  ".join(bad))
+    print(f"  ok  embedded coordinates are exact for {len([n for n in build.SOURCES if n in curves])} curves")
+
+
 def main():
     html = HTML.read_text()
     core_js, curves = extract(html)
+    check_embedding_is_exact(curves)
     curves, raw_copy_cases = build_copy_cases(curves)
     global COPY_CASES, COPY_TRUTH
     COPY_CASES = [c[:4] for c in raw_copy_cases]
@@ -313,6 +348,27 @@ def main():
           f"searched -> {'PASS' if caught_sd else 'FAIL'}")
     if not caught_sd:
         raise SystemExit("a truncated polyline search went unnoticed")
+
+    # ---- heatmap statistics and colour map
+    js_all = run_node(core_js, curves, CASES)
+    bad = []
+    for name, j in js_all["heat"].items():
+        W = np.array(curves[name]["x"]) + 1j * np.array(curves[name]["y"])
+        py = core.heat_stats(W)
+        for key in ("lo", "hi", "gmean", "D"):
+            if abs(j[key] - py[key]) > 1e-9 * max(1.0, abs(py[key])):
+                bad.append(f"{name}: {key} js={j[key]} py={py[key]}")
+        if j["imin"] != py["imin"] or j["imax"] != py["imax"]:
+            bad.append(f"{name}: arg-extrema {j['imin']},{j['imax']} vs {py['imin']},{py['imax']}")
+    if bad:
+        raise SystemExit("heatmap statistics disagree:\n  " + "\n  ".join(bad))
+    print(f"  ok  heatmap statistics match numpy on all {len(js_all['heat'])} curves")
+    r = js_all["ramp"]
+    assert r["low"] == [5, 48, 97] and r["high"] == [103, 0, 31], r
+    mid = r["mid"]
+    assert min(mid) > 230, f"the geometric mean should be the white of the map, got {mid}"
+    print(f"  ok  colour map: min {r['low']}, geometric mean {[round(c) for c in mid]}, "
+          f"max {r['high']}")
 
     # and the copy fit must notice a broken parameter correspondence
     bad_sigma = core_js.replace("specific", "specific")

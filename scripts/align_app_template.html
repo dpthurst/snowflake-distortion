@@ -64,6 +64,8 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
   <div class="pane"><h2>overlay: <span class="swatch" style="background:var(--grey)"></span>whole
      <span class="swatch" style="background:var(--blue)"></span>shortening</h2>
      <canvas id="cvRight" width="440" height="440"></canvas></div>
+  <div class="pane"><h2 id="heatTitle">r(x,y) on I&times;I</h2>
+     <canvas id="cvHeat" width="440" height="440"></canvas></div>
 </div>
 
 <div class="pane" style="margin-top:12px"><h2>pointwise residual |w &minus; gW| against t</h2>
@@ -80,7 +82,9 @@ Note that with the block taken from the same curve the index correspondence matc
 says something when the two curves differ. <em>r/R</em> compares endpoint chord ratios; its percentile is taken
 among the chords of the same index gap. With <strong>distance to the other curve</strong> the residual is
 instead the distance from each curve to the piecewise-linear interpolant of the other, in both directions
-(601 sample points, so it is sampled rather than exact).</div>
+(601 sample points, so it is sampled rather than exact). The right-hand panel is the distortion
+heatmap of the whole curve on $I\times I$: blue at the minimum, red at the maximum, white at the geometric
+mean, with the minimum and maximum marked and crosses at the current chord.</div>
 
 <script>
 const CURVES = __CURVES__;
@@ -457,6 +461,37 @@ function setDistance(ax, ay, bx, by, bxs) {
   return { d: out, sup };
 }
 
+/* ---------- distortion heatmap data ---------- */
+function heatStats(X, Y) {
+  const n = X.length, x = new Float64Array(n);
+  for (let i = 0; i < n; i++) x[i] = i / (n - 1);
+  let lo = Infinity, hi = -Infinity, ilo = [0, 0], ihi = [0, 0];
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+    const g = Math.pow(x[j] - x[i], ALPHA);
+    if (!(g > 0)) continue;
+    const r = Math.hypot(X[i] - X[j], Y[i] - Y[j]) / g;
+    if (r < lo) { lo = r; ilo = [i, j]; }
+    if (r > hi) { hi = r; ihi = [i, j]; }
+  }
+  return { lo, hi, gmean: Math.sqrt(lo * hi), D: hi / lo, imin: ilo, imax: ihi, n };
+}
+
+/* RdBu_r, sampled at eleven stops; blue = low, red = high, white in the middle */
+const RDBU = [[5,48,97],[32,101,171],[67,147,195],[144,196,221],[209,229,240],
+              [247,246,246],[253,219,199],[243,164,129],[214,96,77],[177,24,43],[103,0,31]];
+function rampRGB(u) {
+  if (!(u >= 0)) u = 0; if (u > 1) u = 1;
+  const v = u * (RDBU.length - 1), k = Math.min(Math.floor(v), RDBU.length - 2), f = v - k;
+  const a = RDBU[k], b = RDBU[k + 1];
+  return [a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2])];
+}
+
+/* position in the logarithmic scale that spans [lo, hi] */
+function heatU(r, lo, hi) {
+  if (!(r > 0)) return 0;
+  return Math.log(r / lo) / Math.log(hi / lo);
+}
+
 function diamond(X, Y, a, b) {
   let hi = 0;
   for (let i = a; i <= b; i++) for (let j = i + 1; j <= b; j++) {
@@ -490,6 +525,40 @@ if (typeof document !== "undefined") {
     const k = "D:" + name;
     if (!cache.has(k)) cache.set(k, distortion(curve(name).x, curve(name).y));
     return cache.get(k);
+  }
+
+  function heatStatsOf(name) {
+    const k = "hs:" + name;
+    if (!cache.has(k)) cache.set(k, heatStats(curve(name).x, curve(name).y));
+    return cache.get(k);
+  }
+
+  /* the r matrix as an offscreen canvas, built once per curve */
+  function heatImage(name) {
+    const k = "heat:" + name;
+    if (cache.has(k)) return cache.get(k);
+    const c = curve(name), m = c.x.length, st = heatStatsOf(name);
+    const S = Math.min(512, m);
+    const off = document.createElement("canvas");
+    off.width = S; off.height = S;
+    const g = off.getContext("2d");
+    const img = g.createImageData(S, S), d = img.data;
+    for (let py = 0; py < S; py++) {
+      const i = Math.round((1 - py / (S - 1)) * (m - 1));
+      for (let px = 0; px < S; px++) {
+        const j = Math.round(px / (S - 1) * (m - 1));
+        const o = 4 * (py * S + px);
+        if (i === j) { d[o + 3] = 0; continue; }
+        const gap = Math.abs(j - i) / (m - 1);
+        const r = Math.hypot(c.x[i] - c.x[j], c.y[i] - c.y[j]) / Math.pow(gap, ALPHA);
+        const rgb = rampRGB(heatU(r, st.lo, st.hi));
+        d[o] = rgb[0]; d[o + 1] = rgb[1]; d[o + 2] = rgb[2]; d[o + 3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+    const rec = { canvas: off, S, m, st };
+    cache.set(k, rec);
+    return rec;
   }
 
   /* ---------- copy-mode parameters ---------- */
@@ -753,6 +822,40 @@ if (typeof document !== "undefined") {
       : "max " + mx.toFixed(6) + (copyMode ? " (copy model, at its breakpoints)"
                                            : " (= sup, exact at the knots)"), pad + 4, pad - 8);
 
+    /* heatmap of the whole curve, with the current chord marked */
+    const cvH = $("#cvHeat");
+    if (cvH) {
+      const ch = cvH.getContext("2d");
+      const heat = heatImage(state.whole), st = heat.st;
+      const mH = heat.m;
+      ch.clearRect(0, 0, cvH.width, cvH.height);
+      const padH = 24, side = Math.min(cvH.width, cvH.height) - 2 * padH;
+      const top = (cvH.height - side) / 2;
+      ch.imageSmoothingEnabled = heat.S < side;
+      ch.drawImage(heat.canvas, padH, top, side, side);
+      const pxOf = j => padH + (j / (mH - 1)) * side;
+      const pyOf = i => top + side - (i / (mH - 1)) * side;
+      ch.save();
+      ch.strokeStyle = "#3a3a3a"; ch.lineWidth = 0.8;
+      ch.beginPath(); ch.moveTo(pxOf(0), pyOf(0)); ch.lineTo(pxOf(mH - 1), pyOf(mH - 1)); ch.stroke();
+      ch.fillStyle = "#1f4e9c"; ch.strokeStyle = "#fff"; ch.lineWidth = 1.2;
+      ch.beginPath(); ch.arc(pxOf(st.imin[1]), pyOf(st.imin[0]), 4.5, 0, 7); ch.fill(); ch.stroke();
+      ch.fillStyle = "#a01c2c";
+      ch.beginPath(); ch.arc(pxOf(st.imax[1]), pyOf(st.imax[0]), 4.5, 0, 7); ch.fill(); ch.stroke();
+      ch.strokeStyle = "#e08a2e"; ch.lineWidth = 1.4;
+      for (const [ii, jj] of [[a, b], [b, a]]) {
+        const X = pxOf(jj), Y = pyOf(ii), d2 = 5;
+        ch.beginPath();
+        ch.moveTo(X - d2, Y); ch.lineTo(X + d2, Y);
+        ch.moveTo(X, Y - d2); ch.lineTo(X, Y + d2);
+        ch.stroke();
+      }
+      ch.restore();
+      $("#heatTitle").textContent =
+        "r(x,y) for " + state.whole + ": [" + st.lo.toFixed(4) + ", " + st.hi.toFixed(4) +
+        "], white at " + st.gmean.toFixed(4) + ", D = " + st.D.toFixed(4);
+    }
+
     /* readout */
     const f = n => n.toFixed(6);
     const m = W.x.length;
@@ -924,7 +1027,7 @@ if (typeof document !== "undefined") {
     if (ev.key === "ArrowDown") { setInterval(state.a, state.b + step); ev.preventDefault(); }
   });
 
-  window.__app = { state, draw, setInterval, report, copyModel, runFullFit };
+  window.__app = { state, draw, setInterval, report, copyModel, runFullFit, heatImage, heatStatsOf };
   draw();
 })();
 }

@@ -82,9 +82,11 @@ def main():
             print(f"skip {name}: missing {path.name}")
             continue
         v = core.gauge(load(path, field, index))
+        # full precision: rounding to 7 decimals perturbs the shortest chords by
+        # ~1e-5 relative, which is the size of the near-ties and flips arg-min/arg-max
         curves[name] = {
-            "x": [round(float(a), 7) for a in v.real],
-            "y": [round(float(b), 7) for b in v.imag],
+            "x": [float(a) for a in v.real],
+            "y": [float(b) for b in v.imag],
             "D": core.distortion(v),
             "src": str(path.relative_to(ROOT)),
         }

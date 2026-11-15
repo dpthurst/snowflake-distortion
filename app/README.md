@@ -13,6 +13,11 @@ curve, in two modes:
   knots, hence V-shaped where the curves cross), or the distance from each
   curve to the piecewise-linear interpolant of the other, taken in both
   directions and reported as a symmetric maximum;
+* **distortion heatmap** — a third panel draws $r(x,y)$ on $I\times I$ for the
+  whole curve: blue at the minimum, red at the maximum, white at their
+  geometric mean (a log scale, so the colour change sits at the logarithmic
+  centre). The minimum and maximum pairs are marked, as are crosses at the
+  current chord. It is computed in the browser once per curve and cached;
 * **copy mode** — fit ``w(t) ~ c W(s0 + s1 t) + d``: a similarity image of the
   whole with a free affine parameter. Six free parameters, found by a coarse
   grid over the parameter range followed by two local refinements; the sliders
@@ -34,5 +39,11 @@ Checks (see `scripts/`):
     python3 scripts/preview_align_copy.py     # static PNG, copy mode
     python3 scripts/preview_residual_metrics.py  # the two metrics side by side
 
+Coordinates are embedded at full precision. Rounding them to 7 decimals moved
+the $m=800$ arg-min from the gap-90 pair $(509,599)$ to a gap-1 pair, because
+the shortest chords are sensitive at the $10^{-5}$ level; a test now compares
+the embedded arrays with the source `.npy` files bit for bit.
+
 There is no browser on this machine, so drawing, dragging and layout have not
-been tested; only the geometry and the event wiring have.
+been tested; only the geometry, the heatmap statistics and the event wiring
+have.

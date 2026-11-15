@@ -19,7 +19,18 @@ const html = fs.readFileSync(file, 'utf8');
 const ids = new Set([...html.matchAll(/id="([^"]+)"/g)].map(m => m[1]));
 
 function canvasCtx() {
-  return new Proxy({}, {
+  const base = {
+    createImageData: (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }),
+    putImageData: () => undefined,
+    getImageData: (x, y, w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }),
+    drawImage: () => undefined,
+    save: () => undefined, restore: () => undefined,
+    beginPath: () => undefined, moveTo: () => undefined, lineTo: () => undefined,
+    arc: () => undefined, fill: () => undefined, stroke: () => undefined,
+    clearRect: () => undefined, fillRect: () => undefined, fillText: () => undefined,
+    setLineDash: () => undefined,
+  };
+  return new Proxy(base, {
     get: (t, k) => (k in t ? t[k] : () => undefined),
     set: (t, k, v) => { t[k] = v; return true; },
   });
@@ -49,7 +60,7 @@ const document = {
 };
 const window = { addEventListener(t, f) { (window._l = window._l || {})[t] = f; } };
 
-const ctx = vm.createContext({ document, window, console, Math, Float64Array, Array, Object, Number, JSON });
+const ctx = vm.createContext({ document, window, console, Math, Float64Array, Float32Array, Array, Object, Number, JSON, Uint8ClampedArray });
 
 const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 if (blocks.length !== 3) { console.error(`expected 3 script blocks, found ${blocks.length}`); process.exit(1); }
@@ -109,6 +120,19 @@ variant.value = 'rev';
 variant.onchange({ target: variant });
 check('variant switch keeps a readout', readout().includes('reversal') || readout().includes('rev'),
       readout().split('\n')[1]);
+
+/* distortion heatmap panel */
+const heatTitle = readout();   // just to force a draw before reading
+nodes.get('#an').value = '0'; nodes.get('#an').oninput({ target: nodes.get('#an') });
+nodes.get('#bn').value = '799'; nodes.get('#bn').oninput({ target: nodes.get('#bn') });
+const ht = nodes.get('#heatTitle').textContent;
+check('heatmap panel titles the current curve', /r\(x,y\) for/.test(ht) && /D =/.test(ht), ht);
+const beforeCurve = nodes.get('#heatTitle').textContent;
+const wholeH = nodes.get('#whole');
+wholeH.value = 'S-branch m=100'; wholeH.onchange({ target: wholeH });
+check('heatmap follows the curve switch', nodes.get('#heatTitle').textContent !== beforeCurve &&
+      /m=100/.test(nodes.get('#heatTitle').textContent), nodes.get('#heatTitle').textContent);
+wholeH.value = 'S-branch m=800'; wholeH.onchange({ target: wholeH });
 
 /* residual metric switch */
 const metric = nodes.get('#metric');

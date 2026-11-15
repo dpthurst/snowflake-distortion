@@ -294,3 +294,17 @@ def set_distance_sup(whole, a, b, source=None, kind="id", n=601):
     fwd = dist_to_polyline(w.real, w.imag, gv.real, gv.imag)
     bwd = dist_to_polyline(g.real, g.imag, bv.real, bv.imag)
     return float(fwd.max()), float(bwd.max()), float(max(fwd.max(), bwd.max()))
+
+
+def heat_stats(v):
+    """min, max, geometric mean and arg-extrema of r(x_i,x_j), x_i = i/(m-1)."""
+    v = np.asarray(v, dtype=complex)
+    n = len(v)
+    x = np.arange(n) / (n - 1)
+    i, j = np.triu_indices(n, 1)
+    r = np.abs(v[i] - v[j]) / np.abs(x[i] - x[j]) ** ALPHA
+    imin = int(r.argmin())
+    imax = int(r.argmax())
+    lo, hi = float(r[imin]), float(r[imax])
+    return dict(lo=lo, hi=hi, gmean=float(np.sqrt(lo * hi)), D=hi / lo,
+                imin=[int(i[imin]), int(j[imin])], imax=[int(i[imax]), int(j[imax])])
