@@ -25,9 +25,15 @@ that panel's range:
 
 The script checks that the geometric mean renders as the white of the map and
 that no value falls outside its scale, so nothing is clipped. The panels are
-therefore *not* on a common colour scale: each is centred on its own range. The
-dashed contour is the level set $r=1$, the $\alpha$-power law itself. The
-diagonal $x=y$, where $r$ is undefined, is masked and drawn as a thin line.
+therefore *not* on a common colour scale: each is centred on its own range.
+
+The dashed contour sits at the same geometric mean, i.e. on the white level.
+There is no scale-free meaning in the level $r=1$: scaling the configuration by
+$\lambda$ multiplies every $r$ by $\lambda$ and leaves $D$ alone, so the level
+set $r=1$ is an artefact of the chord normalisation. The invariant reference
+levels are $r_{\min}$, $r_{\max}$ and their geometric mean, which scales with
+$r$ and therefore keeps its relative position. The diagonal $x=y$, where $r$ is
+undefined, is masked and drawn as a thin line.
 
 An earlier rendering used `magma` on a shared log scale, whose low end is
 black: the pixels for $r\approx0.48$–$0.55$ came out black and read as missing

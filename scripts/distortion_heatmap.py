@@ -93,13 +93,15 @@ def main():
         gmean = np.sqrt(s["lo"] * s["hi"])
         im = a0.imshow(r, origin="lower", extent=[0, 1, 0, 1], cmap="RdBu_r",
                        norm=LogNorm(vmin=s["lo"], vmax=s["hi"]), interpolation="nearest")
-        # the level set r = 1 is the alpha-power law itself
+        # r itself scales with the chord normalisation, so the only scale-free
+        # reference levels are the extremes and their geometric mean
         a0.contour(np.linspace(0, 1, r.shape[1]), np.linspace(0, 1, r.shape[0]),
-                   np.nan_to_num(r, nan=1.0), levels=[1.0], colors="0.25",
-                   linewidths=0.5, linestyles="--")
+                   np.nan_to_num(r, nan=gmean), levels=[gmean], colors="0.15",
+                   linewidths=0.7, linestyles="--")
         a0.set_title(f"{name}\n"
-                     f"r in [{s['lo']:.4f}, {s['hi']:.4f}],  D = {s['D']:.4f};  "
-                     f"white at the geometric mean {gmean:.4f}", fontsize=8.5)
+                     f"r in [{s['lo']:.4f}, {s['hi']:.4f}],  D = {s['D']:.4f}\n"
+                     f"white and the dashed contour at the geometric mean {gmean:.4f}",
+                     fontsize=8.5)
         a0.set_xlabel("x", fontsize=8); a0.set_ylabel("y", fontsize=8)
         a0.tick_params(labelsize=7)
         cb = fig.colorbar(im, ax=a0, fraction=0.046, pad=0.03)
