@@ -110,6 +110,26 @@ variant.onchange({ target: variant });
 check('variant switch keeps a readout', readout().includes('reversal') || readout().includes('rev'),
       readout().split('\n')[1]);
 
+/* copy mode: similarity + affine parameter */
+const mode = nodes.get('#mode');
+mode.value = 'copy';
+let copyThrew = null;
+try { mode.onchange({ target: mode }); } catch (e) { copyThrew = e; }
+check('switching to copy mode does not throw', !copyThrew, copyThrew && copyThrew.message);
+const txt = readout();
+check('copy mode reports a similarity', /\|c\|/.test(txt) && /parameter s/.test(txt),
+      txt.split('\n').slice(3, 6).join(' | '));
+check('copy-mode sliders were initialised', nodes.get('#lscale').value !== '' &&
+      nodes.get('#s0').value !== '', `lscale=${nodes.get('#lscale').value} s0=${nodes.get('#s0').value}`);
+const beforeScale = readout();
+const ls = nodes.get('#lscale');
+ls.value = String(Number(ls.value) + 0.2);
+ls.oninput({ target: ls });
+check('moving the scale changes the residual', readout() !== beforeScale);
+let refitThrew = null;
+try { nodes.get('#refit').onclick({}); } catch (e) { refitThrew = e; }
+check('refit does not throw', !refitThrew, refitThrew && refitThrew.message);
+
 /* pointer drag on the left canvas */
 const cv = nodes.get('#cvLeft');
 let threw = null;

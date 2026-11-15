@@ -41,6 +41,18 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
       <option value="revconj">reversal + conjugation</option>
     </select></div>
   <div><label for="preset">presets</label><select id="preset"></select></div>
+  <div><label for="mode">correspondence</label><select id="mode">
+      <option value="index">index (parameter-aligned)</option>
+      <option value="copy">copy of the whole + affine parameter</option>
+    </select></div>
+</div>
+
+<div class="bar" id="copyctl" style="display:none">
+  <div><label for="lscale">scale log10</label><input type="range" id="lscale" min="-2" max="2" step="0.005"><span id="lscaleval"></span></div>
+  <div><label for="rot">rotation (deg)</label><input type="range" id="rot" min="-180" max="180" step="0.5"><span id="rotval"></span></div>
+  <div><label for="s0">s0</label><input type="range" id="s0" min="0" max="1" step="0.001"><span id="s0val"></span></div>
+  <div><label for="s1">s1</label><input type="range" id="s1" min="-1" max="1" step="0.001"><span id="s1val"></span></div>
+  <div><button id="refit">refit all six</button></div>
 </div>
 
 <div class="panes">
@@ -54,10 +66,15 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
   <canvas id="cvStrip" width="904" height="130"></canvas></div>
 
 <div id="readout"></div>
-<div class="hint">Keys: left/right move a, up/down move b (hold Shift for 10 steps). The numbers on the right are
-for the interval [a,b]; <em>free fit</em> allows a least-squares complex dilation instead of the endpoint gauge,
-and is reported for comparison only. <em>r/R</em> compares the interval's endpoint chord ratio with the whole
-curve's; its percentile is taken among all chords with the same index gap.</div>
+<div class="hint">Keys: left/right move a, up/down move b (hold Shift for 10 steps).
+<strong>Index correspondence</strong> compares the block with the whole at the same parameter, endpoint-gauged;
+<em>free fit</em> allows a least-squares complex dilation instead, and is reported for comparison only.
+<strong>Copy mode</strong> fits <em>w(t) &asymp; c&middot;W(s0 + s1&middot;t) + d</em> — a similarity image of the whole
+with a freely chosen affine parameter — by a coarse grid followed by two local refinements. The sliders set the
+scale, the rotation and the parameter range, re-fitting the translation; <em>refit all six</em> re-runs the search.
+Note that with the block taken from the same curve the index correspondence matches exactly, so copy mode only
+says something when the two curves differ. <em>r/R</em> compares endpoint chord ratios; its percentile is taken
+among the chords of the same index gap.</div>
 
 <script>
 const CURVES = __CURVES__;
@@ -227,6 +244,166 @@ function ladder(X, Y, L) {
   return out;
 }
 
+/* ---------- copy mode: a similarity image of the whole, with an affine
+   reparametrisation of its parameter.  Model: w(t) ~ c W(s0 + s1 t) + d with
+   complex c, d and real s0, s1, the interval [s0, s0+s1] kept inside [0, 1]. ---------- */
+
+function sampleBlock(X, Y, a, b, n) {
+  const t = uniform(n);
+  return { t, ...blockAt(X, Y, a, b, t) };
+}
+
+function wholeSamples(WX, WY, ss) {
+  return interpAt(WX, WY, ss);
+}
+
+/* residuals of c W(s0+s1 t) + d against the block samples, for one (c,d,s0,s1) */
+function copyResidual(WX, WY, w, cx, cy, dx, dy, s0, s1) {
+  const ss = new Float64Array(w.t.length);
+  for (let i = 0; i < ss.length; i++) ss[i] = s0 + s1 * w.t[i];
+  const q = interpAt(WX, WY, ss);
+  const rx = new Float64Array(ss.length), ry = new Float64Array(ss.length);
+  let sup = 0, sum = 0;
+  for (let i = 0; i < ss.length; i++) {
+    const ux = cx * q.x[i] - cy * q.y[i] + dx;
+    const uy = cx * q.y[i] + cy * q.x[i] + dy;
+    const ex = w.x[i] - ux, ey = w.y[i] - uy;
+    rx[i] = ex; ry[i] = ey;
+    const d = Math.hypot(ex, ey);
+    if (d > sup) sup = d;
+    sum += ex * ex + ey * ey;
+  }
+  return { sup, rms: Math.sqrt(sum / ss.length), rx, ry };
+}
+
+function copyPenalty(s0, s1) {
+  const lo = Math.min(s0, s0 + s1), hi = Math.max(s0, s0 + s1);
+  let p = 0;
+  if (lo < -1e-12) p += 1e3 * (-lo);
+  if (hi > 1 + 1e-12) p += 1e3 * (hi - 1);
+  if (Math.abs(s1) < 1e-3) p += 1e3 * (1e-3 - Math.abs(s1));
+  return p;
+}
+
+/* least-squares (c,d) at a fixed parameter correspondence, with the resulting
+   sup and a smooth surrogate of it */
+function profileAt(WX, WY, w, s0, s1, power) {
+  const n = w.t.length, ss = new Float64Array(n);
+  for (let i = 0; i < n; i++) ss[i] = s0 + s1 * w.t[i];
+  const q = interpAt(WX, WY, ss);
+  let qx = 0, qy = 0, wx = 0, wy = 0;
+  for (let i = 0; i < n; i++) { qx += q.x[i]; qy += q.y[i]; wx += w.x[i]; wy += w.y[i]; }
+  qx /= n; qy /= n; wx /= n; wy /= n;
+  let numX = 0, numY = 0, den = 0;
+  for (let i = 0; i < n; i++) {
+    const ax = q.x[i] - qx, ay = q.y[i] - qy, bx = w.x[i] - wx, by = w.y[i] - wy;
+    numX += ax * bx + ay * by; numY += ax * by - ay * bx; den += ax * ax + ay * ay;
+  }
+  if (!(den > 0)) return { cx: 1, cy: 0, dx: 0, dy: 0, sup: Infinity, soft: Infinity };
+  const cx = numX / den, cy = numY / den;
+  const dx = wx - (cx * qx - cy * qy), dy = wy - (cx * qy + cy * qx);
+  let sup = 0, acc = 0;
+  for (let i = 0; i < n; i++) {
+    const ux = cx * q.x[i] - cy * q.y[i] + dx - w.x[i];
+    const uy = cx * q.y[i] + cy * q.x[i] + dy - w.y[i];
+    const d = Math.hypot(ux, uy);
+    if (d > sup) sup = d;
+    acc += Math.pow(d, power);
+  }
+  return { cx, cy, dx, dy, sup, soft: Math.pow(acc / n, 1 / power) };
+}
+
+/* best translation for a fixed similarity factor c and a fixed correspondence */
+function fitTranslation(WX, WY, w, cx, cy, s0, s1) {
+  const n = w.t.length, ss = new Float64Array(n);
+  for (let i = 0; i < n; i++) ss[i] = s0 + s1 * w.t[i];
+  const q = interpAt(WX, WY, ss);
+  let qx = 0, qy = 0, wx = 0, wy = 0;
+  for (let i = 0; i < n; i++) { qx += q.x[i]; qy += q.y[i]; wx += w.x[i]; wy += w.y[i]; }
+  qx /= n; qy /= n; wx /= n; wy /= n;
+  return { dx: wx - (cx * qx - cy * qy), dy: wy - (cx * qy + cy * qx) };
+}
+
+function sigmaPenalty(s0, s1) {
+  let p = 0;
+  if (s0 < 0) p += 1e3 * (-s0);
+  if (s0 + s1 > 1) p += 1e3 * (s0 + s1 - 1);
+  if (Math.abs(s1) < 0.02) p += 1e3 * (0.02 - Math.abs(s1));
+  return p;
+}
+
+/* joint fit of the similarity and the affine parameter, in three stages: a coarse
+   grid on a subsampled block (the profile in s0 is narrow, one node of shift is
+   already visible), then two Nelder-Mead refinements at increasing resolution */
+function fitCopy(WX, WY, SX, SY, a, b) {
+  const Wg = gauge(WX, WY);
+  const POWER = 12;
+  const t1 = uniform(101);
+  const w1 = { t: t1, ...blockAt(SX, SY, a, b, t1) };
+  const obj1 = p => {
+    const s1 = Math.min(p[1], 1 - p[0]);
+    return profileAt(Wg.x, Wg.y, w1, p[0], s1, POWER).soft + sigmaPenalty(p[0], s1);
+  };
+  let best = { v: Infinity, s0: 0, s1: 0.25 };
+  for (let i = 0; i <= 60; i++) {
+    const s0 = 0.95 * i / 60;
+    for (let j = 1; j <= 24; j++) {
+      const s1 = j / 24;
+      if (s0 + s1 > 1) continue;
+      const pr = profileAt(Wg.x, Wg.y, w1, s0, s1, POWER);
+      if (pr.sup < best.v) best = { v: pr.sup, s0, s1 };
+    }
+  }
+  let p = nelderMead2(obj1, [best.s0, best.s1], [0.01, 0.01], 400, 1e-8);
+  const t2 = uniform(301);
+  const w2 = { t: t2, ...blockAt(SX, SY, a, b, t2) };
+  const obj2 = q => {
+    const s1 = Math.min(q[1], 1 - q[0]);
+    return profileAt(Wg.x, Wg.y, w2, q[0], s1, POWER).soft + sigmaPenalty(q[0], s1);
+  };
+  p = nelderMead2(obj2, p, [0.002, 0.002], 500, 1e-10);
+  const s0 = p[0], s1 = Math.min(p[1], 1 - p[0]);
+  const pr = profileAt(Wg.x, Wg.y, w2, s0, s1, POWER);
+  const m = WX.length;
+  const natRes = profileAt(Wg.x, Wg.y, w2, a / (m - 1), (b - a) / (m - 1), POWER);
+  return { cx: pr.cx, cy: pr.cy, dx: pr.dx, dy: pr.dy, s0, s1,
+           sup: pr.sup, rms: 0,
+           natural: { cx: natRes.cx, cy: natRes.cy, dx: natRes.dx, dy: natRes.dy,
+                      s0: a / (m - 1), s1: (b - a) / (m - 1), sup: natRes.sup },
+           absC: Math.hypot(pr.cx, pr.cy), argC: Math.atan2(pr.cy, pr.cx) };
+}
+
+/* Nelder-Mead in two dimensions */
+function nelderMead2(f, x0, step, iters, tol) {
+  let simplex = [x0.slice(), [x0[0] + step[0], x0[1]], [x0[0], x0[1] + step[1]]];
+  let vals = simplex.map(f);
+  for (let it = 0; it < iters; it++) {
+    const order = [0, 1, 2].sort((i, j) => vals[i] - vals[j]);
+    simplex = order.map(i => simplex[i]); vals = order.map(i => vals[i]);
+    if (Math.hypot(simplex[2][0] - simplex[0][0], simplex[2][1] - simplex[0][1]) < tol) break;
+    const cen = [(simplex[0][0] + simplex[1][0]) / 2, (simplex[0][1] + simplex[1][1]) / 2];
+    const worst = simplex[2];
+    const refl = [2 * cen[0] - worst[0], 2 * cen[1] - worst[1]], fr = f(refl);
+    if (fr < vals[0]) {
+      const exp = [3 * cen[0] - 2 * worst[0], 3 * cen[1] - 2 * worst[1]], fe = f(exp);
+      if (fe < fr) { simplex[2] = exp; vals[2] = fe; } else { simplex[2] = refl; vals[2] = fr; }
+    } else if (fr < vals[1]) { simplex[2] = refl; vals[2] = fr; }
+    else {
+      const con = [cen[0] + 0.5 * (worst[0] - cen[0]), cen[1] + 0.5 * (worst[1] - cen[1])], fc = f(con);
+      if (fc < vals[2]) { simplex[2] = con; vals[2] = fc; }
+      else {
+        for (let i = 1; i < 3; i++) {
+          simplex[i] = [simplex[0][0] + 0.5 * (simplex[i][0] - simplex[0][0]),
+                        simplex[0][1] + 0.5 * (simplex[i][1] - simplex[0][1])];
+          vals[i] = f(simplex[i]);
+        }
+      }
+    }
+  }
+  let b = 0; for (let i = 1; i < 3; i++) if (vals[i] < vals[b]) b = i;
+  return simplex[b];
+}
+
 function diamond(X, Y, a, b) {
   let hi = 0;
   for (let i = a; i <= b; i++) for (let j = i + 1; j <= b; j++) {
@@ -250,17 +427,92 @@ if (typeof document !== "undefined") {
   const $ = s => document.querySelector(s);
   const names = Object.keys(CURVES);
   const preferred = "S-branch m=800";
-  const start = names.includes(preferred) ? preferred : names[0];
-  const state = { whole: start, source: start, a: 0, b: 0, variant: "auto" };
+  const startName = names.includes(preferred) ? preferred : names[0];
+  const state = { whole: startName, source: startName, a: 0, b: 0,
+                  variant: "auto", mode: "index", copy: null };
   const cache = new Map();
 
-  function curve(name) { return CURVES[name]; }
-  function key(name) { return name; }
+  const curve = name => CURVES[name];
   function D_of(name) {
     const k = "D:" + name;
     if (!cache.has(k)) cache.set(k, distortion(curve(name).x, curve(name).y));
     return cache.get(k);
   }
+
+  /* ---------- copy-mode parameters ---------- */
+  function copyStripParams(m, L, s0, s1) {
+    const set = Array.from(uniform(N_RMS));
+    const lower = Math.min(s0, s0 + s1), upper = Math.max(s0, s0 + s1);
+    for (let k = 0; k < m; k++) {
+      const te = (k / (m - 1) - s0) / s1;
+      if (te > 0 && te < 1) set.push(te);
+    }
+    set.sort((p, q) => p - q);
+    const out = [set[0]];
+    for (let i = 1; i < set.length; i++) if (set[i] - out[out.length - 1] > 1e-15) out.push(set[i]);
+    return Float64Array.from(out);
+  }
+
+  /* residuals of the copy against the block, at the parameters used for drawing */
+  function copyModel(wholeName, srcName, a, b, cp) {
+    const W = curve(wholeName), S = curve(srcName), m = W.x.length, L = b - a;
+    const Wg = gauge(W.x, W.y);
+    const ts = copyStripParams(m, L, cp.s0, cp.s1);
+    const w = blockAt(S.x, S.y, a, b, ts);
+    const ss = new Float64Array(ts.length);
+    for (let i = 0; i < ss.length; i++) ss[i] = cp.s0 + cp.s1 * ts[i];
+    const q = interpAt(Wg.x, Wg.y, ss);
+    const gx = new Float64Array(ts.length), gy = new Float64Array(ts.length);
+    let sup = 0, sum = 0;
+    for (let i = 0; i < ts.length; i++) {
+      gx[i] = cp.cx * q.x[i] - cp.cy * q.y[i] + cp.dx;
+      gy[i] = cp.cx * q.y[i] + cp.cy * q.x[i] + cp.dy;
+      const ex = w.x[i] - gx[i], ey = w.y[i] - gy[i];
+      const d = Math.hypot(ex, ey);
+      if (d > sup) sup = d;
+      sum += ex * ex + ey * ey;
+    }
+    return { ts, w, g: { x: gx, y: gy }, sup, rms: Math.sqrt(sum / ts.length) };
+  }
+
+  function runFullFit() {
+    const W = curve(state.whole), S = curve(state.source);
+    const f = fitCopy(W.x, W.y, S.x, S.y, state.a, state.b);
+    state.copy = { cx: f.cx, cy: f.cy, dx: f.dx, dy: f.dy, s0: f.s0, s1: f.s1,
+                   natural: f.natural };
+    syncCopySliders();
+  }
+
+  function syncCopySliders() {
+    const cp = state.copy; if (!cp) return;
+    const abs = Math.hypot(cp.cx, cp.cy), ang = Math.atan2(cp.cy, cp.cx) * 180 / Math.PI;
+    $("#lscale").value = String(Math.log10(Math.max(abs, 1e-6)).toFixed(3));
+    $("#rot").value = String(ang.toFixed(1));
+    $("#s0").value = String(cp.s0.toFixed(3));
+    $("#s1").value = String(cp.s1.toFixed(3));
+    $("#lscaleval").textContent = " " + abs.toExponential(3);
+    $("#rotval").textContent = " " + ang.toFixed(1) + "°";
+    $("#s0val").textContent = " " + (cp.s0 * (curve(state.whole).x.length - 1)).toFixed(1) + " (index)";
+    $("#s1val").textContent = " " + (cp.s1 * (curve(state.whole).x.length - 1)).toFixed(1) + " (index)";
+  }
+
+  /* user moves the scale, the rotation or the parameter range; the translation is
+     then the least-squares one for that correspondence */
+  function applyCopySliders() {
+    const cp = state.copy; if (!cp) return;
+    const abs = Math.pow(10, +$("#lscale").value), ang = +$("#rot").value * Math.PI / 180;
+    cp.cx = abs * Math.cos(ang); cp.cy = abs * Math.sin(ang);
+    cp.s0 = +$("#s0").value; cp.s1 = +$("#s1").value;
+    if (Math.abs(cp.s1) < 1e-3) cp.s1 = cp.s1 < 0 ? -1e-3 : 1e-3;
+    const W = curve(state.whole), S = curve(state.source);
+    const w = sampleBlock(S.x, S.y, state.a, state.b, 301);
+    const Wg = gauge(W.x, W.y);
+    const ls = fitTranslation(Wg.x, Wg.y, w, cp.cx, cp.cy, cp.s0, cp.s1);
+    cp.dx = ls.dx; cp.dy = ls.dy;
+    syncCopySliders(); draw();
+  }
+
+  /* ---------- the report for the current interval ---------- */
   function report(wholeName, srcName, a, b) {
     const w = curve(wholeName), s = curve(srcName);
     const res = residuals(w.x, w.y, s.x, s.y, a, b);
@@ -277,58 +529,67 @@ if (typeof document !== "undefined") {
                   D_whole: D_of(wholeName), D_block: distortion(seg.x, seg.y),
                   s_block: diamond(s.x, s.y, a, b) / rho, r_over_R: r_ab / R_full };
     if (wholeName === srcName) {
-      const lad = cache.get("lad:" + srcName + ":" + (b - a)) || (() => {
-        const v = ladder(s.x, s.y, b - a); cache.set("lad:" + srcName + ":" + (b - a), v); return v;
-      })();
-      /* rank among the other chords of the same gap: the interval's own entry is
-         excluded so that an exact tie with itself cannot flip the count. */
+      const key = "lad:" + srcName + ":" + (b - a);
+      let lad = cache.get(key);
+      if (!lad) { lad = ladder(s.x, s.y, b - a); cache.set(key, lad); }
       let below = 0;
-      const own = a;
-      for (let i = 0; i < lad.length; i++) if (i !== own && lad[i] < r_ab) below++;
+      for (let i = 0; i < lad.length; i++) if (i !== a && lad[i] < r_ab) below++;
       if (lad.length > 1) out.pct = below / (lad.length - 1);
       out.ladder = lad; out.r_ab = r_ab;
     }
     return out;
   }
 
-  /* --- drawing helpers --- */
-  function fit(xs, ys, w, h, pad) {
+  /* ---------- drawing ---------- */
+  function fitView(xs, ys, w, h, pad) {
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (let i = 0; i < xs.length; i++) {
       if (xs[i] < x0) x0 = xs[i]; if (xs[i] > x1) x1 = xs[i];
       if (ys[i] < y0) y0 = ys[i]; if (ys[i] > y1) y1 = ys[i];
     }
-    const sx = (w - 2 * pad) / Math.max(x1 - x0, 1e-9), sy = (h - 2 * pad) / Math.max(y1 - y0, 1e-9);
-    const s = Math.min(sx, sy);
+    const s = Math.min((w - 2 * pad) / Math.max(x1 - x0, 1e-9), (h - 2 * pad) / Math.max(y1 - y0, 1e-9));
     const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
     return p => [w / 2 + (p[0] - cx) * s, h / 2 - (p[1] - cy) * s];
   }
   function poly(ctx, X, Y, map, color, width, alpha) {
-    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.globalAlpha = alpha === undefined ? 1 : alpha;
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.globalAlpha = alpha === undefined ? 1 : alpha;
     ctx.beginPath();
     for (let i = 0; i < X.length; i++) { const p = map([X[i], Y[i]]); i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }
     ctx.stroke(); ctx.restore();
   }
-  function dots(ctx, X, Y, map, color, r) {
-    ctx.save(); ctx.fillStyle = color;
-    for (let i = 0; i < X.length; i++) { const p = map([X[i], Y[i]]); ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 7); ctx.fill(); }
-    ctx.restore();
+  function subSample(X, Y, from, to, n) {
+    const t = uniform(n), dx = new Float64Array(n), dy = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const u = from + t[i] * (to - from);
+      const k = Math.min(Math.floor(u), X.length - 2), f = u - k;
+      dx[i] = X[k] * (1 - f) + X[k + 1] * f; dy[i] = Y[k] * (1 - f) + Y[k + 1] * f;
+    }
+    return { x: dx, y: dy };
   }
 
   function draw() {
     const W = curve(state.whole), S = curve(state.source);
     const rep = report(state.whole, state.source, state.a, state.b);
     const a = state.a, b = state.b;
+    const copyMode = state.mode === "copy" && state.copy;
+    let model = null;
+    if (copyMode) model = copyModel(state.whole, state.source, a, b, state.copy);
 
-    /* left: the whole curve with the interval */
+    /* left: whole curve, block, and (in copy mode) the covered subarc */
     const cv = $("#cvLeft"), ctx = cv.getContext("2d");
     ctx.clearRect(0, 0, cv.width, cv.height);
-    const map = fit(W.x, W.y, cv.width, cv.height, 24);
+    const map = fitView(W.x, W.y, cv.width, cv.height, 24);
     poly(ctx, W.x, W.y, map, "#c9c9c9", 1.2, 1);
+    if (copyMode) {
+      const m = W.x.length, lo = Math.min(state.copy.s0, state.copy.s0 + state.copy.s1);
+      const hi = Math.max(state.copy.s0, state.copy.s0 + state.copy.s1);
+      const cov = subSample(W.x, W.y, lo * (m - 1), hi * (m - 1), 400);
+      poly(ctx, cov.x, cov.y, map, "#2c9c4a", 3.0, 0.85);
+    }
     poly(ctx, S.x.slice(a, b + 1), S.y.slice(a, b + 1), map, "#e08a2e", 2.2, 1);
     const pa = map([S.x[a], S.y[a]]), pb = map([S.x[b], S.y[b]]);
-    ctx.save();
-    ctx.fillStyle = "#c8342a"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5;
+    ctx.save(); ctx.fillStyle = "#c8342a"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5;
     for (const p of [pa, pb]) { ctx.beginPath(); ctx.arc(p[0], p[1], 5, 0, 7); ctx.fill(); ctx.stroke(); }
     ctx.fillStyle = "#333"; ctx.font = "11px sans-serif";
     ctx.fillText("a=" + a, pa[0] + 7, pa[1] - 6);
@@ -340,27 +601,34 @@ if (typeof document !== "undefined") {
     c2.clearRect(0, 0, cv2.width, cv2.height);
     const t = uniform(1201);
     const Wg = gauge(W.x, W.y);
-    const g = wholeAt(Wg.x, Wg.y, t, rep.kind);
-    const w = blockAt(S.x, S.y, a, b, t);
-    const allx = Array.from(g.x).concat(Array.from(w.x));
-    const ally = Array.from(g.y).concat(Array.from(w.y));
-    const map2 = fit(allx, ally, cv2.width, cv2.height, 24);
-    poly(c2, g.x, g.y, map2, "#b9b9b9", 1.4, 1);
-    poly(c2, w.x, w.y, map2, "#1f6fd0", 2.0, 1);
+    let gx, gy, resX, resY;
+    if (copyMode) {
+      gx = model.g.x; gy = model.g.y; resX = model.w.x; resY = model.w.y;
+    } else {
+      const g = wholeAt(Wg.x, Wg.y, t, rep.kind);
+      const w = blockAt(S.x, S.y, a, b, t);
+      gx = g.x; gy = g.y; resX = w.x; resY = w.y;
+    }
+    const allx = Array.from(gx).concat(Array.from(resX));
+    const ally = Array.from(gy).concat(Array.from(resY));
+    const map2 = fitView(allx, ally, cv2.width, cv2.height, 24);
+    if (copyMode) poly(c2, Wg.x, Wg.y, map2, "#e3e3e3", 1.0, 0.7);
+    poly(c2, gx, gy, map2, copyMode ? "#2c9c4a" : "#b9b9b9", 1.5, 1);
+    poly(c2, resX, resY, map2, "#1f6fd0", 2.0, 1);
 
-    /* strip: residual */
+    /* strip */
     const cv3 = $("#cvStrip"), c3 = cv3.getContext("2d");
     c3.clearRect(0, 0, cv3.width, cv3.height);
     const pad = 26, H = cv3.height - 2 * pad, Wd = cv3.width - 2 * pad;
-    /* the strip is drawn on the knots of both curves plus a fine grid, so its
-       maximum is the exact sup printed above rather than a sampled one */
-    const ts = stripParams(W.x.length, b - a);
-    const gs = wholeAt(Wg.x, Wg.y, ts, rep.kind);
-    const ws = blockAt(S.x, S.y, a, b, ts);
-    let mx = 0;
+    const ts = copyMode ? model.ts : stripParams(W.x.length, b - a);
+    const ws = copyMode ? model.w : blockAt(S.x, S.y, a, b, ts);
+    const gs = copyMode ? model.g : wholeAt(Wg.x, Wg.y, ts, rep.kind);
     const res = new Float64Array(ts.length);
-    for (let i = 0; i < ts.length; i++) res[i] = Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]);
-    for (let i = 0; i < res.length; i++) if (res[i] > mx) mx = res[i];
+    let mx = 0;
+    for (let i = 0; i < ts.length; i++) {
+      res[i] = Math.hypot(ws.x[i] - gs.x[i], ws.y[i] - gs.y[i]);
+      if (res[i] > mx) mx = res[i];
+    }
     c3.strokeStyle = "#ddd"; c3.lineWidth = 1;
     c3.beginPath(); c3.moveTo(pad, pad + H); c3.lineTo(pad + Wd, pad + H); c3.stroke();
     c3.strokeStyle = "#c8342a"; c3.lineWidth = 1.4; c3.beginPath();
@@ -371,31 +639,51 @@ if (typeof document !== "undefined") {
     c3.stroke();
     c3.fillStyle = "#666"; c3.font = "11px sans-serif";
     c3.fillText("t = 0", pad, pad + H + 16); c3.fillText("t = 1", pad + Wd - 26, pad + H + 16);
-    c3.fillText("max " + mx.toFixed(6) + " (= sup, exact at the knots)", pad + 4, pad - 8);
+    c3.fillText("max " + mx.toFixed(6) + (copyMode ? " (copy model, at its breakpoints)"
+                                                      : " (= sup, exact at the knots)"), pad + 4, pad - 8);
 
     /* readout */
     const f = n => n.toFixed(6);
+    const m = W.x.length;
     const lines = [
       "interval            [" + a + ", " + b + "]   index length " + (b - a) + "   relative " + ((b - a) / (S.x.length - 1)).toFixed(4),
-      "orientation         " + rep.kind + (state.variant === "auto" ? "   (best of four)" : "   (chosen)"),
-      "residual sup        " + f(rep.sup) + "     rms " + f(rep.rms) + "   (endpoint chord = 1)",
-      "free-fit sup        " + f(rep.fit.sup) + "     |c| " + rep.fit.absC.toFixed(4) + "   arg c " + (rep.fit.argC * 180 / Math.PI).toFixed(1) + " deg",
-      "per-variant sup     " + VARIANTS.map(k => k + " " + rep.res[k].sup.toFixed(4)).join("   "),
+      "correspondence      " + (copyMode ? "copy of the whole, affine parameter" : "index (parameter-aligned)"),
+      "orientation         " + (copyMode ? "free similarity (conj. not used)" : rep.kind + (state.variant === "auto" ? "   (best of four)" : "   (chosen)")),
+      "residual sup        " + f(copyMode ? model.sup : rep.sup) + "     rms " + f(copyMode ? model.rms : rep.rms) + "   (block endpoint chord = 1)",
+      copyMode
+        ? "similarity          |c| " + Math.hypot(state.copy.cx, state.copy.cy).toExponential(4) +
+          "   arg " + (Math.atan2(state.copy.cy, state.copy.cx) * 180 / Math.PI).toFixed(2) + " deg" +
+          "   translation " + state.copy.dx.toFixed(4) + (state.copy.dy >= 0 ? "+" : "-") + Math.abs(state.copy.dy).toFixed(4) + "i"
+        : "free-fit sup        " + f(rep.fit.sup) + "     |c| " + rep.fit.absC.toFixed(4) + "   arg c " + (rep.fit.argC * 180 / Math.PI).toFixed(1) + " deg",
+      copyMode
+        ? "parameter s         s0 " + state.copy.s0.toFixed(5) + "   s1 " + state.copy.s1.toFixed(5) +
+          "   (index units: " + (state.copy.s0 * (m - 1)).toFixed(1) + ", " + (state.copy.s1 * (m - 1)).toFixed(1) + ")" +
+          "   index correspondence would be " + (a / (m - 1)).toFixed(5) + ", " + ((b - a) / (m - 1)).toFixed(5)
+        : "per-variant sup     " + VARIANTS.map(k => k + " " + rep.res[k].sup.toFixed(4)).join("   "),
+      copyMode
+        ? "natural (index)     sup " + f(state.copy.natural.sup) + "   |c| " + Math.hypot(state.copy.natural.cx, state.copy.natural.cy).toExponential(4) +
+          "   ratio to fitted " + (model.sup > 0 ? (state.copy.natural.sup / model.sup).toFixed(2) + "x" : "n/a")
+        : "free-fit sup        " + f(rep.fit.sup) + "     |c| " + rep.fit.absC.toFixed(4) + "   arg c " + (rep.fit.argC * 180 / Math.PI).toFixed(1) + " deg",
       "D whole / interval  " + rep.D_whole.toFixed(9) + " / " + rep.D_block.toFixed(9),
       "block diam / chord  " + rep.s_block.toFixed(6),
-      "r_ab / R_full       " + rep.r_over_R.toFixed(6) + (rep.pct === undefined ? "" : "     percentile in gap " + (100 * rep.pct).toFixed(1) + "%"),
-      "endpoint chord      " + Math.hypot(S.x[b] - S.x[a], S.y[b] - S.y[a]).toFixed(6) +
-        "     chord angle " + (Math.atan2(S.y[b] - S.y[a], S.x[b] - S.x[a]) * 180 / Math.PI).toFixed(1) + " deg"
+      "r_ab / R_full       " + rep.r_over_R.toFixed(6) + (rep.pct === undefined ? "" : "     percentile in gap " + (100 * rep.pct).toFixed(1) + "%")
     ];
+    if (copyMode && state.whole === state.source) {
+      lines.push("");
+      lines.push("note: the block is a piece of this same curve, so the index correspondence");
+      lines.push("      matches it exactly. The copy mode says something only when the two");
+      lines.push("      curves differ (choose a different 'shortening taken from').");
+    }
     $("#readout").textContent = lines.join("\n");
     return rep;
   }
 
-  /* --- controls --- */
+  /* ---------- controls ---------- */
   function refreshPresets() {
     const sel = $("#preset"); sel.innerHTML = "";
     const list = PRESETS[state.whole] || [];
-    const opt0 = document.createElement("option"); opt0.value = ""; opt0.textContent = list.length ? "choose…" : "none for this curve";
+    const opt0 = document.createElement("option"); opt0.value = "";
+    opt0.textContent = list.length ? "choose…" : "none for this curve";
     sel.appendChild(opt0);
     list.forEach((p, i) => {
       const o = document.createElement("option"); o.value = String(i);
@@ -406,16 +694,16 @@ if (typeof document !== "undefined") {
   function clampRange() {
     const S = curve(state.source), m = S.x.length;
     const aEl = $("#a"), bEl = $("#b"), an = $("#an"), bn = $("#bn");
-    aEl.max = bEl.max = String(m - 1);
+    aEl.max = bEl.max = String(m - 1); an.max = bn.max = String(m - 1);
     aEl.value = an.value = String(state.a);
     bEl.value = bn.value = String(state.b);
-    an.max = bn.max = String(m - 1);
   }
   function setInterval(a, b) {
     const S = curve(state.source), m = S.x.length;
     a = Math.max(0, Math.min(a, m - 2));
     b = Math.max(a + 1, Math.min(b, m - 1));
     state.a = a; state.b = b;
+    if (state.mode === "copy") runFullFit();
     clampRange(); draw();
   }
   function fillSelects() {
@@ -437,7 +725,8 @@ if (typeof document !== "undefined") {
   $("#whole").onchange = e => { state.whole = e.target.value; refreshPresets(); setInterval(state.a, state.b); };
   $("#source").onchange = e => {
     state.source = e.target.value;
-    const S = curve(state.source); setInterval(Math.min(state.a, S.x.length - 2), Math.min(state.b, S.x.length - 1));
+    const S = curve(state.source);
+    setInterval(Math.min(state.a, S.x.length - 2), Math.min(state.b, S.x.length - 1));
   };
   $("#a").oninput = e => setInterval(+e.target.value, state.b);
   $("#b").oninput = e => setInterval(state.a, +e.target.value);
@@ -451,6 +740,14 @@ if (typeof document !== "undefined") {
     if (state.source !== state.whole) { state.source = state.whole; $("#source").value = state.whole; }
     setInterval(p[0], p[1]);
   };
+  $("#mode").onchange = e => {
+    state.mode = e.target.value;
+    $("#copyctl").style.display = state.mode === "copy" ? "flex" : "none";
+    if (state.mode === "copy") runFullFit();
+    draw();
+  };
+  for (const id of ["#lscale", "#rot", "#s0", "#s1"]) $(id).oninput = applyCopySliders;
+  $("#refit").onclick = () => { runFullFit(); draw(); };
 
   /* drag handles */
   const cvL = $("#cvLeft");
@@ -459,7 +756,7 @@ if (typeof document !== "undefined") {
     const r = cvL.getBoundingClientRect();
     const P = [ev.clientX - r.left, ev.clientY - r.top];
     const W = curve(state.whole), S = curve(state.source);
-    const map = fit(W.x, W.y, cvL.width, cvL.height, 24);
+    const map = fitView(W.x, W.y, cvL.width, cvL.height, 24);
     const pa = map([S.x[state.a], S.y[state.a]]), pb = map([S.x[state.b], S.y[state.b]]);
     const da = Math.hypot(P[0] - pa[0], P[1] - pa[1]), db = Math.hypot(P[0] - pb[0], P[1] - pb[1]);
     if (Math.min(da, db) > 22) return null;
@@ -469,7 +766,7 @@ if (typeof document !== "undefined") {
     const r = cvL.getBoundingClientRect();
     const P = [ev.clientX - r.left, ev.clientY - r.top];
     const W = curve(state.whole), S = curve(state.source);
-    const map = fit(W.x, W.y, cvL.width, cvL.height, 24);
+    const map = fitView(W.x, W.y, cvL.width, cvL.height, 24);
     let best = 0, bestD = Infinity;
     for (let i = 0; i < S.x.length; i++) {
       const p = map([S.x[i], S.y[i]]);
@@ -501,7 +798,7 @@ if (typeof document !== "undefined") {
     if (ev.key === "ArrowDown") { setInterval(state.a, state.b + step); ev.preventDefault(); }
   });
 
-  window.__app = { state, draw, setInterval, report };
+  window.__app = { state, draw, setInterval, report, copyModel, runFullFit };
   draw();
 })();
 }

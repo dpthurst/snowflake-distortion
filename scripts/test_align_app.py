@@ -60,13 +60,26 @@ def run_node(core_js, curves, cases):
     SCRATCH.mkdir(exist_ok=True)
     exports = ("\nmodule.exports = {ALPHA, VARIANTS, gauge, interpAt, blockAt, wholeAt, knots,\n"
                "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond,\n"
-               "  stripParams};\n")
+               "  stripParams, fitCopy, copyResidual, profileAt, fitTranslation};\n")
     (SCRATCH / "align_core.js").write_text(core_js + exports)
     driver = """
 const core = require('./align_core.js');
 const fs = require('fs');
 const { CURVES, CASES } = JSON.parse(fs.readFileSync('./align_cases.json', 'utf8'));
 function arr(a) { return { x: Float64Array.from(a.x), y: Float64Array.from(a.y) }; }
+const COPY_CASES = JSON.parse(fs.readFileSync('./align_cases.json', 'utf8')).COPY_CASES || [];
+const outCopy = [];
+for (const [w, s, a, b] of COPY_CASES) {
+  const W = arr(CURVES[w]), S = arr(CURVES[s]);
+  const fit = core.fitCopy(W.x, W.y, S.x, S.y, a, b);
+  const Wg = core.gauge(W.x, W.y);
+  const t = new Float64Array(1201); for (let i = 0; i < 1201; i++) t[i] = i / 1200;
+  const wS = core.blockAt(S.x, S.y, a, b, t);
+  const inside = core.copyResidual(Wg.x, Wg.y, { t, x: wS.x, y: wS.y },
+                                   fit.cx, fit.cy, fit.dx, fit.dy, fit.s0, fit.s1);
+  outCopy.push({ s0: fit.s0, s1: fit.s1, cx: fit.cx, cy: fit.cy, dx: fit.dx, dy: fit.dy,
+                 sup: inside.sup, rms: inside.rms, natural_sup: fit.natural.sup });
+}
 const out = [];
 for (const [w, s, a, b] of CASES) {
   const W = arr(CURVES[w]), S = arr(CURVES[s]);
@@ -96,10 +109,11 @@ for (const [w, s, a, b] of CASES) {
              s_block: core.diamond(S.x, S.y, a, b) / rho,
              pct, r_ab });
 }
-process.stdout.write(JSON.stringify(out));
+process.stdout.write(JSON.stringify({ cases: out, copy: outCopy }));
 """
     (SCRATCH / "align_run.js").write_text(driver)
-    (SCRATCH / "align_cases.json").write_text(json.dumps({"CURVES": curves, "CASES": cases}))
+    cases_in = {"CURVES": curves, "CASES": cases, "COPY_CASES": COPY_CASES}
+    (SCRATCH / "align_cases.json").write_text(json.dumps(cases_in))
     proc = subprocess.run([str(NODE), str(SCRATCH / "align_run.js")],
                           cwd=SCRATCH, capture_output=True, text=True)
     if proc.returncode != 0:
@@ -153,9 +167,36 @@ def compare(js, py, case, tol=1e-9, report=None):
     return not bad
 
 
+def build_copy_cases(curves):
+    """Synthetic curves that are exact (or only chord-approximate) similarity
+    images of a window of the m=800 curve, under a known affine parameter."""
+    import copy as _copy
+
+    W = np.array(curves["S-branch m=800"]["x"]) + 1j * np.array(curves["S-branch m=800"]["y"])
+    Wg = core.gauge(W)
+    m = len(W)
+    c, d = 0.37 * np.exp(-1.2j), 0.21 + 0.33j
+    out = _copy.deepcopy(curves)
+    cases = []
+    for name, (j0, q, N) in {"synthetic exact": (100, 1, 200),
+                             "synthetic coarse": (100, 2, 200)}.items():
+        nodes = c * Wg[j0 + np.arange(N) * q] + d
+        out[name] = dict(x=[round(float(z.real), 12) for z in nodes],
+                         y=[round(float(z.imag), 12) for z in nodes],
+                         D=core.distortion(nodes), src="synthetic")
+        cases.append(("S-branch m=800", name, 0, N - 1, j0 / (m - 1),
+                      q * (N - 1) / (m - 1)))
+    cases.append(("S-branch m=800", "S-branch m=40", 0, 39, None, None))
+    return out, cases
+
+
 def main():
     html = HTML.read_text()
     core_js, curves = extract(html)
+    curves, raw_copy_cases = build_copy_cases(curves)
+    global COPY_CASES, COPY_TRUTH
+    COPY_CASES = [c[:4] for c in raw_copy_cases]
+    COPY_TRUTH = {c[1]: (c[4], c[5]) for c in raw_copy_cases if c[4] is not None}
 
     for i, body in enumerate(script_bodies(html)):
         tmp = SCRATCH / f"app_script_{i}.js"
@@ -166,7 +207,7 @@ def main():
             raise SystemExit(f"script block {i} does not parse:\n{chk.stderr[-3000:]}")
     print(f"both inline scripts parse ({len(script_bodies(html))} blocks)")
 
-    js = run_node(core_js, curves, CASES)
+    js = run_node(core_js, curves, CASES)["cases"]
     failures = []
     for case, j in zip(CASES, js):
         p = python_side(curves, case)
@@ -176,10 +217,38 @@ def main():
     if failures:
         raise SystemExit("mismatches:\n  " + "\n  ".join(failures))
 
+    # ---- copy mode: similarity + affine reparametrisation
+    js_copy = run_node(core_js, curves, CASES)["copy"]
+    for case, j in zip(COPY_CASES, js_copy):
+        w, src, a, b = case
+        if src in COPY_TRUTH:
+            j["s0_true"], j["s1_true"] = COPY_TRUTH[src]
+        W = np.array(curves[w]["x"]) + 1j * np.array(curves[w]["y"])
+        S = np.array(curves[src]["x"]) + 1j * np.array(curves[src]["y"])
+        t = np.linspace(0, 1, 1201)
+        sup, rms = core.copy_residual(W, a, b, S, j["s0"], j["s1"],
+                                      complex(j["cx"], j["cy"]), complex(j["dx"], j["dy"]), t=t)
+        ref = core.fit_copy_multires(W, a, b, S)
+        tag = f"{w} vs {src} [{a},{b}]"
+        assert abs(sup - j["sup"]) < 1e-9, f"{tag}: python recompute {sup} vs js {j['sup']}"
+        if src.startswith("synthetic exact"):
+            assert j["sup"] < 1e-6, f"{tag}: exact copy not recovered, sup={j['sup']}"
+            assert abs(j["s0"] - j["s0_true"]) < 2e-3 and abs(j["s1"] - j["s1_true"]) < 2e-3, \
+                f"{tag}: parameters s0={j['s0']} s1={j['s1']} not recovered"
+            print(f"  ok  copy fit recovers an exact copy: {tag}  sup={j['sup']:.2e} "
+                  f"s=({j['s0']:.4f},{j['s1']:.4f}) truth ({j['s0_true']:.4f},{j['s1_true']:.4f})")
+        else:
+            assert j["sup"] <= j["natural_sup"] + 1e-9, \
+                f"{tag}: fit {j['sup']} is worse than the index correspondence {j['natural_sup']}"
+            assert j["sup"] <= ref["sup"] + 0.02, \
+                f"{tag}: js {j['sup']} much worse than the reference {ref['sup']}"
+            print(f"  ok  copy fit: {tag}  sup={j['sup']:.5f} (index correspondence "
+                  f"{j['natural_sup']:.5f}, reference {ref['sup']:.5f})")
+
     # the comparison must be able to fail: flip a sign in the free-fit multiplier
     broken = core_js.replace("numY += ax * by - ay * bx;", "numY += ay * bx - ax * by;")
     assert broken != core_js, "corruption target not found"
-    js_bad = run_node(broken, curves, CASES[:3])
+    js_bad = run_node(broken, curves, CASES[:3])["cases"]
     caught = []
     for case, j in zip(CASES[:3], js_bad):
         compare(j, python_side(curves, case), case, report=caught)
@@ -192,7 +261,7 @@ def main():
     coarse = core_js.replace("const all = Array.from(k).concat(Array.from(u)).sort((p, q) => p - q);",
                              "const all = Array.from(u).sort((p, q) => p - q);")
     assert coarse != core_js, "strip corruption target not found"
-    js_coarse = run_node(coarse, curves, CASES[:4])
+    js_coarse = run_node(coarse, curves, CASES[:4])["cases"]
     caught2 = []
     for case, j in zip(CASES[:4], js_coarse):
         compare(j, python_side(curves, case), case, report=caught2)
@@ -200,6 +269,20 @@ def main():
           f"{'PASS' if caught2 else 'FAIL'}")
     if not caught2:
         raise SystemExit("a uniform-only strip went unnoticed")
+    # and the copy fit must notice a broken parameter correspondence
+    bad_sigma = core_js.replace("specific", "specific")
+    bad_sigma = core_js.replace("for (let i = 0; i < n; i++) ss[i] = s0 + s1 * w.t[i];",
+                                "for (let i = 0; i < n; i++) ss[i] = s0 + w.t[i];")
+    assert bad_sigma != core_js, "sigma corruption target not found"
+    js_bad_sigma = run_node(bad_sigma, curves, CASES)["copy"]
+    broke = False
+    for case, j in zip(COPY_CASES, js_bad_sigma):
+        if case[1] == "synthetic exact" and j["sup"] > 1e-6:
+            broke = True
+    print(f"copy test: exact recovery lost when the affine parameter is broken -> "
+          f"{'PASS' if broke else 'FAIL'}")
+    if not broke:
+        raise SystemExit("a broken affine correspondence was not noticed")
     print("all comparisons agree")
 
 

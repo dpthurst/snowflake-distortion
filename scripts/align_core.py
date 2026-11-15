@@ -127,3 +127,129 @@ def interval_report(whole, a, b, source=None):
         others = lad[np.arange(lad.size) != a]
         rep["r_percentile"] = float((others < r_ab).mean())
     return rep
+
+
+# ---------------------------------------------------------------- copy mode
+# A similarity image of the whole with an affine reparametrisation:
+#   w(t) ~ c W(s0 + s1 t) + d,   c, d in C,  [s0, s0+s1] inside [0, 1].
+
+def sample_block(v, a, b, n=301):
+    t = np.linspace(0.0, 1.0, n)
+    return t, block(v, a, b, t)
+
+
+def copy_residual(whole, a, b, source, s0, s1, c, d, t=None):
+    """sup and rms of w(t) - (c W(s0+s1 t) + d) at the given parameters."""
+    if t is None:
+        t = np.linspace(0.0, 1.0, 301)
+    w = block(source, a, b, t)
+    q = _interp(gauge(whole), s0 + s1 * t)
+    r = np.abs(w - (c * q + d))
+    return float(r.max()), float(np.sqrt(np.mean(r ** 2)))
+
+
+def fit_similarity(whole, a, b, source, s0, s1, t=None):
+    """Least-squares complex c, d for a fixed parameter correspondence."""
+    if t is None:
+        t = np.linspace(0.0, 1.0, 301)
+    w = block(source, a, b, t)
+    q = _interp(gauge(whole), s0 + s1 * t)
+    qc, wc = q - q.mean(), w - w.mean()
+    c = np.vdot(qc, wc) / np.vdot(qc, qc).real
+    return complex(c), complex(w.mean() - c * q.mean())
+
+
+def fit_copy_reference(whole, a, b, source, power=12.0, n=301):
+    """Reference six-parameter fit with scipy's Nelder-Mead on the soft maximum."""
+    from scipy.optimize import minimize
+
+    t, w = sample_block(source, a, b, n)
+    W = gauge(whole)
+    m = len(np.asarray(whole))
+    nat = (a / (m - 1), (b - a) / (m - 1))
+    c0, d0 = fit_similarity(whole, a, b, source, *nat, t=t)
+
+    def soft(p):
+        q = _interp(W, p[4] + p[5] * t)
+        r = np.abs(w - ((p[0] + 1j * p[1]) * q + (p[2] + 1j * p[3])))
+        pen = 0.0
+        lo, hi = min(p[4], p[4] + p[5]), max(p[4], p[4] + p[5])
+        if lo < -1e-12:
+            pen += 1e3 * (-lo)
+        if hi > 1 + 1e-12:
+            pen += 1e3 * (hi - 1)
+        if abs(p[5]) < 1e-3:
+            pen += 1e3 * (1e-3 - abs(p[5]))
+        return (np.mean(r ** power)) ** (1 / power) + pen
+
+    x0 = [c0.real, c0.imag, d0.real, d0.imag, nat[0], nat[1]]
+    res = minimize(soft, x0, method="Nelder-Mead",
+                   options=dict(maxiter=4000, xatol=1e-10, fatol=1e-12, adaptive=True))
+    p = res.x
+    sup, rms = copy_residual(whole, a, b, source, p[4], p[5],
+                             complex(p[0], p[1]), complex(p[2], p[3]),
+                             t=np.linspace(0, 1, 1201))
+    nat_sup, _ = copy_residual(whole, a, b, source, nat[0], nat[1], c0, d0,
+                               t=np.linspace(0, 1, 1201))
+    return dict(params=p, sup=sup, rms=rms, natural_sup=nat_sup, nat=nat)
+
+
+def profile_at(Wg, t, w, s0, s1, power=12.0):
+    """Least-squares (c,d) at a fixed correspondence, with sup and soft-max."""
+    q = _interp(Wg, s0 + s1 * t)
+    qc, wc = q - q.mean(), w - w.mean()
+    den = np.vdot(qc, qc).real
+    c = np.vdot(qc, wc) / den
+    d = w.mean() - c * q.mean()
+    r = np.abs(w - (c * q + d))
+    return dict(c=c, d=d, sup=float(r.max()),
+                soft=float((np.mean(r ** power)) ** (1 / power)))
+
+
+def fit_copy_multires(whole, a, b, source):
+    """The app's copy-mode fit: coarse grid, then two refinements."""
+    from scipy.optimize import minimize
+
+    Wg = gauge(whole)
+    m = len(np.asarray(whole))
+
+    def penal(s0, s1):
+        p = 0.0
+        if s0 < 0:
+            p += 1e3 * (-s0)
+        if s0 + s1 > 1:
+            p += 1e3 * (s0 + s1 - 1)
+        if abs(s1) < 0.02:
+            p += 1e3 * (0.02 - abs(s1))
+        return p
+
+    def stage(n, init=None):
+        t = np.linspace(0.0, 1.0, n)
+        w = block(source, a, b, t)
+
+        def obj(p):
+            s1 = min(p[1], 1 - p[0])
+            return profile_at(Wg, t, w, p[0], s1)["soft"] + penal(p[0], s1)
+
+        if init is None:
+            best = (np.inf, 0.0, 0.25)
+            for s0 in np.linspace(0, 0.95, 61):
+                for s1 in np.linspace(1 / 24, 1.0, 24):
+                    if s0 + s1 > 1:
+                        continue
+                    v = profile_at(Wg, t, w, s0, s1)["sup"]
+                    if v < best[0]:
+                        best = (v, s0, s1)
+            init = [best[1], best[2]]
+        res = minimize(obj, init, method="Nelder-Mead",
+                       options=dict(maxiter=800, xatol=1e-10, fatol=1e-12, adaptive=True))
+        p = res.x
+        return [p[0], min(p[1], 1 - p[0])], t, w
+
+    p, t1, w1 = stage(101)
+    p, t2, w2 = stage(301, p)
+    s0, s1 = p
+    pr = profile_at(Wg, t2, w2, s0, s1)
+    nat = profile_at(Wg, t2, w2, a / (m - 1), (b - a) / (m - 1))
+    return dict(s0=s0, s1=s1, c=pr["c"], d=pr["d"], sup=pr["sup"],
+                natural_sup=nat["sup"], natural_c=nat["c"], natural_d=nat["d"])
