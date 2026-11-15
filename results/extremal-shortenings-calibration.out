@@ -1,0 +1,9 @@
+Calibration of the shape comparison
+Exact quarter-copy of the Koch arc (65 nodes, recursive depth 50):
+  identity match sup = 1.1102230246251565e-16
+  identity match RMS = 4.2174079108380972e-17
+  PASS (< 1e-13)
+
+The quarter-copy ratio r(0,1/4) is 1.000000000000000. The established Koch global ratio range is
+[2*6^(-alpha), 2*sqrt(211)*69^(-alpha)] = [0.483459078354429, 1.013719490565511].
+Therefore a true self-shortening need not be a near-extremal chord.

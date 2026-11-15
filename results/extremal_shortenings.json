@@ -1,0 +1,950 @@
+{
+  "source": ".ultramath/smwhdqmht/m1/s_m800_plain.npy",
+  "alpha": 0.7924812503605781,
+  "shape_comparison_interpolant": "linear in original index; shape test only",
+  "near_extremal_band_tolerance": 0.02,
+  "candidates": [
+    {
+      "a": 455,
+      "b": 689,
+      "ratio": 0.0056796702576024215,
+      "band_extreme_ratio": 0.0056796702576024215,
+      "relative_gap_to_band_extreme": 0.0,
+      "cutoff": 0.2,
+      "kind": "max",
+      "relative_length": 0.2928660826032541,
+      "similarity_scale": 0.4284323616382327,
+      "similarity_angle_degrees": -4.100805555109127,
+      "block_D": 1.5910519607022995,
+      "best_sup": {
+        "variant": "reversal+conjugation",
+        "sup": 0.31411832311794646,
+        "rms": 0.1685045404363107
+      },
+      "best_rms": {
+        "variant": "reversal+conjugation",
+        "sup": 0.31411832311794646,
+        "rms": 0.1685045404363107
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.3595269587032412,
+          "rms": 0.1909823406592428
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.3673969568423516,
+          "rms": 0.18652563774402672
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.4002589135397949,
+          "rms": 0.2051344457688123
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.31411832311794646,
+          "rms": 0.1685045404363107
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 566,
+        "minimum_sup": 0.11705716562863995,
+        "best_sup_range_inclusive": [
+          262,
+          496
+        ],
+        "minimum_rms": 0.058477199024518985,
+        "best_rms_range_inclusive": [
+          265,
+          499
+        ],
+        "median_sup": 0.40028146092142913,
+        "sup_rank_lowest_is_one": 111,
+        "rms_rank_lowest_is_one": 146
+      }
+    },
+    {
+      "a": 205,
+      "b": 550,
+      "ratio": 0.0056796695733699895,
+      "band_extreme_ratio": 0.0056796702576024215,
+      "relative_gap_to_band_extreme": 1.204704500375155e-07,
+      "cutoff": 0.2,
+      "kind": "max",
+      "relative_length": 0.43178973717146435,
+      "similarity_scale": 0.5827699103255491,
+      "similarity_angle_degrees": -53.86401044829586,
+      "block_D": 1.5910515362016122,
+      "best_sup": {
+        "variant": "identity",
+        "sup": 0.21016599040879883,
+        "rms": 0.09819399394137007
+      },
+      "best_rms": {
+        "variant": "reversal",
+        "sup": 0.22165657198490157,
+        "rms": 0.09245862159667842
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.21016599040879883,
+          "rms": 0.09819399394137007
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.38828693156792377,
+          "rms": 0.24231451001343965
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.22165657198490157,
+          "rms": 0.09245862159667842
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.414828185607541,
+          "rms": 0.2450514451480804
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 455,
+        "minimum_sup": 0.17139272454126153,
+        "best_sup_range_inclusive": [
+          231,
+          576
+        ],
+        "minimum_rms": 0.08322289173039313,
+        "best_rms_range_inclusive": [
+          213,
+          558
+        ],
+        "median_sup": 0.48680999958313226,
+        "sup_rank_lowest_is_one": 52,
+        "rms_rank_lowest_is_one": 23
+      }
+    },
+    {
+      "a": 356,
+      "b": 607,
+      "ratio": 0.003573599360766167,
+      "band_extreme_ratio": 0.003573599360766167,
+      "relative_gap_to_band_extreme": 0.0,
+      "cutoff": 0.2,
+      "kind": "min",
+      "relative_length": 0.3141426783479349,
+      "similarity_scale": 0.2849720673567104,
+      "similarity_angle_degrees": -40.78193279649383,
+      "block_D": 1.591051353941763,
+      "best_sup": {
+        "variant": "reversal+conjugation",
+        "sup": 0.6359351943856945,
+        "rms": 0.3685410574371022
+      },
+      "best_rms": {
+        "variant": "reversal+conjugation",
+        "sup": 0.6359351943856945,
+        "rms": 0.3685410574371022
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.6602362577297597,
+          "rms": 0.3796177052371473
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.6434062432534824,
+          "rms": 0.3946730965219625
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.6963914003057821,
+          "rms": 0.40542029950519554
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.6359351943856945,
+          "rms": 0.3685410574371022
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 549,
+        "minimum_sup": 0.10265015133335559,
+        "best_sup_range_inclusive": [
+          260,
+          511
+        ],
+        "minimum_rms": 0.05434821550138041,
+        "best_rms_range_inclusive": [
+          256,
+          507
+        ],
+        "median_sup": 0.41076757051668406,
+        "sup_rank_lowest_is_one": 537,
+        "rms_rank_lowest_is_one": 548
+      }
+    },
+    {
+      "a": 148,
+      "b": 415,
+      "ratio": 0.0035767626110988927,
+      "band_extreme_ratio": 0.003573599360766167,
+      "relative_gap_to_band_extreme": 0.0008851720669793596,
+      "cutoff": 0.2,
+      "kind": "min",
+      "relative_length": 0.3341677096370463,
+      "similarity_scale": 0.299539979341476,
+      "similarity_angle_degrees": -41.45813847792234,
+      "block_D": 1.591050715214431,
+      "best_sup": {
+        "variant": "conjugation",
+        "sup": 0.6441074166534063,
+        "rms": 0.37734749555964614
+      },
+      "best_rms": {
+        "variant": "conjugation",
+        "sup": 0.6441074166534063,
+        "rms": 0.37734749555964614
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.7015479674047025,
+          "rms": 0.41506096225381806
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.6441074166534063,
+          "rms": 0.37734749555964614
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.6851351974192689,
+          "rms": 0.3883714967830022
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.6550423507631246,
+          "rms": 0.40570117738839384
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 533,
+        "minimum_sup": 0.11369904615899325,
+        "best_sup_range_inclusive": [
+          244,
+          511
+        ],
+        "minimum_rms": 0.05331117640140996,
+        "best_rms_range_inclusive": [
+          243,
+          510
+        ],
+        "median_sup": 0.42152931954045264,
+        "sup_rank_lowest_is_one": 511,
+        "rms_rank_lowest_is_one": 519
+      }
+    },
+    {
+      "a": 100,
+      "b": 666,
+      "ratio": 0.005646814493790712,
+      "band_extreme_ratio": 0.005646814493790712,
+      "relative_gap_to_band_extreme": 0.0,
+      "cutoff": 0.5,
+      "kind": "max",
+      "relative_length": 0.7083854818523154,
+      "similarity_scale": 0.8577464477515977,
+      "similarity_angle_degrees": -28.590839762287253,
+      "block_D": 1.5910517690275547,
+      "best_sup": {
+        "variant": "identity",
+        "sup": 0.16234985151691836,
+        "rms": 0.08122437023380699
+      },
+      "best_rms": {
+        "variant": "reversal",
+        "sup": 0.17794652321857773,
+        "rms": 0.0793200298184293
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.16234985151691836,
+          "rms": 0.08122437023380699
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.38683453417155855,
+          "rms": 0.2527718085187973
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.17794652321857773,
+          "rms": 0.0793200298184293
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.42035313039709227,
+          "rms": 0.25378824212822365
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 234,
+        "minimum_sup": 0.13603428234807333,
+        "best_sup_range_inclusive": [
+          130,
+          696
+        ],
+        "minimum_rms": 0.06448100718198424,
+        "best_rms_range_inclusive": [
+          132,
+          698
+        ],
+        "median_sup": 0.2354480814153181,
+        "sup_rank_lowest_is_one": 60,
+        "rms_rank_lowest_is_one": 58
+      }
+    },
+    {
+      "a": 100,
+      "b": 654,
+      "ratio": 0.005626251964943224,
+      "band_extreme_ratio": 0.005646814493790712,
+      "relative_gap_to_band_extreme": 0.003641438703201446,
+      "cutoff": 0.5,
+      "kind": "max",
+      "relative_length": 0.6933667083854819,
+      "similarity_scale": 0.8402320171220546,
+      "similarity_angle_degrees": -30.2265012022788,
+      "block_D": 1.591051769027554,
+      "best_sup": {
+        "variant": "identity",
+        "sup": 0.16453847545638906,
+        "rms": 0.08949305151578078
+      },
+      "best_rms": {
+        "variant": "reversal",
+        "sup": 0.17620170310668223,
+        "rms": 0.08086871748423317
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.16453847545638906,
+          "rms": 0.08949305151578078
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.3878320480384149,
+          "rms": 0.25115949724454706
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.17620170310668223,
+          "rms": 0.08086871748423317
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.4295017549468087,
+          "rms": 0.2537310006563898
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 246,
+        "minimum_sup": 0.13284197657684255,
+        "best_sup_range_inclusive": [
+          67,
+          621
+        ],
+        "minimum_rms": 0.06086879140575086,
+        "best_rms_range_inclusive": [
+          125,
+          679
+        ],
+        "median_sup": 0.2552221983608013,
+        "sup_rank_lowest_is_one": 77,
+        "rms_rank_lowest_is_one": 87
+      }
+    },
+    {
+      "a": 341,
+      "b": 790,
+      "ratio": 0.003626213166886242,
+      "band_extreme_ratio": 0.003626213166886242,
+      "relative_gap_to_band_extreme": 0.0,
+      "cutoff": 0.5,
+      "kind": "min",
+      "relative_length": 0.5619524405506884,
+      "similarity_scale": 0.45846778756699347,
+      "similarity_angle_degrees": -9.981033492908203,
+      "block_D": 1.5910519607022997,
+      "best_sup": {
+        "variant": "reversal+conjugation",
+        "sup": 0.5980885225217091,
+        "rms": 0.36540369369597636
+      },
+      "best_rms": {
+        "variant": "reversal+conjugation",
+        "sup": 0.5980885225217091,
+        "rms": 0.36540369369597636
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.6664637519407282,
+          "rms": 0.3768394171156448
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.6433965569156193,
+          "rms": 0.39179390406505493
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.6775994458806944,
+          "rms": 0.4031838410382623
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.5980885225217091,
+          "rms": 0.36540369369597636
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 351,
+        "minimum_sup": 0.09353585148811529,
+        "best_sup_range_inclusive": [
+          170,
+          619
+        ],
+        "minimum_rms": 0.0409266717292859,
+        "best_rms_range_inclusive": [
+          162,
+          611
+        ],
+        "median_sup": 0.43296459988888414,
+        "sup_rank_lowest_is_one": 278,
+        "rms_rank_lowest_is_one": 329
+      }
+    },
+    {
+      "a": 0,
+      "b": 420,
+      "ratio": 0.00363684645192732,
+      "band_extreme_ratio": 0.003626213166886242,
+      "relative_gap_to_band_extreme": 0.0029323386551509557,
+      "cutoff": 0.5,
+      "kind": "min",
+      "relative_length": 0.5256570713391739,
+      "similarity_scale": 0.4361148180674124,
+      "similarity_angle_degrees": -11.064879349862228,
+      "block_D": 1.5910508480923378,
+      "best_sup": {
+        "variant": "conjugation",
+        "sup": 0.6047394772615102,
+        "rms": 0.3783595119087096
+      },
+      "best_rms": {
+        "variant": "conjugation",
+        "sup": 0.6047394772615102,
+        "rms": 0.3783595119087096
+      },
+      "all_fits": [
+        {
+          "variant": "identity",
+          "sup": 0.7248913039257536,
+          "rms": 0.4151737758565603
+        },
+        {
+          "variant": "conjugation",
+          "sup": 0.6047394772615102,
+          "rms": 0.3783595119087096
+        },
+        {
+          "variant": "reversal",
+          "sup": 0.6863693481541456,
+          "rms": 0.3880350292621552
+        },
+        {
+          "variant": "reversal+conjugation",
+          "sup": 0.6168322250934971,
+          "rms": 0.4051559070598566
+        }
+      ],
+      "same_length_baseline": {
+        "number_of_intervals": 380,
+        "minimum_sup": 0.10948567174413802,
+        "best_sup_range_inclusive": [
+          161,
+          581
+        ],
+        "minimum_rms": 0.049542626364746746,
+        "best_rms_range_inclusive": [
+          166,
+          586
+        ],
+        "median_sup": 0.48992043538303126,
+        "sup_rank_lowest_is_one": 337,
+        "rms_rank_lowest_is_one": 374
+      }
+    }
+  ],
+  "near_extremal_bands": [
+    {
+      "cutoff": 0.2,
+      "kind": "max",
+      "number_of_chords_within_two_percent": 3587,
+      "best_sup": {
+        "a": 277,
+        "b": 479,
+        "ratio": 0.0055770867092120105,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.19883683999783996,
+            "rms": 0.08347009515840632
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.39401241313579266,
+            "rms": 0.24856782654180537
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.14114609353187163,
+            "rms": 0.07586961050106256
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.42953800960442556,
+            "rms": 0.2527097537069134
+          }
+        ],
+        "best_sup": {
+          "variant": "reversal",
+          "sup": 0.14114609353187163,
+          "rms": 0.07586961050106256
+        },
+        "best_rms": {
+          "variant": "reversal",
+          "sup": 0.14114609353187163,
+          "rms": 0.07586961050106256
+        },
+        "block_D": 1.5910501354164672,
+        "same_length_baseline": {
+          "number_of_intervals": 598,
+          "minimum_sup": 0.14114609353187163,
+          "best_sup_range_inclusive": [
+            277,
+            479
+          ],
+          "minimum_rms": 0.07563972368854012,
+          "best_rms_range_inclusive": [
+            276,
+            478
+          ],
+          "median_sup": 0.3910189093994272,
+          "sup_rank_lowest_is_one": 1,
+          "rms_rank_lowest_is_one": 3
+        }
+      },
+      "best_rms": {
+        "a": 178,
+        "b": 575,
+        "ratio": 0.005570470309817959,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.204013159437327,
+            "rms": 0.07997404733918227
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.41250038240870746,
+            "rms": 0.2555887293709801
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.17928038815319727,
+            "rms": 0.06870998202298063
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.4383874209822583,
+            "rms": 0.25876977312178817
+          }
+        ],
+        "best_sup": {
+          "variant": "reversal",
+          "sup": 0.17928038815319727,
+          "rms": 0.06870998202298063
+        },
+        "best_rms": {
+          "variant": "reversal",
+          "sup": 0.17928038815319727,
+          "rms": 0.06870998202298063
+        },
+        "block_D": 1.5910515362016124,
+        "same_length_baseline": {
+          "number_of_intervals": 403,
+          "minimum_sup": 0.16368762453079463,
+          "best_sup_range_inclusive": [
+            190,
+            587
+          ],
+          "minimum_rms": 0.06390403754819081,
+          "best_rms_range_inclusive": [
+            195,
+            592
+          ],
+          "median_sup": 0.5174411548752,
+          "sup_rank_lowest_is_one": 18,
+          "rms_rank_lowest_is_one": 10
+        }
+      }
+    },
+    {
+      "cutoff": 0.2,
+      "kind": "min",
+      "number_of_chords_within_two_percent": 102,
+      "best_sup": {
+        "a": 346,
+        "b": 720,
+        "ratio": 0.003633725204249208,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.6435652733520192,
+            "rms": 0.36711771620431943
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.6110843581399745,
+            "rms": 0.3777649225853847
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.6964707534195074,
+            "rms": 0.39327564414791505
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.5391115446746978,
+            "rms": 0.3508947390856834
+          }
+        ],
+        "best_sup": {
+          "variant": "reversal+conjugation",
+          "sup": 0.5391115446746978,
+          "rms": 0.3508947390856834
+        },
+        "best_rms": {
+          "variant": "reversal+conjugation",
+          "sup": 0.5391115446746978,
+          "rms": 0.3508947390856834
+        },
+        "block_D": 1.5910519607023006,
+        "same_length_baseline": {
+          "number_of_intervals": 426,
+          "minimum_sup": 0.16421193518985971,
+          "best_sup_range_inclusive": [
+            195,
+            569
+          ],
+          "minimum_rms": 0.07519406591917137,
+          "best_rms_range_inclusive": [
+            185,
+            559
+          ],
+          "median_sup": 0.5041809145397955,
+          "sup_rank_lowest_is_one": 298,
+          "rms_rank_lowest_is_one": 393
+        }
+      },
+      "best_rms": {
+        "a": 356,
+        "b": 600,
+        "ratio": 0.003618228551131089,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.6452951277049811,
+            "rms": 0.36464526652576335
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.5858775940136304,
+            "rms": 0.3721875558253902
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.6920095015648865,
+            "rms": 0.3894868606184051
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.5883545758242462,
+            "rms": 0.34560110303214464
+          }
+        ],
+        "best_sup": {
+          "variant": "conjugation",
+          "sup": 0.5858775940136304,
+          "rms": 0.3721875558253902
+        },
+        "best_rms": {
+          "variant": "reversal+conjugation",
+          "sup": 0.5883545758242462,
+          "rms": 0.34560110303214464
+        },
+        "block_D": 1.5910513539417632,
+        "same_length_baseline": {
+          "number_of_intervals": 556,
+          "minimum_sup": 0.11581793836563167,
+          "best_sup_range_inclusive": [
+            263,
+            507
+          ],
+          "minimum_rms": 0.056821502478782336,
+          "best_rms_range_inclusive": [
+            261,
+            505
+          ],
+          "median_sup": 0.41050887344269105,
+          "sup_rank_lowest_is_one": 521,
+          "rms_rank_lowest_is_one": 540
+        }
+      }
+    },
+    {
+      "cutoff": 0.5,
+      "kind": "max",
+      "number_of_chords_within_two_percent": 878,
+      "best_sup": {
+        "a": 112,
+        "b": 669,
+        "ratio": 0.00553739029311129,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.1447400074509513,
+            "rms": 0.07621573218607725
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.3906094634064438,
+            "rms": 0.25613128833427873
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.17068695353656776,
+            "rms": 0.08510572628241712
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.4067230742011389,
+            "rms": 0.2553765620319322
+          }
+        ],
+        "best_sup": {
+          "variant": "identity",
+          "sup": 0.1447400074509513,
+          "rms": 0.07621573218607725
+        },
+        "best_rms": {
+          "variant": "identity",
+          "sup": 0.1447400074509513,
+          "rms": 0.07621573218607725
+        },
+        "block_D": 1.5910517690275547,
+        "same_length_baseline": {
+          "number_of_intervals": 243,
+          "minimum_sup": 0.13237625953644497,
+          "best_sup_range_inclusive": [
+            64,
+            621
+          ],
+          "minimum_rms": 0.06217763671111849,
+          "best_rms_range_inclusive": [
+            124,
+            681
+          ],
+          "median_sup": 0.25048830888224294,
+          "sup_rank_lowest_is_one": 18,
+          "rms_rank_lowest_is_one": 49
+        }
+      },
+      "best_rms": {
+        "a": 76,
+        "b": 687,
+        "ratio": 0.005539933065997533,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.15342798933109797,
+            "rms": 0.07134920983286941
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.4142897984382998,
+            "rms": 0.26400507040326526
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.17369696889545222,
+            "rms": 0.06495759603993315
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.4180196398538833,
+            "rms": 0.2656925886948181
+          }
+        ],
+        "best_sup": {
+          "variant": "identity",
+          "sup": 0.15342798933109797,
+          "rms": 0.07134920983286941
+        },
+        "best_rms": {
+          "variant": "reversal",
+          "sup": 0.17369696889545222,
+          "rms": 0.06495759603993315
+        },
+        "block_D": 1.5910517690275543,
+        "same_length_baseline": {
+          "number_of_intervals": 189,
+          "minimum_sup": 0.13854220364706113,
+          "best_sup_range_inclusive": [
+            88,
+            699
+          ],
+          "minimum_rms": 0.05908559730203554,
+          "best_rms_range_inclusive": [
+            68,
+            679
+          ],
+          "median_sup": 0.20753221391787302,
+          "sup_rank_lowest_is_one": 20,
+          "rms_rank_lowest_is_one": 23
+        }
+      }
+    },
+    {
+      "cutoff": 0.5,
+      "kind": "min",
+      "number_of_chords_within_two_percent": 129,
+      "best_sup": {
+        "a": 6,
+        "b": 418,
+        "ratio": 0.003693981575905083,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.7097940525055682,
+            "rms": 0.40131420551951913
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.5725065796167348,
+            "rms": 0.36255459549594554
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.670563584377412,
+            "rms": 0.3744463351003669
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.6035059322462412,
+            "rms": 0.389181526796845
+          }
+        ],
+        "best_sup": {
+          "variant": "conjugation",
+          "sup": 0.5725065796167348,
+          "rms": 0.36255459549594554
+        },
+        "best_rms": {
+          "variant": "conjugation",
+          "sup": 0.5725065796167348,
+          "rms": 0.36255459549594554
+        },
+        "block_D": 1.5910508480923382,
+        "same_length_baseline": {
+          "number_of_intervals": 388,
+          "minimum_sup": 0.13167032727562827,
+          "best_sup_range_inclusive": [
+            166,
+            578
+          ],
+          "minimum_rms": 0.05472348115922498,
+          "best_rms_range_inclusive": [
+            170,
+            582
+          ],
+          "median_sup": 0.5178546075118271,
+          "sup_rank_lowest_is_one": 285,
+          "rms_rank_lowest_is_one": 347
+        }
+      },
+      "best_rms": {
+        "a": 347,
+        "b": 789,
+        "ratio": 0.0036951280955783315,
+        "fits": [
+          {
+            "variant": "identity",
+            "sup": 0.6408394049813461,
+            "rms": 0.36137755709603225
+          },
+          {
+            "variant": "conjugation",
+            "sup": 0.6298796676477231,
+            "rms": 0.3785005525448998
+          },
+          {
+            "variant": "reversal",
+            "sup": 0.6584396913091387,
+            "rms": 0.38758067164304394
+          },
+          {
+            "variant": "reversal+conjugation",
+            "sup": 0.5850489492150137,
+            "rms": 0.3525497560348248
+          }
+        ],
+        "best_sup": {
+          "variant": "reversal+conjugation",
+          "sup": 0.5850489492150137,
+          "rms": 0.3525497560348248
+        },
+        "best_rms": {
+          "variant": "reversal+conjugation",
+          "sup": 0.5850489492150137,
+          "rms": 0.3525497560348248
+        },
+        "block_D": 1.5910519607023,
+        "same_length_baseline": {
+          "number_of_intervals": 358,
+          "minimum_sup": 0.09735267524129577,
+          "best_sup_range_inclusive": [
+            156,
+            598
+          ],
+          "minimum_rms": 0.0433007063381806,
+          "best_rms_range_inclusive": [
+            163,
+            605
+          ],
+          "median_sup": 0.4488117933085694,
+          "sup_rank_lowest_is_one": 269,
+          "rms_rank_lowest_is_one": 286
+        }
+      }
+    }
+  ]
+}

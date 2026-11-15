@@ -1,0 +1,70 @@
+[
+  {
+    "cutoff": 0.2,
+    "kind": "max",
+    "near_extremal_chords": 3587,
+    "interval": [
+      277,
+      479
+    ],
+    "ratio": 0.0055770867092120105,
+    "variant": "reversal",
+    "sup": 0.14114609353187163,
+    "rms": 0.07586961050106256,
+    "same_length_count": 598,
+    "same_length_rank": 1,
+    "same_length_best": 0.14114609353187163,
+    "block_D": 1.5910501354164672
+  },
+  {
+    "cutoff": 0.2,
+    "kind": "min",
+    "near_extremal_chords": 102,
+    "interval": [
+      346,
+      720
+    ],
+    "ratio": 0.003633725204249208,
+    "variant": "reversal+conjugation",
+    "sup": 0.5391115446746978,
+    "rms": 0.3508947390856834,
+    "same_length_count": 426,
+    "same_length_rank": 298,
+    "same_length_best": 0.16421193518985971,
+    "block_D": 1.5910519607023006
+  },
+  {
+    "cutoff": 0.5,
+    "kind": "max",
+    "near_extremal_chords": 878,
+    "interval": [
+      112,
+      669
+    ],
+    "ratio": 0.00553739029311129,
+    "variant": "identity",
+    "sup": 0.1447400074509513,
+    "rms": 0.07621573218607725,
+    "same_length_count": 243,
+    "same_length_rank": 18,
+    "same_length_best": 0.13237625953644497,
+    "block_D": 1.5910517690275547
+  },
+  {
+    "cutoff": 0.5,
+    "kind": "min",
+    "near_extremal_chords": 129,
+    "interval": [
+      6,
+      418
+    ],
+    "ratio": 0.003693981575905083,
+    "variant": "conjugation",
+    "sup": 0.5725065796167348,
+    "rms": 0.36255459549594554,
+    "same_length_count": 388,
+    "same_length_rank": 285,
+    "same_length_best": 0.13167032727562827,
+    "block_D": 1.5910508480923382
+  }
+]
