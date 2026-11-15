@@ -69,3 +69,41 @@ below the median for $m=100$ but above its minimum.
 python3 scripts/preview_align_copy.py    # the m=40 picture
 python3 scripts/test_align_app.py        # fit checked against numpy
 ```
+
+## The fitted scale is the reciprocal of the chord ratio
+
+Both curves are gauged to unit endpoint chord, so for a block that is a piece
+of the whole the exact fit has $|c| = 1/\rho$ with
+$\rho=\lvert v_b-v_a\rvert/\lvert v_{m-1}-v_0\rvert$ the chord ratio of the
+piece. Verified on seven intervals of the $m=800$ curve (residuals at
+$10^{-12}$):
+
+```
+interval     tau      rho     1/rho    |c| fit    rho/tau^alpha
+[0,799]     1.000    1.0000   1.0000   1.0000    1.0000
+[0,399]     0.499    0.4777   2.0932   2.0932    0.8283
+[0,199]     0.249    0.3525   2.8368   2.8368    1.0607
+[259,511]   0.315    0.3722   2.6865   2.6865    0.9289
+[455,689]   0.293    0.4284   2.3341   2.3341    1.1338
+```
+
+So a piece of the same curve always fits with $|c|>1$: in this gauge the
+"shrunk copy" appears as $\rho<1$, and the content of the scale is $\rho$
+against $\tau^\alpha$, not $|c|$ itself. The page now prints $\rho$,
+$\tau^\alpha$ and their ratio in copy mode.
+
+Across curves $|c|<1$ does occur, but only marginally: the $m=400$, $m=800$ and
+$m=1600$ curves as the whole against the $m=100$ curve as the block give
+$|c|=0.995$, $0.995$, $0.994$.
+
+Full-curve blocks, fitted $|c|$ (whole in rows, block source in columns):
+
+```
+          m40     m100     m200     m400     m800    m1600
+m40      1.000    1.959    1.859    1.942    1.939    1.937
+m100    14.428    1.000    5.135    1.026    1.025    1.025
+m200     4.474    2.022    1.000    5.349    5.344    5.345
+m400    13.073    0.995    5.414    1.000    1.000    1.000
+m800     5.179    0.995    5.485    1.000    1.000    1.000
+m1600    2.469    0.994    5.461    1.000    1.000    1.000
+```

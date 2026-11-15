@@ -209,6 +209,7 @@ def build_copy_cases(curves):
         cases.append(("S-branch m=800", name, 0, N - 1, j0 / (m - 1),
                       q * (N - 1) / (m - 1)))
     cases.append(("S-branch m=800", "S-branch m=40", 0, 39, None, None))
+    cases.append(("S-branch m=800", "S-branch m=800", 259, 511, None, None))
     return out, cases
 
 
@@ -262,6 +263,13 @@ def main():
         else:
             assert j["sup"] <= j["natural_sup"] + 1e-9, \
                 f"{tag}: fit {j['sup']} is worse than the index correspondence {j['natural_sup']}"
+            if w == src:
+                rho = abs(S[b] - S[a]) / abs(S[-1] - S[0])
+                got = abs(complex(j["cx"], j["cy"])) * rho
+                assert abs(got - 1) < 1e-6, \
+                    f"{tag}: |c|*rho = {got} but a piece of the curve must give exactly 1"
+                print(f"  ok  copy fit on a piece of the same curve: |c|*rho = {got:.9f}, "
+                      f"residual {j['sup']:.1e}, s0={j['s0']:.5f} (index {a / (len(W) - 1):.5f})")
             assert j["sup"] <= ref["sup"] + 0.02, \
                 f"{tag}: js {j['sup']} much worse than the reference {ref['sup']}"
             print(f"  ok  copy fit: {tag}  sup={j['sup']:.5f} (index correspondence "

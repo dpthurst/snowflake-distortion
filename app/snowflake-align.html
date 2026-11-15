@@ -779,14 +779,25 @@ if (typeof document !== "undefined") {
           "   ratio to fitted " + (model.sup > 0 ? (state.copy.natural.sup / model.sup).toFixed(2) + "x" : "n/a")
         : "free-fit sup        " + f(rep.fit.sup) + "     |c| " + rep.fit.absC.toFixed(4) + "   arg c " + (rep.fit.argC * 180 / Math.PI).toFixed(1) + " deg",
       "D whole / interval  " + rep.D_whole.toFixed(9) + " / " + rep.D_block.toFixed(9),
-      "block diam / chord  " + rep.s_block.toFixed(6),
+      copyMode
+        ? (state.whole === state.source
+            ? "scale               rho " + (rep.r_over_R * Math.pow((b - a) / (m - 1), ALPHA)).toFixed(5) +
+              " = chord(piece)/chord(whole)   and |c| = 1/rho   (so |c| > 1 here by construction)"
+            : "scale               |c| " + Math.hypot(state.copy.cx, state.copy.cy).toExponential(4) +
+              "   (the copy, measured against the block)")
+        : "block diam / chord  " + rep.s_block.toFixed(6),
+      copyMode && state.whole === state.source
+        ? "self-similarity     tau^alpha " + Math.pow((b - a) / (m - 1), ALPHA).toFixed(5) +
+          "   rho/tau^alpha " + rep.r_over_R.toFixed(5) + "   (1 would be dimension-consistent)"
+        : (copyMode ? "block diam / chord  " + rep.s_block.toFixed(6) : ""),
       "r_ab / R_full       " + rep.r_over_R.toFixed(6) + (rep.pct === undefined ? "" : "     percentile in gap " + (100 * rep.pct).toFixed(1) + "%")
     ];
     if (copyMode && state.whole === state.source) {
       lines.push("");
-      lines.push("note: the block is a piece of this same curve, so the index correspondence");
-      lines.push("      matches it exactly. The copy mode says something only when the two");
-      lines.push("      curves differ (choose a different 'shortening taken from').");
+      lines.push("note: the block is a piece of this same curve, so the shape fit is exact by");
+      lines.push("      construction; the residual cannot discriminate. The scale it reports is");
+      lines.push("      not empty: rho is the chord ratio, |c| = 1/rho, and rho against");
+      lines.push("      tau^alpha is the dimension-consistency test (ratio 1 = self-similar).");
     }
     $("#readout").textContent = lines.join("\n");
     return rep;
