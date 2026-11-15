@@ -259,8 +259,47 @@ const copiedText = window._copied;
 check('the copy button produces a full parameter string',
       typeof copiedText === 'string' && /c=/.test(copiedText) && /s1=/.test(copiedText), copiedText);
 
+/* moving the interval carries the copy with it, affinely */
+{
+  const before = { ...app2.state.copy };
+  const oldA = app2.state.a, oldB = app2.state.b;
+  const aEl = nodes.get('#an'), bEl2 = nodes.get('#b');
+  aEl.value = String(oldA + 40); aEl.oninput({ target: aEl });
+  bEl2.value = String(oldB + 40); bEl2.oninput({ target: bEl2 });
+  const after = { ...app2.state.copy };
+  const slope = before.s1 / (oldB - oldA);
+  const expectS0 = before.s0 + 40 * slope, expectS1 = before.s1;
+  check('shifting the interval shifts the arc by the same multiple',
+        Math.abs(after.s0 - expectS0) < 1e-12 && Math.abs(after.s1 - expectS1) < 1e-12 &&
+        Math.abs(after.cx - before.cx) < 1e-15 && Math.abs(after.dx - before.dx) < 1e-15,
+        `s0 ${before.s0.toFixed(5)} -> ${after.s0.toFixed(5)} (expected ${expectS0.toFixed(5)}), ` +
+        `|c| unchanged ${Math.abs(after.cx - before.cx) < 1e-15}`);
+  /* lengthening the block stretches the arc in proportion */
+  const pre = { ...app2.state.copy };
+  bEl2.value = String(app2.state.b + 60); bEl2.oninput({ target: bEl2 });
+  const post = { ...app2.state.copy };
+  const ratio = (post.s1 / pre.s1) / (((app2.state.b - app2.state.a)) / (app2.state.b - 60 - app2.state.a));
+  check('lengthening the block stretches the arc in proportion', Math.abs(ratio - 1) < 1e-9,
+        `ratio ${ratio.toFixed(6)}`);
+  /* and the switch turns it off */
+  nodes.get('#follow').value = 'stay';
+  const frozen = { ...app2.state.copy };
+  aEl.value = String(app2.state.a + 5); aEl.oninput({ target: aEl });
+  const stillFrozen = { ...app2.state.copy };
+  check('the copy can be told to stay put',
+        Math.abs(stillFrozen.s0 - frozen.s0) < 1e-15 && Math.abs(stillFrozen.dx - frozen.dx) < 1e-15);
+  nodes.get('#follow').value = 'follow';
+}
+
 /* a parameter change must not leave the copy off screen */
 {
+  /* fresh state: m=800 against itself, mid interval, copy just fitted */
+  const wSel = nodes.get('#whole'); wSel.value = 'S-branch m=800'; wSel.onchange({ target: wSel });
+  const sSel = nodes.get('#source'); sSel.value = 'S-branch m=800'; sSel.onchange({ target: sSel });
+  const a2 = nodes.get('#an'), b3 = nodes.get('#bn');
+  a2.value = '259'; a2.oninput({ target: a2 });
+  b3.value = '511'; b3.oninput({ target: b3 });
+  nodes.get('#refit').onclick({});
   const view0 = app2.view();
   app2.state.copy.dx += 12;                       // push it far away
   app2.draw();

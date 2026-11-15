@@ -60,6 +60,10 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
       <option value="move">moves the copy</option>
       <option value="transform">rotates and scales it</option>
     </select></div>
+  <div><label for="follow">when the interval moves</label><select id="follow">
+      <option value="follow">the copy follows it</option>
+      <option value="stay">the copy stays put</option>
+    </select></div>
   <div><button id="refit">refit all six</button></div>
   <div><button id="copyparams">copy parameters</button><span id="copied" style="font-size:11px;color:#276b2f"></span></div>
 </div>
@@ -84,8 +88,9 @@ computed on the union of the two knot sets. Drag the two handles, or use the sli
 with a freely chosen affine parameter — by a coarse grid followed by two local refinements.
 <strong>Drag the green copy on the overlay</strong> to move it; set the drag control to
 <em>rotates and scales it</em> (or hold Shift) to transform it about its centre instead. The sliders set the
-scale, the rotation and the parameter range; <em>refit all six</em> re-runs the search. Changing the interval or the curves keeps your placement;
-only <em>refit all six</em> recomputes it.
+scale, the rotation and the parameter range; <em>refit all six</em> re-runs the search. When the interval moves, the copy follows it by default — the
+correspondence between block and arc is affine, so the arc moves by the same multiple of the block's
+displacement and the similarity is untouched; choose <em>the copy stays put</em> to freeze it instead.
 Note that with the block taken from the same curve the index correspondence matches exactly, so copy mode only
 says something when the two curves differ. <em>r/R</em> compares endpoint chord ratios; its percentile is taken
 among the chords of the same index gap. With <strong>distance to the other curve</strong> the residual is
@@ -694,6 +699,12 @@ if (typeof document !== "undefined") {
     f.view = { cx, cy, s, w, h };
     return f;
   }
+  function viewToMap(view) {
+    const f = p => [view.w / 2 + (p[0] - view.cx) * view.s,
+                    view.h / 2 - (p[1] - view.cy) * view.s];
+    f.view = view;
+    return f;
+  }
   /* pixel coordinates back to curve coordinates, for the drag handlers */
   function invView(view, px, py) {
     return [view.cx + (px - view.w / 2) / view.s, view.cy - (py - view.h / 2) / view.s];
@@ -784,7 +795,11 @@ if (typeof document !== "undefined") {
         ally = ally.concat(Array.from(gy));
       }
     }
-    const map2 = fitView(allx, ally, cv2.width, cv2.height, 24);
+    /* hold the frame exactly still for the whole drag, so the picture does not
+       jump when the pointer first moves */
+    const map2 = (copyDrag && copyDrag.view)
+      ? viewToMap(copyDrag.view)
+      : fitView(allx, ally, cv2.width, cv2.height, 24);
     rightView = map2.view;
     if (copyMode) poly(c2, Wg.x, Wg.y, map2, "#e3e3e3", 1.0, 0.7);
     poly(c2, gx, gy, map2, copyMode ? "#2c9c4a" : "#b9b9b9", 1.5, 1);
@@ -995,14 +1010,34 @@ if (typeof document !== "undefined") {
     aEl.value = an.value = String(state.a);
     bEl.value = bn.value = String(state.b);
   }
+  /* Keep the correspondence between the block and the covered arc: the map from
+     block index to whole index is affine, so moving the block moves the arc by
+     the same multiple of the block's displacement. The similarity is untouched,
+     which is what makes the overlay stay where it is. */
+  function moveCopyWithInterval(oldA, oldB, newA, newB) {
+    const cp = state.copy;
+    if (!cp || oldB === oldA) return;
+    const ns = curve(state.source).x.length, mw = curve(state.whole).x.length;
+    const slope = (cp.s1 * (mw - 1)) / (oldB - oldA);      // arc nodes per block node
+    const s0i = cp.s0 * (mw - 1) + (newA - oldA) * slope;
+    const Ki = (newB - newA) * slope;
+    cp.s0 = s0i / (mw - 1);
+    cp.s1 = Ki / (mw - 1);
+    if (Math.abs(cp.s1) < 1e-3) cp.s1 = cp.s1 < 0 ? -1e-3 : 1e-3;
+    syncCopySliders();
+  }
+
   function setInterval(a, b) {
     const S = curve(state.source), m = S.x.length;
     a = Math.max(0, Math.min(a, m - 2));
     b = Math.max(a + 1, Math.min(b, m - 1));
+    const oldA = state.a, oldB = state.b;
     state.a = a; state.b = b;
-    /* the copy's position is independent of which block is being matched, so a
-       new interval must not throw away a placement the user has made */
-    if (state.mode === "copy" && !state.copy) runFullFit();
+    if (state.mode === "copy" && !state.copy) {
+      runFullFit();
+    } else if (state.mode === "copy" && $("#follow").value !== "stay") {
+      moveCopyWithInterval(oldA, oldB, a, b);
+    }
     clampRange(); draw();
   }
   function fillSelects() {
@@ -1110,7 +1145,7 @@ if (typeof document !== "undefined") {
     const r = cvR.getBoundingClientRect();
     const p = invView(rightView, ev.clientX - r.left, ev.clientY - r.top);
     copyDrag = { p0: p, cp: { ...state.copy }, pivot: pivotForDrag(),
-                 transform: dragModeIsTransform(ev) };
+                 view: rightView, transform: dragModeIsTransform(ev) };
     cvR.setPointerCapture(ev.pointerId);
     ev.preventDefault();
   });
