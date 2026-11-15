@@ -1,0 +1,7 @@
+40 literal RMQ spot checks: PASS
+interval_count: 205120
+global_D: 1.5910519607023
+max_absolute_deviation: 4.5523760454635465e-06
+max_relative_deviation: 2.861236564174875e-06
+near_tie_count: 50616
+validation: 40 literal random-submatrix max/min checks passed
