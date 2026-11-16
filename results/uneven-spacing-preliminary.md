@@ -507,3 +507,41 @@ the support is $O(m)$ pairs out of $O(m^2)$, so the limit measure is likely sing
 comparison of densities will never look convergent. (iv) Use the stress as a refinement driver
 rather than a picture: insert points where the marginal mass or the residual is largest, which is
 the adaptive scheme of §9.
+
+### Is the stress better behaved on uneven nodes?
+
+The plot above is the *uniform* ladder, and the uneven experiments do converge faster in $D$. So it is
+natural to ask whether the stress is cleaner there. It is not: **on uneven nodes there is no stress
+at all.**
+
+`scripts/stress_uneven.py` reuses the same machinery with only `loggap` changed to
+$\log(x_j-x_i)$, so `grad_rows`, the SLP and the multiplier LP all apply to an uneven configuration
+as they stand. Result, at tolerance $10^{-8}$ on $\log r$:
+
+```
+  configuration        D            KKT status   tight pairs
+  kappa=4   m=200      1.485475300      2            1 + 1
+  kappa=4   m=400      1.537491238      2            1 + 2
+  i.i.d.    m=200      1.469092211      2            1 + 1
+  i.i.d.    m=400      1.522169560      2            1 + 2
+  uniform   m=200      1.490855260      0           48 + 346
+  uniform   m=400      1.541792000      0           70 + 706
+```
+
+The uneven optima have a *single* longest chord and one or two shortest, so the multiplier LP is
+infeasible at every tolerance tested ($10^{-9}$ to $10^{-4}$); the uniform ones have the marginal
+contact of §9 (hundreds of ties) and a certificate. The reason is structural: with free spacings the
+optimiser can isolate the extremal chords instead of tying them, and that is exactly why it reaches a
+lower $D$ at fixed $m$ --- it escapes the rigidity that forces thousands of ties. But the same escape
+means there are no multipliers to plot: the uneven family is better for *values* and empty for
+*stress*.
+
+Two checks on that conclusion. The uneven optima come from a smoothed surrogate, so they are only
+approximately stationary: the direction that decreases the longest chord and increases the shortest
+changes $D$ by $+2.5\times10^{-7}$ for a step of $10^{-6}$, i.e. the two chord gradients are
+*nearly* parallel, and an exact-minimax polish in the uneven setting (the SLP with uneven `loggap`)
+improves $D$ by $10^{-8}$ in 200 iterations without reaching a certificate. So these points sit on a
+kink of $D$ where the smoothed optimiser stopped, not at a multiply-tied stationary point. Whether a
+*properly* stationary uneven optimum would have a stress is therefore still open --- but nothing in
+the runs so far produces one, and the marginal-contact structure that the stress needs appears to be
+a property of the uniform-index problem.
