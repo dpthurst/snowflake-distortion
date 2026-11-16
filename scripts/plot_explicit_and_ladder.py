@@ -40,7 +40,7 @@ def fig_curves():
     p2, z2, _ = ec.two_piece(level=10)
     p3, z3, _ = ec.three_piece(level=7)
     zk = ec.koch_nodes(5)
-    fig, ax = plt.subplots(1, 3, figsize=(6.5, 2.25))
+    fig, ax = plt.subplots(1, 3, figsize=(6.5, 2.55))
     panels = [(zk, "Koch arc", f"$D=2.096805$  (sharp)"),
               (z2, "two-piece reversible", f"$D=2.04204$  (level 16)"),
               (z3, "three-piece reversible", f"$D=2.017935$  (levels 9–11)")]
@@ -51,8 +51,8 @@ def fig_curves():
         a.plot(w.real, w.imag, "-", color="#1f3f6f", lw=0.7)
         a.plot(w[[0, -1]].real, w[[0, -1]].imag, "o", ms=2.5, color="#c8342a", mec="w")
         a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
-        a.set_title(f"{name}\n{sub}", fontsize=6.8)
-    fig.suptitle("explicit arcs with distortion below the Koch constant", fontsize=7.2, y=1.0)
+        a.set_title(f"{name}\n{sub}", fontsize=8.4)
+    fig.suptitle("explicit arcs with distortion below the Koch constant", fontsize=8.4, y=1.0)
     fig.tight_layout()
     out = ROOT / "figures/explicit-curves.png"
     fig.savefig(out, dpi=130, facecolor="white", bbox_inches="tight",
@@ -61,7 +61,7 @@ def fig_curves():
 
 
 def fig_ladder():
-    fig, ax = plt.subplots(1, len(LADDER), figsize=(6.8, 1.85))
+    fig, ax = plt.subplots(1, len(LADDER), figsize=(6.6, 2.15))
     rows = []
     for a, (m, path, kind) in zip(ax, LADDER):
         v = load(path, kind)
@@ -71,9 +71,9 @@ def fig_ladder():
         a.plot([0, 1], [0, 0], ":", lw=0.7, color="0.45")
         a.plot(v[[0, -1]].real, v[[0, -1]].imag, "o", ms=2.0, color="#c8342a", mec="w")
         a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
-        a.set_title(f"$m={m}$\n$D_m={D:.6f}$", fontsize=6.2)
+        a.set_title(f"$m={m}$\n$D_m={D:.6f}$", fontsize=7.6)
     fig.suptitle("best known S-branch positions, endpoint-gauged (dotted: the chord)",
-                 fontsize=7, y=1.03)
+                 fontsize=8, y=1.03)
     fig.tight_layout()
     out = ROOT / "figures/ladder-m.png"
     fig.savefig(out, dpi=130, facecolor="white", bbox_inches="tight",
@@ -99,7 +99,7 @@ def arc_values():
 
 def fig_arc():
     """the other branch: configurations that stay on one side of their chord"""
-    fig, ax = plt.subplots(1, len(ARC), figsize=(6.9, 1.75))
+    fig, ax = plt.subplots(1, len(ARC), figsize=(6.6, 2.0))
     for a, (m, path, kind) in zip(ax, ARC):
         v = load(path, kind)
         D = core.distortion(v)
@@ -107,9 +107,10 @@ def fig_arc():
         a.plot([0, 1], [0, 0], ":", lw=0.7, color="0.45")
         a.plot(v[[0, -1]].real, v[[0, -1]].imag, "o", ms=2.0, color="#c8342a", mec="w")
         a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
-        a.set_title(f"$m={m}$\n$D={D:.6f}$", fontsize=6.2)
+        a.set_title(f"$m={m}$\n$D={D:.6f}$", fontsize=7.6)
     fig.suptitle("best known one-sided (arc) configurations, endpoint-gauged "
-                 "(dotted: the chord, which the curve touches but never crosses)", fontsize=7, y=1.03)
+                 "(dotted: the chord, which the curve touches but never crosses)",
+                 fontsize=8, y=1.03)
     fig.tight_layout()
     out = ROOT / "figures/arc-m.png"
     fig.savefig(out, dpi=140, facecolor="white", bbox_inches="tight",
@@ -130,7 +131,7 @@ def fig_ladder_D():
     hi = np.maximum(0.0, arc_at - Ds)
     pct = 100 * (arc_at - Ds) / Ds
 
-    fig, (ax, bz) = plt.subplots(1, 2, figsize=(6.5, 2.55),
+    fig, (ax, bz) = plt.subplots(1, 2, figsize=(6.5, 2.95),
                                  gridspec_kw=dict(width_ratios=[1.3, 1]))
     ax.errorbar(ms, Ds, yerr=[lo, hi], fmt="o-", color="#1f3f6f", ms=3.6,
                 elinewidth=1.1, capsize=2.4, capthick=0.9,
@@ -150,7 +151,7 @@ def fig_ladder_D():
     ax.set_ylim(1.0, 2.15)
     ax.grid(alpha=0.25)
     ax.set_title("against the certified bounds", fontsize=7.2)
-    ax.legend(fontsize=5.4, loc="upper left", framealpha=0.92,
+    ax.legend(fontsize=6.6, loc="upper left", framealpha=0.92,
               handlelength=1.8, labelspacing=0.35)
 
     bz.semilogx(ms, pct, "o-", color="#2c9c4a", ms=3.4, lw=0.9)
@@ -158,7 +159,7 @@ def fig_ladder_D():
     bz.set_xlabel("$m$")
     bz.set_ylabel("$(D_{\\rm arc}-D_{\\rm S})/D_{\\rm S}$  [\\%]")
     bz.grid(alpha=0.25)
-    bz.set_title("the size of that bar", fontsize=7.2)
+    bz.set_title("the size of that bar", fontsize=8.4)
     fig.tight_layout()
     out = ROOT / "figures/ladder-D.png"
     fig.savefig(out, dpi=140, facecolor="white", bbox_inches="tight",

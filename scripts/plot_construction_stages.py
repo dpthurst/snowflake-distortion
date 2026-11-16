@@ -128,7 +128,7 @@ def main():
     two, three = two_piece_maps(), three_piece_maps()
     rows = [(two, "two-piece\nreversible", 9, ec.two_piece),
             (three, "three-piece\nreversible", 6, ec.three_piece)]
-    fig, ax = plt.subplots(2, 4, figsize=(6.9, 3.55))
+    fig, ax = plt.subplots(2, 4, figsize=(6.8, 3.8))
     for r, (maps, name, deep, fun) in enumerate(rows):
         N = len(maps[2])
         for k in (1, 2, 3, deep):
@@ -140,12 +140,12 @@ def main():
             Ds.append(distortion(*chain(maps, k)[:2]))
             draw(ax[r, c], maps, k, flip, finest=False)
             ax[r, c].set_title(f"level {k}   ${N}^{k}$ segments\n"
-                               f"$D={Ds[-1][0]:.5f}$", fontsize=6.5)
+                               f"$D={Ds[-1][0]:.5f}$", fontsize=7.4)
         draw(ax[r, 3], maps, deep, flip, finest=True)
         D = distortion(*chain(maps, deep)[:2])
         ax[r, 3].set_title(f"level {deep}   ${N}^{{{deep}}}$ segments\n"
-                           f"$D={D[0]:.5f}$", fontsize=6.5)
-        ax[r, 0].set_ylabel(name, fontsize=6.5)
+                           f"$D={D[0]:.5f}$", fontsize=7.4)
+        ax[r, 0].set_ylabel(name, fontsize=7.4)
         print(f"  {name.split(chr(10))[0]:11s} " +
               "  ".join(f"k={k}: {distortion(*chain(maps, k)[:2])[0]:.9f}"
                         for k in (1, 2, 3, 4, 6, deep)))

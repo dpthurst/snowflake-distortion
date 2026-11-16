@@ -11,6 +11,14 @@
 \hypersetup{pdftitle={Improving on the Koch extremal},pdfauthor={Open Math OS agent}}
 \setlist{nosep,leftmargin=*}
 \setlength{\emergencystretch}{1.5em}
+% more room for floats: seven figures in eight pages of text
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.5}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
 \graphicspath{{../figures/}}
 \newtheorem{proposition}{Proposition}
 \theoremstyle{remark}
@@ -213,6 +221,46 @@ three-piece they were stable by $K=9$. A certified statement would need the exac
 functional (the pair-graph variational problem) rather than deeper sampling.
 \end{remark}
 
+
+\subsection*{Where the distortion lives}\label{sec:heat}
+
+For a parametrised arc, the quantity of interest is the field
+\[
+  r(x,y)=\frac{|\gamma(x)-\gamma(y)|}{|x-y|^{\alp}}
+\]
+on the parameter square, whose sup and inf are the two constants of \eqref{eq:koch} and whose
+quotient is $D$. Figure~\ref{fig:heat} draws it for the three self-similar constructions and for the
+$m=800$ ladder configuration. Each panel is normalised to its own range and drawn logarithmically
+with a diverging map --- blue at the minimum, white at the geometric mean of that range, red at the
+maximum --- so the colour change falls at the logarithmic centre of the panel, and the white level is
+also drawn as a contour; the diagonal, where $r$ is undefined, is masked. The two- and three-piece
+arcs are drawn on their \emph{own} parameter grids, which are not uniform: the cells are narrow where
+the substitution packs many nodes into a short parameter interval, and that compression is part of
+what one sees. Interpolating them onto a uniform grid instead would insert collinear nodes whose $r$
+falls to zero and would corrupt the minimum.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{distortion-heatmaps.png}
+  \caption{$r$ on the parameter square. Top left the Koch arc at level 5, with its two proved
+  extremal pairs marked: circles at $(\tfrac5{16},\tfrac{11}{16})$ and its images, which sit at the
+  centre of the deepest blue lobes, squares at $(\tfrac{63}{256},\tfrac{321}{1024})$ and its images,
+  which sit on the red band. Top right and bottom left the two reversible arcs, bottom right the
+  $m=800$ ladder configuration. Values: $r\in[0.483,1.014]$, $D=2.0968$ (Koch);
+  $[0.491,1.003]$, $2.0415$ (two pieces); $[0.540,1.086]$, $2.0112$ (three pieces);
+  $[0.721,1.147]$, $1.5900$ (ladder). Each panel has its own colour scale, so only the
+  \emph{position} of the extrema should be compared across panels, not the colours.}
+  \label{fig:heat}
+\end{figure}
+
+Two things are worth reading off. The geometry of the extremes is the same in all four panels: the
+largest ratios form a band hugging the diagonal, i.e.\ they are produced by \emph{short} chords, and
+the smallest ratios sit in off-diagonal lobes at intermediate separations --- the two mechanisms
+compete, which is the local-plus-global picture the earlier reports reached from the tie counts. And
+the ladder panel, which is not self-similar, has the same layout as the three self-similar ones: the
+distortion of the numerical optima is organised the same way even though their sub-arcs are not
+copies.
+
 \section{The finite-\texorpdfstring{$m$}{m} ladder}\label{sec:ladder}
 
 For $m\ge2$ let $D_m$ be the least distortion of an $m$-point configuration
@@ -327,6 +375,42 @@ The two branches are listed separately because mixing them makes the ladder jump
 $m=200$ used to be the arc, which is $0.8\%$ above the S value now recorded there.}
 \label{tab:ladder}
 \end{table}
+
+
+\subsection*{What a local block sees}\label{sec:blocks}
+
+Does a piece of a near-optimal configuration reproduce the distortion of the whole? For a
+self-similar arc it must, at the substitution scales: a block that is a copy of the whole carries a
+scaled copy of the whole $r$-field. Checked at level 6, where the four level-1 pieces of the Koch
+polygon each give $D=2.096805160875$ (deviation $2\times10^{-15}$), and for the two-piece arc at
+level 10, whose two pieces give deviations $3.7\times10^{-15}$ and $2.2\times10^{-16}$. A shallower
+block is a copy of a shallower \emph{truncation}, not of the whole, so it returns that truncation's
+value: the level-3 blocks of the Koch polygon give $2.089552$, the level-3 distortion, which is not
+an error but the truncation.
+
+For the numerical ladder this is a property rather than a theorem, and it holds. The exhaustive
+check of \texttt{scripts/check\_block\_distortion.py} tested all $205\,120$ contiguous blocks with
+gap at least $160$ of the stored $m=800$ configuration and found every one reproducing $D$ to
+$2.9\times10^{-6}$ relative, half of them to $10^{-9}$. On the polished $m=800$ configuration it is
+much tighter (Figure~\ref{fig:blocks}): every block of length at least $160$ reproduces $D$ to
+$1.2\times10^{-13}$, and the \emph{median} block is already that accurate at length $40$ --- though
+the worst block of length $40$ is off by $9\%$, so not every block is representative.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\textwidth]{block-comparison.png}
+  \caption{Relative deviation of the restricted distortion $D_{\rm block}$ from the whole $D$, over
+  all contiguous blocks of the $m=800$ configuration, against block length: the maximum over blocks
+  and the median. The dotted line is the level a self-similar arc attains exactly at its
+  substitution scales.}
+  \label{fig:blocks}
+\end{figure}
+
+The reading: the numerical optima are \emph{locally self-similar in distortion} --- every long
+contiguous sub-arc has the same distortion as the whole --- while not being self-similar in shape,
+since their sub-arcs are not similar copies (the best sub-arc similarity residual measured earlier is
+$0.13$). That combination is what the limit object is expected to have, and it is the strongest
+evidence in hand that it is not an exactly self-similar curve.
 
 \begin{figure}[t]
   \centering

@@ -11,6 +11,15 @@ max: t=(63/256, 321/1024), chord 2*sqrt(211)/243 = 0.1196
 
 Reproduce with:  python3 scripts/plot_koch_extremals.py
 
+`distortion-heatmaps.png` — r(x,y) = |F(x)-F(y)|/|x-y|^alpha on the parameter square for the
+Koch arc, the two-piece and three-piece reversible arcs (each on its own parameter grid) and the
+m=800 ladder configuration; each panel normalised to its own range, blue = min, white = geometric
+mean, red = max, with the Koch extremal pairs marked. Figure 3 of the note.
+
+`block-comparison.png` — deviation of the restricted distortion of every contiguous block of the
+m=800 configuration from the whole, against block length, with the exact level a self-similar arc
+attains at its substitution scales. Figure 4 of the note.
+
 `explicit-curves.png` — Koch, the two-piece reversible arc and the three-piece
 reversible arc (the two explicit arcs below the Koch constant). Reproduce with:
 python3 scripts/plot_explicit_and_ladder.py
