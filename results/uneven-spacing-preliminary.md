@@ -454,3 +454,56 @@ following the descent leads to the two-piece arc at $t\approx0.563$, $D=2.042$. 
 programme the lesson is that continuum stationarity is sensitive to where the extremal pairs sit, so
 the families worth testing are those that vary the branch data of a self-similar curve, not
 interpolations in shape space.
+
+## 13. The stress at $m=200,400,800$, and whether it approximates a continuum stress
+
+![the stress measures](../figures/stress-measures.png)
+
+`figures/stress-measures.png`, from `scripts/stress_plot.py` (data `results/stress-maxent.npz`).
+
+**The selection has to be canonical.** `slp2.stress` returns *a* vertex of the multiplier polytope;
+at these $m$ the polytope has hundreds of tight pairs and the vertex depends on the order the pairs
+happen to be listed in, so plotting it is meaningless. The canonical choice used here is the
+maximum-entropy point: maximise $-\sum z\log z$ over $\lambda,\mu\ge0$, $\sum\lambda=\sum\mu=1$,
+$A_+\lambda-A_-\mu=0$, computed exactly through its smooth dual (Newton, constraint residual
+$\le2\times10^{-12}$). It does not depend on pair ordering. Tight sets: $48+346$, $70+706$,
+$147+1408$ at $m=200,400,800$.
+
+**What it looks like.** Panel (a), $m=800$: the minimum measure (red) hugs the diagonal — it is a
+*local* measure — while the maximum measure (blue) is spread over separations of order $0.1$--$0.5$.
+Panel (c) makes the first statement quantitative in lattice units: mass $0.22,0.17,0.14$ at separation
+one, then $0.10,0.08,0.10$ at two, $0.05$ at three, decaying by about a factor two per spacing. Panel
+(d): the maximum measure sits at separations of order $0.3$ with a secondary bump near $0.5$, and both
+the peak position and the shape shift with $m$.
+
+**Can these be read as the continuum stress?** Partly, and not yet.
+
+* *The minimum part cannot converge as a measure on $[0,1]^2$.* Its median separation is
+  $0.005,0.005,0.003$ at $m=200,400,800$, i.e. one or two lattice spacings: as $m\to\infty$ it
+  concentrates on the diagonal, where $r(x,x)$ is not defined. The informative object is the
+  blown-up description — the law of the separation in units of $1/m$ (panel (c)) — which does decay
+  like a fixed profile, $0.22\to0.17\to0.14$ at the first spacing, so there is some hope of a
+  rescaled limit, but the profile is still drifting.
+* *The maximum part could converge*, and this is where a limit might be visible: it lives at
+  $O(1)$ separations. But at $m\le800$ it has not settled — the 2-D histogram (20×20) of the maximum
+  measure differs by $L1=0.91$ between $m=200$ and $400$ and $0.61$ between $400$ and $800$, and the
+  separation histogram by $0.53$ and $0.39$.
+* *The marginal* is the most stable statistic: its 20-bin $L1$ distance falls from $0.21$ to $0.17$
+  between consecutive $m$ (panel (b)), still dominated by the spiky fine structure.
+
+**Theory.** At a continuum minimiser a stress *does* exist: $D=M/m$ is locally Lipschitz on the
+space of bi-Hölder arcs, so at any local (hence any global) minimiser $0\in\partial D$ in Clarke's
+sense, and the Clarke subdifferential is generated exactly by convex combinations of the
+$\nabla(r_a/r_b)$ over the tight pairs — which is the stress condition. So the object one is aiming
+at is guaranteed; the open question is whether the canonically selected finite-$m$ measures converge
+to it, which is the test the earlier session proposed (weak convergence of selected multiplier
+measures along a shape-compatible branch).
+
+**What would make them approximations.** (i) Fix the selection, as here. (ii) Split the problem at
+its two scales: describe the local (minimum) part in blown-up coordinates, separation in units of
+$1/m$, and test *that* law for convergence; describe the global (maximum) part as a measure on
+$[0,1]^2$ and test weak convergence with smooth test functions. (iii) Expect a *fragmented* limit —
+the support is $O(m)$ pairs out of $O(m^2)$, so the limit measure is likely singular, and pointwise
+comparison of densities will never look convergent. (iv) Use the stress as a refinement driver
+rather than a picture: insert points where the marginal mass or the residual is largest, which is
+the adaptive scheme of §9.
