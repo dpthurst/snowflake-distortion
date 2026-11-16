@@ -123,6 +123,28 @@ parameter gap, so there is no self-contact.
   \label{fig:curves}
 \end{figure}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{construction-stages.png}
+  \caption{The two arcs built up, one, two and three substitutions deep (left to right) and
+  then as deep as the picture needs. Each segment is replaced by $N$ copies of the whole arc
+  --- copy $i$ scaled by $|b_i|=w_i^{\alp}$, rotated by $\arg b_i$, reflected when
+  $\epsilon_i=1$, traversed backwards when $\sigma_i=-1$, on the parameter interval
+  $[a_i,a_i+w_i]$ of the formulas above. Colour marks the first-level piece, the arrows its
+  direction of traversal, the dotted grey curve the level-1 pattern, whose vertices recur at
+  every level because every copy of the arc contains its own endpoints. The number under each
+  title is $D$ measured on the drawn polyline alone, a lower bound that can only grow with the
+  level: $1.00000$, $1.89800$, $1.89800$, $2.04147$ for the two-piece arc and $1.07457$,
+  $1.98927$, $2.01124$, $2.01553$ for the three-piece. Two things are visible. The two-piece
+  pattern is \emph{exactly} equalised at level 1 --- all three of its chords have shortening
+  exactly $1$, because $|b_i|=w_i^{\alp}$ --- so its whole distortion is made by the
+  cross-piece pairs that appear at level 2. The three-piece pattern, having no free parameter,
+  cannot be equalised at all: two of its level-1 chords are already $7.5\%$ longer than exact
+  ($D=1.0746$), and since they join vertices that recur at every level they keep the ratio
+  $1.074569932$ at all depths, merely ceasing to be the binding pair.}
+  \label{fig:stages}
+\end{figure}
+
 \begin{remark}[what these numbers are]
 Both are \emph{measurements at a deep level}, not certificates. A level-$K$ configuration sees
 only pairs of its own nodes, so its ratio is a lower bound for the ratio of the arc and can only
@@ -232,7 +254,9 @@ $D_\infty$.
 \begin{itemize}
 \item \texttt{scripts/explicit\_curves.py} builds both arcs from the formulas above and prints
   the level-$K$ ratios; \texttt{scripts/plot\_explicit\_and\_ladder.py} draws
-  Figures~\ref{fig:curves}--\ref{fig:gap}.
+  Figures~\ref{fig:curves} and \ref{fig:ladder}--\ref{fig:gap}.
+\item \texttt{scripts/plot\_construction\_stages.py} draws Figure~\ref{fig:stages}; it checks its
+  own vertices against \texttt{explicit\_curves.py} before plotting.
 \item The configurations of Table~\ref{tab:ladder} are stored in the paths named there;
   \texttt{scripts/optimise\_m400.py} produced the two certified rows.
 \end{itemize}

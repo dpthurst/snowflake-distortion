@@ -18,3 +18,10 @@ python3 scripts/plot_explicit_and_ladder.py
 `ladder-m.png` — best known configurations at m=100,200,400,800,1600.
 `ladder-D.png` — D_m against m, with the explicit bounds as reference lines.
 Figure 3 of notes/improving-koch-extremals.pdf.
+
+`construction-stages.png` — the two explicit constructions at levels 1,2,3 and at the
+level where the picture settles: each segment is replaced by N scaled/rotated copies
+of the whole, some reflected and some traversed backwards. Titles give D measured on
+the drawn polyline (1.00000, 1.89800, 1.89800, 2.04147 for two pieces;
+1.07457, 1.98927, 2.01124, 2.01553 for three). Figure 2 of notes/improving-koch-extremals.pdf.
+Reproduce with: python3 scripts/plot_construction_stages.py
