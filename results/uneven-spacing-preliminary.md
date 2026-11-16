@@ -583,3 +583,45 @@ kink of $D$ where the smoothed optimiser stopped, not at a multiply-tied station
 *properly* stationary uneven optimum would have a stress is therefore still open --- but nothing in
 the runs so far produces one, and the marginal-contact structure that the stress needs appears to be
 a property of the uniform-index problem.
+
+## 14. Repelling nodes: GUE, log-gas, Riesz gas
+
+**Sampling is cheap, at least for $\beta=2$.** The GUE is the $\beta=2$ log-gas on the line, so its
+nodes are the eigenvalues of an $n\times n$ Hermitian Gaussian matrix: one `eigvalsh`, $O(n^3)$,
+milliseconds at $n\le400$, exact, no MCMC. For hard walls, other $\beta$, or a Riesz exponent, a plain
+Metropolis on the gas energy costs $O(n)$ per proposal; $3\times10^3$ sweeps at $n\le200$ is seconds.
+Both are implemented in `scripts/repelling_nodes.py`; data in `results/repelling-nodes*.json`.
+
+```
+         m=32                m=64                 m=100
+ uniform 1.331919            1.403007             1.439499
+ Riesz 2 1.3315  1.3322      1.4013  1.4035       1.4388  1.4423
+ Riesz 1 1.3297  1.3295      1.4009  1.4055       1.4373  1.4373
+ GUE     1.3240  1.3211      1.4011  1.4030       1.4358  1.4401
+ log-gas 1.3123  1.2878      1.3739  1.3857       1.4284  1.4291
+ i.i.d.  1.3035  1.2907      1.3726  1.3814       1.4075  1.4124
+```
+(two draws each; positions optimised in every case.)
+
+**Repulsion on its own buys nothing.** The Riesz gases ($\sum|x_i-x_j|^{-s}$, $s=1,2$) reproduce the
+uniform value to $0.1\%$: their gap ratios are $1.1$--$2.4$, i.e. the nodes are almost a lattice, and
+§5 says that is the one thing that kills the effect --- what pays is *local clustering*, not even
+coverage.
+
+**The log-gas is the best of the physical samplers**, and for a density reason: in a box with hard
+walls the $\beta=2$ equilibrium density is arcsine, $\propto(x(1-x))^{-1/2}$, which diverges at the
+two ends. So it produces genuine strong local unevenness there (gap ratios $30$--$130$) and beats
+uniform by $1.5\%$ at $m=32$ and $1\%$ at $m=100$ --- though still short of i.i.d., which is more
+uneven everywhere.
+
+**The GUE itself** (eigenvalues rescaled into $[0,1]$) has the semicircle density: sparse at the ends,
+dense in the middle. That is a smooth change of density, which §6 found does nothing; it sits between
+uniform and the log-gas at $m=32$ and is indistinguishable from uniform by $m=64$.
+
+**So the answer to the suggestion**: a GUE or Coulomb gas will not by itself give a better
+repelling sampler for this purpose, because repulsion drives the nodes towards uniformity and the gain
+comes from the opposite. If repulsion is wanted, the useful object is the gas *in a box* (log-gas or
+sine-kernel near the edges), which mixes repulsion in the interior with the wall singularities; but
+then the effect being measured is the edge density, not the repulsion. Everything here is a
+finite-$m$ sampling effect; all of these samplers are legitimate discretisations of the continuum
+(same shapes, §3), so they can only change the rate.
