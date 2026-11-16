@@ -146,7 +146,7 @@ def subdivide(boxes):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--eps", type=float, default=1e-3)
+    ap.add_argument("--eps", type=float, default=1e-12)
     ap.add_argument("--maxboxes", type=int, default=4_000_000)
     ap.add_argument("--out", default=str(ROOT / "results/m4-global.json"))
     args = ap.parse_args()
