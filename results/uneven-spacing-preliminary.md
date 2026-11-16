@@ -559,9 +559,20 @@ against the required $\approx2m$. The honest state is therefore: **whether a pro
 optimum has a stress is open**; what the evidence does show is that polishing from these starts is
 slow and does not build the marginal-contact structure. The diagnostic to watch is the tight count
 --- a converged uneven optimum must reach $\approx2m$, and none of these runs got past a few dozen.
-What would fix it: an SLP with row-normalised gradients (the gradients scale like $1/\text{chord}$,
-which at gap ratios of $10^3$ is a $10^3$ spread and wrecks the trust region), or a continuation in
-much smaller spacing steps with the L-BFGS kept at moderate $\beta$.
+Row-normalising the gradients was the first thing to try, since $|A_i|=1/\text{chord}$ varies by the
+whole chord ratio and wrecks the trust region: `scripts/slp_scaled.py` divides each row by its norm
+before building the LP. It changes almost nothing --- from $\kappa=4$, $m=200$ it moves
+$D=1.4854753001\to1.4854752648$ in 400 iterations, status still 2, $1+9$ ties. So the stall is not a
+scaling artefact of the SLP.
+
+**What the stall looks like.** At the polished points the extremes are *nearly* tied --- at $m=200$,
+$\kappa=4$, twenty-six pairs lie within $10^{-6}$ of the largest ratio and hundreds within $10^{-4}$
+--- but only one or two are tied exactly. A KKT point needs $\approx2m$ *exact* ties, so the
+configuration is sitting where the contact set is about to form and the descent per step is
+therefore tiny: any decrease of the worst chord immediately hands the maximum to a pair that is
+$10^{-6}$ behind it. That is consistent with every method stalling at the same value to $10^{-8}$
+while no certificate exists, and it means the uneven problem at frozen spacings is *ill-conditioned*
+rather than that the answer is no.
 
 Two further checks on the unpolished conclusion. The uneven optima come from a smoothed surrogate, so they are only
 approximately stationary: the direction that decreases the longest chord and increases the shortest
