@@ -17,8 +17,8 @@ python3 scripts/plot_explicit_and_ladder.py
 
 `ladder-m.png` — best known S-branch configurations at m=100,200,400,800,1600 (dotted:
 the chord, which the S crosses).
-`ladder-D.png` — D_m against m against the explicit bounds, with the bar to the other
-branch at each m, and that gap as a percentage. Figure 5 of the note.
+`ladder-D.png` — D_m against m between the certified bounds (purple: D_4, red: Koch), with
+the bar to the other branch at each m, and that gap as a percentage. Figure 5 of the note.
 
 `arc-m.png` — the one-sided (arc) branch at m=40..1600: the gauged curve touches its chord
 but never crosses it. Figure 4 of the note.

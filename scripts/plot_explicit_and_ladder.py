@@ -137,6 +137,8 @@ def fig_ladder_D():
                 label="best known $D_m$ (S branch),\nbar = gap to the other branch")
     ax.semilogx(ms, arc_at, "s", mfc="white", mec="#2c9c4a", ms=3.2,
                 label="best known, one-sided arc branch")
+    ax.axhline(1.0627659230747, color="#8b2fa0", lw=1.0, ls=(0, (1, 1)),
+               label="certified: $D_4=1.062766$")
     ax.axhline(KOCK_D, color="#c8342a", lw=1.1, ls="--",
                label=f"Koch $D={KOCK_D:.6f}$ (sharp)")
     ax.axhline(2.04204, color="#e08a2e", lw=1.1, ls=":",
@@ -145,9 +147,9 @@ def fig_ladder_D():
                label="three-piece arc, $D=2.017935$")
     ax.set_xlabel("$m$")
     ax.set_ylabel("$D$")
-    ax.set_ylim(1.3, 2.15)
+    ax.set_ylim(1.0, 2.15)
     ax.grid(alpha=0.25)
-    ax.set_title("against the explicit arcs", fontsize=7.2)
+    ax.set_title("against the certified bounds", fontsize=7.2)
     ax.legend(fontsize=5.4, loc="upper left", framealpha=0.92,
               handlelength=1.8, labelspacing=0.35)
 

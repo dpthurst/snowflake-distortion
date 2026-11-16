@@ -10,11 +10,13 @@
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Improving on the Koch extremal},pdfauthor={Open Math OS agent}}
 \setlist{nosep,leftmargin=*}
+\setlength{\emergencystretch}{1.5em}
 \graphicspath{{../figures/}}
 \newtheorem{proposition}{Proposition}
 \theoremstyle{remark}
 \newtheorem{remark}[proposition]{Remark}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 \newcommand{\alp}{\alpha}
 \title{Improving on the Koch extremal\\[2pt]
 \large two explicit arcs below $2.0968$, and the finite-$m$ ladder\\[6pt]
@@ -36,7 +38,9 @@ as the problem. The finite-$m$ searches return two macro-shapes --- S-shaped and
 which are recorded separately, per branch, together with the bar that measures how far each rung
 could move without leaving the search. Section~\ref{sec:prior} records what was known before: that
 the exponent is forced, that some distortion is unavoidable, and that the elementary estimate
-bounds only one of the two constants.
+bounds only one of the two constants. The first rung is settled exactly: $D_4=\sqrt{(1+c)/(3c)}$
+with $c=3^{-\alp}$, certified by interval branch-and-bound, so $D_\infty\ge1.0627659$ --- the only
+lower bound in evidence.
 \end{abstract}
 
 \section{The quantity}
@@ -65,7 +69,8 @@ hence $D(F)=\sqrt{633}\,23^{-\alp}=2.096805160875153\ldots$. The two-sided inequ
 sharpness of both constants are proved in the companion note \texttt{koch-extremals.tex}
 (reduction to a compact dyadic pair of parameters and a directed-interval computation).
 This is, as far as the workspace knows, the only proved explicit bound of this kind, and it is
-an upper bound for $D_\infty$: no explicit lower bound is known. The sharpness is part of the
+an upper bound for $D_\infty$: the lower bound $D_\infty\ge1.0628$ comes the other way,
+from the $m=4$ configuration of \S\ref{sec:m4}. The sharpness is part of the
 same note: the two-sided inequality is reduced exactly to a compact dyadic parameter pair, the two
 attaining pairs are evaluated in Eisenstein arithmetic, and the inequalities themselves are closed
 by directed-interval branch-and-bound with reported box counts, residual cells and margins. So the
@@ -100,8 +105,9 @@ because $2^{\alp}=\sqrt3$ and $4^{\alp}=3$. No planar quadruple has those distan
 Cayley--Menger determinant of the six numbers is $4.416341098\neq0$ (and $0.006058081068\neq0$ at
 the normalisation $|x-y|=\tfrac14$), while four points in $\R^2$ have vanishing determinant. So
 every injective arc has $D(\gamma)>1$, the infimum is not attained, and $D_\infty>1$ --- the
-question is not vacuous. The first quantitative case is $m=4$: the best configuration found has
-$D=1.062766196$, which is a search result and not a proof.
+question is not vacuous. The first quantitative case is $m=4$, and it can be settled: $D_4=1.062765923076\ldots$, with a
+computer-assisted certificate, in \S\ref{sec:m4}. So $D_\infty\ge1.0628$: distortion is forced, and
+by a measurable amount.
 
 \paragraph{An explicit bound, and why the constant is the whole problem.} The elementary
 self-similarity estimate bounds $\rho$ from above and nothing from below. Let $x<y$ and choose $k$
@@ -227,6 +233,55 @@ in the index gives an equicontinuous, uniformly bounded family, and any subseque
 optimal curve satisfying $|\gamma(x)-\gamma(y)|\in[|x-y|^{\alp},\Lambda|x-y|^{\alp}]$.
 So the ladder \emph{is} the continuum problem, only sampled.
 
+
+\subsection*{The first rung, exactly: \texorpdfstring{$D_4$}{D4}}\label{sec:m4}
+
+The $m=4$ problem is the one case where a global minimum can be certified outright, and it is
+worth doing because it is the only lower bound for $D_\infty$ in reach.
+
+\begin{proposition}\label{prop:m4}
+Let $c=3^{-\alp}=0.4186878435451467$ and $K=\sqrt{(1+c)/(3c)}$. Then
+\[
+  K-2\times10^{-12}\ \le\ D_4\ \le\ K,\qquad K=1.062765923076354\ldots
+\]
+The upper bound is attained by the four points
+\[
+  v_0=0,\quad v_1=a+bi,\quad v_2=1-a+bi,\quad v_3=1,
+  \qquad a=\frac{1-c}{2},\quad b=\sqrt{c^2-a^2},
+\]
+with $b=0.301361169565585\ldots$,
+for which $r_{01}=r_{12}=r_{23}=r_{03}=c$ and $r_{02}=r_{13}=\sqrt{c(1+c)}/\sqrt3$. Hence
+$D_\infty\ge1.0627659230747$.
+\end{proposition}
+
+\begin{proof}[Proof (computer-assisted)]
+After the similarity gauge $v_0=0$, $v_3=1$ the problem is four-dimensional, in $(v_1,v_2)\in\mathbb{C}^2$,
+and the six ratios are $r_{01}=|v_1|$, $r_{12}=|v_1-v_2|$, $r_{23}=|v_2-1|$, $r_{02}=|v_2|/\sqrt3$,
+$r_{13}=|v_1-1|/\sqrt3$, $r_{03}=3^{-\alp}$, since $2^{\alp}=\sqrt3$ and $4^{\alp}=3$.
+
+\emph{Upper bound.} For the displayed configuration $b^2=c^2-a^2$ gives $|v_1|=c$,
+$v_2-v_1=1-2a=c$, $|v_2-1|=|a-bi|=c$ and, because $(1-a)^2+b^2=\tfrac14[(1+c)^2-(1-c)^2]+c^2=c(1+c)$,
+also $|v_2|=|v_1-1|=\sqrt{c(1+c)}$. So four ratios equal $c$ and two equal $\sqrt{c(1+c)}/\sqrt3$,
+and the quotient is $K$.
+
+\emph{Lower bound.} If $D\le K$ then every ratio lies in $[c/K,Kc]$, which confines $(v_1,v_2)$ to the box
+$\operatorname{Re}v_1\in[0.2293,0.4450]$, $\operatorname{Im}v_1\in[-0.4450,0.4450]$,
+$\operatorname{Re}v_2\in[0.5550,0.7707]$, $\operatorname{Im}v_2\in[-0.4450,0.4450]$; outside it
+$D>K$. On a box, rectangle arithmetic encloses each $r_{ij}$ in
+$[\underline r_{ij},\overline r_{ij}]$ with outward rounding, and since $D\ge r_i/r_j$ pairwise,
+$\max_{i\ne j}\underline r_i/\overline r_j$ is a lower bound for $D$ on the whole box. Discarding
+boxes whose bound exceeds $K-10^{-12}$ and bisecting the rest along the widest coordinate leaves
+$54\,163$ boxes in $0.07$ seconds, none surviving, which proves $D_4\ge K-1.7\times10^{-12}$
+(\texttt{scripts/certify\_m4.py}). Four numbers to check independently: the interval bound was
+tested against $16\,000$ sample points in $400$ random boxes, and $2\times10^5$ random
+configurations produced none with $D\le K$ outside the a priori box.
+\end{proof}
+
+The minimiser is the symmetric bent chain $v_2=1-\overline{v_1}$, with four tight minimum pairs and
+two tight maximum pairs; the certificate pins its position as well as the value, since every box
+more than $10^{-12}$ away from it is discarded. Nothing here extends to $m=6$: that problem is
+eight-dimensional, and the box count grows like the square of the volume ratio.
+
 \paragraph{Two macro-shapes, kept apart.} The searches return two families that do not mix. In the
 first the gauged curve crosses its chord and carries one lobe on each side of it --- the S-shaped
 branch of Figure~\ref{fig:ladder}. In the second it stays on one side, a single arch with a fractal
@@ -301,9 +356,11 @@ $m=200$ used to be the arc, which is $0.8\%$ above the S value now recorded ther
   \includegraphics[width=\textwidth]{ladder-D.png}
   \caption{Left: the ladder against the explicit arcs --- $D_m$ still climbing ($1.35\to1.64$)
   while the best explicit curves sit at $2.02$--$2.04$; the vertical gap of about $0.4$ is the
-  open problem. The bar on each point reaches the best value known in the \emph{other} branch at
-  the same $m$ (the open squares), which is the only measured estimate of how far the point could
-  move without leaving the search: it is $1.25\%$ of $D_m$ at $m=40$ and falls to $0.24\%$ at
+  open problem. The dotted purple line is the certified lower bound
+  $D_\infty\ge1.0627659$ of Proposition~\ref{prop:m4}, the red the proved upper bound: the problem
+  lives in the strip between them, and the ladder shows that neither end is close. The bar on each
+  point reaches the best value known in the \emph{other} branch at the same $m$ (the open squares),
+  which is the only measured estimate of how far the point could move without leaving the search: it is $1.25\%$ of $D_m$ at $m=40$ and falls to $0.24\%$ at
   $m=1600$, where the arc is the better of the two. Right: that gap as a percentage. A branch
   crossing at $m=1600$ is not evidence that either branch is optimal --- only that the two are
   converging, so that the value of $D_\infty$ is pinned to within a per-cent by $m=1600$,
@@ -333,6 +390,29 @@ $D_\infty$.
   ladder shows many distinct stationary configurations within a fraction of a percent
   (31 at $m=40$, 40 at $m=100$), so uniqueness of the \emph{selected} branch is not to be expected
   without a selection rule.
+
+\item \textbf{The critical exponent.} The whole set-up makes sense for any $\alp\in(0,1)$, and the
+  compactness argument gives $D_m(\alp)\to D^{(\alp)}_\infty$ for each. If a finite-distortion arc
+  exists then its image has Hausdorff dimension $1/\alp$, so for $\alp<\tfrac12$ no such arc can
+  exist: the Assouad dimension of $([0,1],|\cdot|^{\alp})$ is $1/\alp>2$, a bi-Lipschitz invariant,
+  and a subset of the plane has Assouad dimension at most $2$. For $\alp>\tfrac12$ such arcs do
+  exist, and not only for our exponent: Herron--Meyer (Rev.\ Mat.\ Iberoam.\ \textbf{28} (2012)
+  603--630) prove that a metric quasicircle of Assouad dimension below $2$ is bi-Lipschitz
+  equivalent to a planar one, and record that the same proofs cover bounded turning Jordan arcs
+  and metric quasi-arcs. Our $\alp=\log3/\log4$ is in this range, and the Koch arc is the explicit
+  witness. That leaves $\alp=\tfrac12$ exactly: is there an
+  injective $\gamma\colon[0,1]\to\R^2$ with $|\gamma(x)-\gamma(y)|\asymp|x-y|^{1/2}$? We do not
+  know, and we flag it as open rather than assert it. Equivalently, is $\sup_mD_m(\tfrac12)$
+  finite? A first ladder at that exponent reads $D_m=1.1688$, $1.4323$, $1.7987$, $2.3386$,
+  $3.4349$, $4.6863$ at $m=4,6,8,16,32,48,64$ -- rising by about $1.3$ per doubling, against
+  $1.44\to1.64$ over a factor $16$ at $\alp=\log3/\log4$. That is what non-existence looks like,
+  but it proves nothing, and the upper rungs are the least converged
+  (\texttt{results/ladder-half.md}). The natural candidate, a self-similar arc with four maps of
+  ratio $\tfrac12$ (the dimension-$2$ analogue of Koch), runs into the fact that the standard such
+  curves are space-filling and therefore not injective, while the injective curves of Hausdorff
+  dimension $2$ (Osgood's) are not known to admit a bi-Hölder parametrisation with exponent
+  $\tfrac12$.
+
 \item \textbf{Structure of the ladder.} The configurations' self-overlaps, their near-ties and the
   shape of the multiplier measures are the natural diagnostics; a companion note records what the
   overlap search says (many approximate self-similarities, thinning as $m$ grows).
@@ -346,10 +426,13 @@ $D_\infty$.
 \item Proved here, and elementary: $D(\gamma)>1$ for every injective arc, so $D_\infty>1$
   (\S\ref{sec:prior}, Cayley--Menger); and $\rho\le6$, i.e. \eqref{eq:crude}, which bounds the upper
   constant alone.
+\item Proved here, computer-assisted: $D_4=1.062765923076\ldots$, so $1.0627659\le D_\infty$
+  (Proposition~\ref{prop:m4}).
 \item Measured, not proved: $D=2.04204$ and $D=2.017935389$ for the two explicit arcs; every entry
   of Table~\ref{tab:ladder}, in both branches; the monotone ladders
   $1.3523\le\cdots\le1.6355$ (S) and $1.3693\le\cdots\le1.6316$ (arc).
-\item Not known: any lower bound for $D_\infty$; whether either explicit arc is optimal; which
+\item Not known: any lower bound for $D_\infty$ beyond $1.0628$ (that is, any $D_m$ with $m\ge5$);
+  whether either explicit arc is optimal; which
   branch, if either, converges to the limit; whether $D_m$ converges rapidly enough to be
   extrapolated.
 \end{itemize}
@@ -372,6 +455,9 @@ $D_\infty$.
   \texttt{arc\_m1600.npy}, under \texttt{results/}, \texttt{.scratch/} and
   \texttt{.ultramath/smwhdqmht/m1/} respectively; the last-named script draws
   Figures~\ref{fig:arc} and~\ref{fig:gap}.
+\item \texttt{scripts/certify\_m4.py} is the certificate of Proposition~\ref{prop:m4}; it prints
+  the certified window and writes \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
+  is the $\alp=\tfrac12$ ladder of \S\ref{sec:prior} (results in \texttt{results/ladder-half.json}).
 \item \texttt{scripts/restart\_study.py} re-runs a cheap optimisation from perturbed and resampled
   starts at each rung and records the values in \texttt{results/restart-study.json}. With the cheap
   budget it lands $0.1$--$1\%$ above the polished values at $m\ge200$, so it measures how much the
