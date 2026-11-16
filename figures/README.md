@@ -25,7 +25,9 @@ gap ratios 1..32, the m=16 shapes overlaid, and the optimal spacings at m=32.
 `uneven-random-shapes.png` — random fixed spacings at m=16,32,64 against the m=800 configuration.
 `uneven-random-diagnostics.png` — D against m for three random draws against the uniform ladder,
 the three m=64 draws overlaid, and their distance to the m=800 curve.
-All three are preliminary and deliberately not in either note; write-up notes in
+`uneven-ladder.png` — the bounded-κ ladder: D against m for κ = 1,2,4,8,16,32 (κ=4 extended to
+m=400) with the polished uniform ladder, and the increment per doubling against m.
+All of these are preliminary and deliberately not in either note; write-up in
 results/uneven-spacing-preliminary.md.
 
 `arc-m.png` — the one-sided (arc) branch at m=40..1600: the gauged curve touches its chord
