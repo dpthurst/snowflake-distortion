@@ -292,3 +292,57 @@ on the index $i$, and insert points where the marginal mass or the residual $|S(
 an adaptive refinement driven by the stress, which converges to a stationary curve instead of
 crawling up the $m$-ladder. Nothing of this is carried out; the finite LP is the only part that
 exists in code.
+
+## 10. Is there a stress for the Koch curve?
+
+The stress is a KKT certificate: if it exists, no first-order variation of the curve lowers $D$, and
+by Farkas the converse holds, so *stress exists* $\iff$ *no first-order descent direction*. It
+certifies local optimality in the space of curves; it says nothing about other branches, and at a
+non-smooth min like this one the directional derivative is typically *positive* in most directions,
+so "D increases in every direction I tried" is consistent with stationarity and decides nothing.
+The only test is the LP (finite) or its continuum analogue.
+
+**Finite level: no certificate, and explicit descent.** At every dyadic level the Koch polygon
+(parameters $x_i=i/4^k$, so exactly the uniform-index configuration of $m=4^k+1$) fails the LP, and
+the imbalance is not small — `scripts/stress_residual.py` minimises the L1 residual of
+$\sum\lambda_a A_a=\sum\mu_b A_b$ over $\lambda,\mu\ge0$, $\sum\lambda=\sum\mu=1$ and divides by the
+mean row norm of $A$:
+
+```
+ level  m      D            residual   #max  #min   D after 1 SLP step   after 5
+   2    17    2.083010     1.953       6     1        2.080516            2.007973
+   3    65    2.089552     1.784       6     8        2.088688            2.062924
+   4    257   2.093439     1.106       6     39       2.092876            2.080642
+   5    1025  2.0968052    1.080      12     166      -                   -
+   6    4097  2.0968052    0.405      72     677      -                   -
+```
+
+The residual is insensitive to the tolerance defining the tight sets ($10^{-6}$ to $10^{-10}$ give
+identical values) and to nothing else, so the sets really are tight. So at every level tested the
+Koch polygon is *not* a local minimum of the finite-$m$ problem, and the SLP reduces $D$ at once.
+
+**But that is a different condition.** The finite-$m$ gradient sees only *node* pairs, while the
+continuum sup is over all pairs; a discrete descent direction can leave the continuum functional
+untouched (or worse). And the residual *falls* under refinement, $1.95,1.78,1.11,1.08,0.41$, as the
+extremal sets grow ($6\to12\to72$ max pairs, $1\to677$ min pairs) and give the multipliers more room.
+So the finite data are **inconclusive** about the continuum.
+
+**A two-parameter family test, also inconclusive.** Four-piece self-similar arcs with weights
+$w=(w_1,w_2,w_2,w_4)$, sidelengths $r_i=w_i^{\alpha}$ and Koch directions $(0,\theta,-\theta,0)$,
+closure forcing $\cos\theta=(1-r_1-r_4)/(r_2+r_3)$: the Koch curve is $w=(1/4,\dots,1/4)$. At level
+6, $D$ increases in every direction tried, with slopes $\partial D/\partial w_1\approx+3.7$,
+$+7.5$ along $(w_1,w_4)=(1,1)$ and $+0.05$ along the anti-diagonal $(1,-1)$: so the Koch curve is a
+local minimum *within this family*, pointy rather than smooth. That is what a KKT point that is not
+smooth looks like, so it does not answer the question either.
+
+**What would.** The Koch extremal pairs are explicit (the orbit of the two seeds under the four
+maps, at all scales), so a continuum stress would be a *self-similar pair of measures* on their
+addresses, and the balance at a test point becomes a countable linear system obtained by
+renormalisation: the same kind of computation as the companion note's two-sided proof, one level up
+(there it was a range; here it is a linear system for the weights). Truncating at level $K$ and
+watching the residual $0.41$ at $K=6$ either decay geometrically (then the limit is plausibly
+feasible and the measure can be constructed) or not. This has not been done.
+
+Nothing here changes any bound: a stress at Koch would make it a critical point of $D$, and since
+other curves do better ($2.0179$ measured, S-ladder about $1.5$--$1.6$) it would be a saddle, not a
+minimiser.
