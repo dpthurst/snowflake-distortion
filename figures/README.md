@@ -21,8 +21,12 @@ the chord, which the S crosses).
 the bar to the other branch at each m, and that gap as a percentage. Figure 5 of the note.
 
 `uneven-spacing.png` — finite-m optima with the parameter gaps bounded: best D_m against m for
-gap ratios 1..32, the m=16 shapes overlaid, and the optimal spacings at m=32. Preliminary, not in
-either note; see .scratch/uneven-spacing-preliminary.md.
+gap ratios 1..32, the m=16 shapes overlaid, and the optimal spacings at m=32.
+`uneven-random-shapes.png` — random fixed spacings at m=16,32,64 against the m=800 configuration.
+`uneven-random-diagnostics.png` — D against m for three random draws against the uniform ladder,
+the three m=64 draws overlaid, and their distance to the m=800 curve.
+All three are preliminary and deliberately not in either note; write-up notes in
+results/uneven-spacing-preliminary.md.
 
 `arc-m.png` — the one-sided (arc) branch at m=40..1600: the gauged curve touches its chord
 but never crosses it. Figure 4 of the note.
