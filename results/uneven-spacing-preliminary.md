@@ -335,7 +335,7 @@ $+7.5$ along $(w_1,w_4)=(1,1)$ and $+0.05$ along the anti-diagonal $(1,-1)$: so 
 local minimum *within this family*, pointy rather than smooth. That is what a KKT point that is not
 smooth looks like, so it does not answer the question either.
 
-**Resolved in §13:** the descent exists. The argument below is therefore moot as a programme; it
+**Resolved in §12:** the descent exists. The argument below is therefore moot as a programme; it
 is kept because the diagnostic it describes (the multiplier residual) correctly predicted
 non-stationarity.
 
@@ -398,79 +398,59 @@ i.i.d. rate is genuinely better or only looks so at these $m$ cannot be settled 
 its increments are $0.059$ ($m=100\to200$) and $0.057$ ($200\to400$), a decay ratio of $0.96$ per
 doubling, the same as the uniform ladder's $0.95$.
 
-## 12. Does the two-piece arc (2.042) imply a descent at Koch?
+## 12. Does the two-piece arc (2.042) imply a descent at Koch? Yes --- Koch is the $t=\tfrac12$ member
 
-**They are not in a common self-similar family.** Koch is a four-branch self-similar arc, weights
-$(1/4,1/4,1/4,1/4)$, ratios $1/3$, directions $(0,60^\circ,-60^\circ,0)$, no reflections or
-reversals; the two-piece arc has two branches, unequal weights $(t,1-t)$ with $t=0.563$, ratios
-$t^\alpha,(1-t)^\alpha$, one reflection and one reversal. The number of branches, the weight vector
-and the sign/reflection pattern are all discrete data at a fixed exponent ($r_i=w_i^\alpha$,
-$\sum w_i=1$); you can only pass between them by degenerating branches, which is not a path of
-admissible arcs. So there is no one-parameter self-similar family containing both.
-
-**A better competitor elsewhere gives no local information.** The naive path — interpolate the two
-*parametrisations*, $\gamma_s=(1-s)F_{\rm Koch}+sF_{2\rm pc}$ on a common uniform parameter grid —
-does not descend at all:
-
-```
-   s        0      0.001     0.003     0.01      0.03      0.1       0.3
-   D(s)  2.096805  2.103048  2.115649  2.160984  2.302097  2.987034  16.29
-```
-
-$D$ *increases* immediately and blows up in the middle (the two curves are very different, so the
-convex combination develops tiny chords). Existence of a better curve somewhere says only that Koch
-is not the *global* minimiser, which was never in doubt; a stress is a *local* object.
-
-**A trap in the comparison itself.** $D$ depends on the parametrisation. The two-piece arc's $2.042$
-is in *its own* self-similar parametrisation; evaluated on the uniform parameter grid the same point
-set scores $2.652$. So "$2.042<2.097$" compares two admissible arcs *each in its natural
-parametrisation* — legitimate as a comparison of curves, but it is not a path between them, and it
-does not identify a direction at Koch.
-
-**What would imply a descent** is a local family: admissible arcs $\gamma_s$, $s\in[0,\varepsilon)$,
-$\gamma_0=F_{\rm Koch}$, with $D(\gamma_s)<D(\gamma_0)$ for small $s>0$. The four-branch family of
-§10 is exactly such a family (free weights, Koch directions, closure), and there $D$ increases in
-every direction tested (slopes $+0.05$ to $+7.5$). Finding a family that *does* descend near Koch
-would settle the stress question negatively at once; nothing here does.
-
-## 13. Resolved: Koch *is* the $t=\tfrac12$ member of the two-piece family, so there is a first-order descent
-
-The two-piece construction of §2 of the note — $\gamma(x)=b_0\overline{\gamma(x/t)}$ for $x\le t$,
-$\gamma(x)=1+b_1\gamma((1-x)/(1-t))$ for $x\ge t$, with $|b_0|=t^\alpha$, $|b_1|=(1-t)^\alpha$,
-$b_0-b_1=1$ — has $t$ as a free parameter. At $t=\tfrac12$ both weights are $\tfrac12$ and both ratios
-are $2^{-\alpha}=1/\sqrt3$, and the construction reproduces the Koch curve (reflected in the real
-axis, which is a similarity):
+**The answer.** The two-piece construction of §2 of the note,
+$\gamma(x)=b_0\overline{\gamma(x/t)}$ for $x\le t$ and $\gamma(x)=1+b_1\gamma((1-x)/(1-t))$ for
+$x\ge t$, with $|b_0|=t^\alpha$, $|b_1|=(1-t)^\alpha$, $b_0-b_1=1$, has $t$ free. At $t=\tfrac12$
+both weights are $\tfrac12$ and both ratios $2^{-\alpha}=1/\sqrt3$, and the construction *is* the
+Koch curve --- reflected in the real axis, which is a similarity. So the family carrying the
+$2.042$ champion also carries Koch, and sweeping $t$ gives
 
 ```
       t        D(t) (level 10)      D - D(Koch)     one-sided slope
-    0.5000    2.096805161          0               -
+    0.4800    2.110404820         +1.36e-02
+    0.4900    2.103279096         +6.5e-03         -0.78
     0.4990    2.097583106         +7.8e-04         -0.78  (from below)
+    0.5000    2.096805161          0               -
     0.5010    2.096248775         -5.6e-04         -0.56  (from above)
-    0.5100    2.090092792         -6.7e-03
-    0.5200    2.082633686         -1.4e-02
+    0.5100    2.090092792         -6.7e-03         -0.56
     0.5400    2.063943913         -3.3e-02
-    0.5630    2.041469         (deep-level value 2.04204)   minimum
+    0.5630    2.041469           (deep-level 2.04204)    minimum
 ```
 
-Confirmation that $t=\tfrac12$ is Koch and not merely something with the same distortion: the minimum
-and maximum ratios there are $0.48346$ and $1.01372$, i.e. the two sharp Koch constants
-$2\cdot6^{-\alpha}$ and $2\sqrt{211}\cdot69^{-\alpha}$; and the level-10 nodes coincide with the
-Koch dyadic nodes to $4\times10^{-3}$ after conjugating (the residual is the parameter-grid mismatch
-of the two enumerations, not a geometry difference).
+$D$ is *monotone decreasing* through $t=\tfrac12$, with the slope changing across the Koch point from
+$-0.78$ (below) to $-0.56$ (above): the extremal pairs reorganise there, but the descent is first
+order on both sides. **Hence there is a first-order descent direction at the Koch curve, no stress
+exists, and Koch is not even a stationary point of the distortion functional.** The finite-level
+multiplier residuals of §10 ($1.95,1.78,1.11,1.08,0.41$) were telling the truth.
 
-Consequences:
+**That $t=\tfrac12$ is really Koch**, not something with the same distortion: the minimum and maximum
+ratios there are $0.48346$ and $1.01372$, i.e. the two sharp constants $2\cdot6^{-\alpha}$ and
+$2\sqrt{211}\cdot69^{-\alpha}$; and the level-10 nodes coincide with the Koch dyadic nodes to
+$4\times10^{-3}$ after conjugating (the residue is the parameter-grid mismatch of the two
+enumerations, not a geometry difference).
 
-* the two-piece family **is** a one-parameter family of admissible self-similar arcs containing the
-  Koch curve, so §12's "not in a common family" was wrong — the two-branch normal form contains
-  Koch once reversal and reflection are identified by the Koch symmetry $F(1-u)=1-\overline{F(u)}$;
-* $D$ is *monotone decreasing* along the family through $t=\tfrac12$ --- $2.1104$ at $t=0.48$,
-  $2.096805$ at $0.50$, $2.0901$ at $0.51$, $2.0639$ at $0.54$, $2.0415$ at $0.563$ --- with the
-  slope changing across the Koch point from $-0.78$ (below) to $-0.56$ (above): the extremal pairs
-  reorganise there, but the descent is first order on both sides;
-* hence there **is** a first-order descent direction at the Koch curve. **No stress exists**, and the
-  Koch curve is not even a stationary point of the distortion functional. The finite-level
-  multiplier residuals of §10 ($1.95,1.78,1.11,1.08,0.41$) were telling the truth.
+**Why the obvious objection fails.** Koch is a four-branch arc (weights $\tfrac14$, ratios
+$\tfrac13$, directions $0,60^\circ,-60^\circ,0$, no reflection) against a two-branch one with
+unequal weights, a reflection and a reversal, so the first guess --- that no family contains both,
+the branch data being discrete --- looks right and is wrong: because the Koch curve satisfies
+$F(1-u)=1-\overline{F(u)}$, a reversal can be traded for a reflection, and the two-branch normal form
+contains Koch at equal weights. That is the observation that produced this section.
 
-Nothing about the bounds changes: Koch remains the only *proved* explicit bound at $2.0968$; what
-changes is that it is now clear it is not a critical point — the distortion functional has a corner
-there, and the descent from it leads to the two-piece arc at $t\approx0.563$ and $D=2.042$.
+**Two traps to record.** (i) Interpolating the two *parametrisations* in shape space,
+$\gamma_s=(1-s)F_{\rm Koch}+sF_{2\rm pc}$ on a common uniform grid, does not descend at all ---
+$D=2.096805,2.103048,2.115649,2.160984,2.302097,16.29$ at $s=0,0.001,0.003,0.01,0.03,0.3$ --- it
+ascends immediately and blows up, because the two curves are very different and the convex
+combination develops tiny chords. A path has to stay inside the family. (ii) $D$ depends on the
+parametrisation: the two-piece arc's $2.042$ is in *its own* self-similar parametrisation, and the
+same point set on the uniform parameter grid scores $2.652$. So "$2.042<2.097$" compares two
+admissible arcs each in its natural parametrisation --- legitimate, but not a path, and on its own
+it identifies no direction at Koch.
+
+**What this does not change.** Koch remains the only *proved* explicit bound at $2.0968$. What changes
+is that it is not a critical point of the distortion functional: the functional has a kink there, and
+following the descent leads to the two-piece arc at $t\approx0.563$, $D=2.042$. For the stress
+programme the lesson is that continuum stationarity is sensitive to where the extremal pairs sit, so
+the families worth testing are those that vary the branch data of a self-similar curve, not
+interpolations in shape space.
