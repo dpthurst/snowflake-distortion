@@ -346,3 +346,49 @@ feasible and the measure can be constructed) or not. This has not been done.
 Nothing here changes any bound: a stress at Koch would make it a critical point of $D$, and since
 other curves do better ($2.0179$ measured, S-ladder about $1.5$--$1.6$) it would be a saddle, not a
 minimiser.
+
+## 11. The growth plot, and i.i.d. spacings up to $m=400$
+
+![the bounded-kappa ladder](../figures/uneven-ladder.png)
+
+`figures/uneven-ladder.png` (from `scripts/plot_uneven_ladder.py`). Left: best $D_m$ against $m$,
+one curve per gap-ratio bound, $\kappa=4$ carried to $m=400$, the polished uniform ladder dashed, and
+the i.i.d. family in black. Right: the increment per doubling, $\Delta D$ against $m$, with the
+power-law fit $cm^{-0.27}$ to the $\kappa=4$ ladder as a dotted guide.
+
+Read-offs:
+
+* at fixed $m\le32$ the ordering in $\kappa$ is strict and monotone (at $m=32$: $1.332, 1.319,
+  1.305, 1.287, 1.270, 1.264$ for $\kappa=1,2,4,8,16,32$), i.e. more allowed unevenness, lower $D$;
+* the $\kappa=4$ curve runs into the uniform one as $m$ grows (gap $3.6\%$ at $m=32$, $0.28\%$ at
+  $m=400$) --- the advantage is spent;
+* nothing decelerates enough to extrapolate: the increments fall from $0.086$ to $0.052$ per
+  doubling over $m=24\dots400$ ($\kappa=4$) and from $0.064$ to $0.046$ over $m=40\dots1600$
+  (uniform).
+
+**i.i.d. spacings, $m$ up to 400.** $x_i$ drawn uniformly at random and frozen, positions optimised,
+three draws at each $m$ (two at $m=400$), `scripts/uneven_random_homotopy.py`. Plain L-BFGS from a
+uniform start is not usable above $m\approx100$ here --- gap ratios of $10^3$--$10^4$ make the problem
+stiff and the draws spread by $4.7\%$ ($1.486$--$1.556$ at $m=200$) --- so the spacings are moved
+from uniform to the target in five steps, re-optimising at each. That is the difference between the
+two columns below.
+
+```
+   m     uniform    kappa=4    i.i.d. (3 draws)          i.i.d. spread
+  100    1.43623    1.42510*   1.41052  1.40475  1.40885   0.4%
+  200    1.49086    1.48548    1.46909  1.46381  1.47038   0.5%
+  400    1.54179    1.53749    1.52217  1.52063   -         0.1%
+```
+(*at $m=96$; the $\kappa=4$ run at $m=100$ was not made.)
+
+So i.i.d. is the lowest of the three families at every common $m$, by $2.0\%$, $1.5\%$, $1.3\%$
+over uniform at $m=100,200,400$; the gain over $\kappa=4$ is about $1\%$. And the draws agree to
+$0.1$--$0.5\%$ once the homotopy is used, which is what makes the comparison meaningful.
+
+The ordering i.i.d. $<$ $\kappa=4$ $<$ uniform at every $m$ is what §5 predicts: more allowed
+unevenness, lower $D$ at fixed $m$, by a diminishing amount. It is still a *sampling* effect --- the
+shapes are the same S curve (§3) --- and all three families are legitimate discretisations
+(asymptotically uniform sampling), so they share the limit and differ only in rate. Whether the
+i.i.d. rate is genuinely better or only looks so at these $m$ cannot be settled from three points:
+its increments are $0.063$ ($m=100\to200$) and $0.053$ ($200\to400$), decaying like the $\kappa=4$
+ones.

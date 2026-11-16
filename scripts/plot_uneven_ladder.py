@@ -44,6 +44,22 @@ def increments(points):
     return np.array(out)
 
 
+def iid_points():
+    """(m, min, max) over the i.i.d. draws: small m from the plain runs, large m from the homotopy"""
+    out = {}
+    for path in ("results/uneven-random.json",):
+        p = ROOT / path
+        if p.exists():
+            for r in json.loads(p.read_text()):
+                m = r["m"]
+                out.setdefault(m, []).append(r["D"])
+    p = ROOT / "results/uneven-random-large.json"
+    if p.exists():
+        for r in json.loads(p.read_text()):
+            out.setdefault(r["m"], []).append(r["D"])
+    return sorted((m, min(v), max(v)) for m, v in out.items())
+
+
 def main():
     data = collect()
     fig, (ax, bz) = plt.subplots(1, 2, figsize=(6.6, 2.5),
@@ -54,6 +70,15 @@ def main():
         ax.semilogx(ms, Ds, "o-", ms=2.6, lw=0.9, color=COL[k], label=f"$\\kappa={k}$")
     ax.semilogx([p[0] for p in UNIFORM_POLISHED], [p[1] for p in UNIFORM_POLISHED],
                 "s--", ms=3.0, lw=0.9, color="0.3", label="uniform, polished")
+    iid = iid_points()
+    if iid:
+        ms = np.array([p[0] for p in iid], float)
+        lo = np.array([p[1] for p in iid])
+        hi = np.array([p[2] for p in iid])
+        ax.plot(ms, lo, "D--", ms=3.2, lw=0.7, color="#000000",
+                label="i.i.d. spacings (best of draws)", zorder=5)
+        ax.errorbar(ms, lo, yerr=[np.zeros_like(lo), hi - lo], fmt="none",
+                    ecolor="#000000", elinewidth=0.8, capsize=2.0, zorder=4)
     ax.set_xlabel("$m$")
     ax.set_ylabel("best $D_m$")
     ax.grid(alpha=0.25)
