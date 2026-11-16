@@ -36,10 +36,12 @@ def gaps_from_w(w, m, rho):
     return d, 0.5 * L * (1.0 - np.tanh(w) ** 2)
 
 
-def unpack(theta, m, nz, rho):
+def unpack(theta, m, nz, rho, x_fixed=None):
     v = np.zeros(m, dtype=complex)
     v[1:-1] = theta[:m - 2] + 1j * theta[m - 2:2 * (m - 2)]
     v[-1] = 1.0
+    if x_fixed is not None:
+        return v, np.asarray(x_fixed, dtype=float)
     if nz:
         w = theta[2 * (m - 2):]
         d = gaps_from_w(w, m, rho)[0]
@@ -58,8 +60,8 @@ def exact_D(v, x):
         int((r <= r.min() * (1 + 1e-9)).sum())
 
 
-def surrogate(theta, m, beta, rho, nz):
-    v, x = unpack(theta, m, nz, rho)
+def surrogate(theta, m, beta, rho, nz, x_fixed=None):
+    v, x = unpack(theta, m, nz, rho, x_fixed)
     i, j = np.triu_indices(m, 1)
     dx = x[j] - x[i]
     d = np.abs(v[i] - v[j])
@@ -123,7 +125,8 @@ def optimise(m, rho, nz, rng, starts=5, betas=(1e2, 1e3, 1e4, 1e5, 1e6), maxiter
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["free", "bounded", "profile"], default="bounded")
+    ap.add_argument("--mode", choices=["free", "bounded", "profile", "random"], default="bounded")
+    ap.add_argument("--draws", type=int, default=3)
     ap.add_argument("--rhos", default="1,2,4,16")
     ap.add_argument("--gammas", default="0.5,1,2")
     ap.add_argument("--ms", default="8,12,16,24")
@@ -136,6 +139,8 @@ def main():
         grid = [("bounded", float(r)) for r in args.rhos.split(",")]
     elif args.mode == "free":
         grid = [("free", np.inf)]
+    elif args.mode == "random":
+        grid = [("random", float(k)) for k in range(args.draws)]
     else:
         grid = [("profile", float(g)) for g in args.gammas.split(",")]
     for kind, par in grid:
@@ -153,6 +158,18 @@ def main():
                                   options=dict(maxiter=800, ftol=1e-15, gtol=1e-12)).x
                 v, _ = unpack(np.concatenate([th, np.zeros(0)]), m, False, 1.0)
                 D, nmax, nmin = exact_D(v, x)
+            elif kind == "random":
+                xr = np.sort(rng.uniform(size=m)); xr[0], xr[-1] = 0.0, 1.0
+                v0 = make_start(m, 0, rng)
+                th = np.concatenate([v0[1:-1].real, v0[1:-1].imag])
+                for beta in (1e2, 1e3, 1e4, 1e5, 1e6):
+                    th = minimize(lambda t: surrogate(np.concatenate([t, np.zeros(0)]), m,
+                                                      beta, 1.0, False, xr),
+                                  th, jac=True, method="L-BFGS-B",
+                                  options=dict(maxiter=800, ftol=1e-15, gtol=1e-12)).x
+                v, _ = unpack(np.concatenate([th, np.zeros(0)]), m, False, 1.0, xr)
+                D, nmax, nmin = exact_D(v, xr)
+                x = xr
             elif kind == "free":
                 D, v, x = optimise(m, 1.0 + 1e-12, True, rng)
             else:

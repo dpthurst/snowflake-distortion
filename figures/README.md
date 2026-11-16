@@ -21,7 +21,8 @@ the chord, which the S crosses).
 the bar to the other branch at each m, and that gap as a percentage. Figure 5 of the note.
 
 `uneven-spacing.png` — finite-m optima with the parameter gaps bounded: best D_m against m for
-gap ratios 1..32, the m=16 shapes overlaid, and the optimal spacings at m=32. Figure 5 of the note.
+gap ratios 1..32, the m=16 shapes overlaid, and the optimal spacings at m=32. Preliminary, not in
+either note; see .scratch/uneven-spacing-preliminary.md.
 
 `arc-m.png` — the one-sided (arc) branch at m=40..1600: the gauged curve touches its chord
 but never crosses it. Figure 4 of the note.

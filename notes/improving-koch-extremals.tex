@@ -282,32 +282,6 @@ two tight maximum pairs; the certificate pins its position as well as the value,
 more than $10^{-12}$ away from it is discarded. Nothing here extends to $m=6$: that problem is
 eight-dimensional, and the box count grows like the square of the volume ratio.
 
-\paragraph{Uneven spacings.} What if the $m$ parameters are not the uniform ones? Asked without a
-constraint the question has no content: three points already achieve $D=1$ exactly (a triangle with
-sides $c,c,2^{\alp}c$ exists because $2^{\alp}\le2$), and splitting its points into near-duplicates --- $\varepsilon$ apart in parameter and
-$c\,\varepsilon^{\alp}$ apart in space --- keeps every ratio at $1$, so the infimum at every
-$m\ge3$ is $1$ and no curve is approximated (numerically: $D=1.0008$ at $m=6$, with parameter gaps
-spanning five orders of magnitude). Bounding the unevenness, $\max\Delta x/\min\Delta x\le\rho$,
-restores the problem: $\rho=1$ is the uniform ladder, and for each fixed $\rho$ the compactness
-argument still gives $D_m(\rho)\to D_\infty$, because comparable gaps keep the parameters
-asymptotically uniform. The rungs improve, at fixed $m$, by a few per cent: at $m=16$ the values are
-$1.245$, $1.219$, $1.175$, $1.163$ for $\rho=1,4,16,32$, and at $m=32$ they are $1.332$, $1.305$,
-$1.270$, $1.264$.
-
-The \emph{shapes} do not bifurcate. From $m=12$ up the optima are the same S profile as the uniform
-ladder, and the endpoint-gauged Hausdorff distance between the $\rho=1$ and the $\rho=32$ curve
-falls from $0.17$ at $m=16$ to $0.045$ at $m=32$: the same limit, reached sooner. At $m=8$ the
-optimiser does leave the branch --- with $\rho\ge4$ the optimum is one-sided, the pattern of
-Proposition~\ref{prop:m4} with points inserted, and at $\rho=32$ it reproduces $D=1.0628$ exactly.
-
-Where the points go is worth looking at, because it is not a smooth profile. At $\rho=32$ the
-optimal gaps sit \emph{at} the bound, in clusters: at $m=32$ they alternate between $0.0026$ and
-$0.082$, i.e. the curve is sampled by near-duplicate groups separated by jumps, which is what a
-self-similar structure wants. Imposing a smooth profile instead is catastrophic ---
-$x_i=(i/(m-1))^{1/2}$ gives $D=5.14$ at $m=12$ and $x_i=(i/(m-1))^{2}$ gives $11.16$, against
-$1.22$ for uniform. Unevenness helps only where the optimisation puts it
-(Figure~\ref{fig:uneven}).
-
 \paragraph{Two macro-shapes, kept apart.} The searches return two families that do not mix. In the
 first the gauged curve crosses its chord and carries one lobe on each side of it --- the S-shaped
 branch of Figure~\ref{fig:ladder}. In the second it stays on one side, a single arch with a fractal
@@ -376,18 +350,6 @@ $m=200$ used to be the arc, which is $0.8\%$ above the S value now recorded ther
   Nothing here selects a branch: the two are recorded because a numerical ladder that mixes them
   is not a sequence.}
   \label{fig:arc}
-\end{figure}
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\textwidth]{uneven-spacing.png}
-  \caption{Uneven spacings, with the gap ratio bounded by $\rho$. Left: the best $D_m$ found falls
-  at every $m$ as more unevenness is allowed, by $0.07$ at $m=32$ from $\rho=1$ to $\rho=32$.
-  Middle: at $m=16$ the optima for $\rho=1,4,32$ are the same S profile, sampled unevenly (dots are
-  the points); the endpoint-gauged distance between the extreme two is $0.17$. Right: the optimal
-  spacings at $m=32$ --- the $\rho=32$ optimum is a staircase, clusters of near-duplicate points
-  separated by jumps of the maximal size, not a smooth grading. These are local optima from a few
-  starts; the values are not monotone in $m$ at fixed $\rho$, which is the signature of that.}
-  \label{fig:uneven}
 \end{figure}
 
 \begin{figure}[t]
@@ -497,9 +459,6 @@ $D_\infty$.
   \texttt{arc\_m1600.npy}, under \texttt{results/}, \texttt{.scratch/} and
   \texttt{.ultramath/smwhdqmht/m1/} respectively; the last-named script draws
   Figures~\ref{fig:arc} and~\ref{fig:gap}.
-\item \texttt{scripts/uneven\_spacing.py} and \texttt{scripts/optimise\_uneven.py} are the
-  uneven-spacing experiments of \S\ref{sec:ladder} (results in \texttt{results/uneven-*.json},
-  figure from \texttt{scripts/plot\_uneven.py}).
 \item \texttt{scripts/certify\_m4.py} is the certificate of Proposition~\ref{prop:m4}; it prints
   the certified window and writes \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
   is the $\alp=\tfrac12$ ladder of \S\ref{sec:prior} (results in \texttt{results/ladder-half.json}).
