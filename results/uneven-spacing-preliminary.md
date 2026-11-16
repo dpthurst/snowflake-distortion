@@ -335,6 +335,10 @@ $+7.5$ along $(w_1,w_4)=(1,1)$ and $+0.05$ along the anti-diagonal $(1,-1)$: so 
 local minimum *within this family*, pointy rather than smooth. That is what a KKT point that is not
 smooth looks like, so it does not answer the question either.
 
+**Resolved in §13:** the descent exists. The argument below is therefore moot as a programme; it
+is kept because the diagnostic it describes (the multiplier residual) correctly predicted
+non-stationarity.
+
 **What would.** The Koch extremal pairs are explicit (the orbit of the two seeds under the four
 maps, at all scales), so a continuum stress would be a *self-similar pair of measures* on their
 addresses, and the balance at a test point becomes a countable linear system obtained by
@@ -428,3 +432,43 @@ $\gamma_0=F_{\rm Koch}$, with $D(\gamma_s)<D(\gamma_0)$ for small $s>0$. The fou
 §10 is exactly such a family (free weights, Koch directions, closure), and there $D$ increases in
 every direction tested (slopes $+0.05$ to $+7.5$). Finding a family that *does* descend near Koch
 would settle the stress question negatively at once; nothing here does.
+
+## 13. Resolved: Koch *is* the $t=\tfrac12$ member of the two-piece family, so there is a first-order descent
+
+The two-piece construction of §2 of the note — $\gamma(x)=b_0\overline{\gamma(x/t)}$ for $x\le t$,
+$\gamma(x)=1+b_1\gamma((1-x)/(1-t))$ for $x\ge t$, with $|b_0|=t^\alpha$, $|b_1|=(1-t)^\alpha$,
+$b_0-b_1=1$ — has $t$ as a free parameter. At $t=\tfrac12$ both weights are $\tfrac12$ and both ratios
+are $2^{-\alpha}=1/\sqrt3$, and the construction reproduces the Koch curve (reflected in the real
+axis, which is a similarity):
+
+```
+      t        D(t) (level 10)      D - D(Koch)     one-sided slope
+    0.5000    2.096805161          0               -
+    0.4990    2.097583106         +7.8e-04         -0.78  (from below)
+    0.5010    2.096248775         -5.6e-04         -0.56  (from above)
+    0.5100    2.090092792         -6.7e-03
+    0.5200    2.082633686         -1.4e-02
+    0.5400    2.063943913         -3.3e-02
+    0.5630    2.041469         (deep-level value 2.04204)   minimum
+```
+
+Confirmation that $t=\tfrac12$ is Koch and not merely something with the same distortion: the minimum
+and maximum ratios there are $0.48346$ and $1.01372$, i.e. the two sharp Koch constants
+$2\cdot6^{-\alpha}$ and $2\sqrt{211}\cdot69^{-\alpha}$; and the level-10 nodes coincide with the
+Koch dyadic nodes to $4\times10^{-3}$ after conjugating (the residual is the parameter-grid mismatch
+of the two enumerations, not a geometry difference).
+
+Consequences:
+
+* the two-piece family **is** a one-parameter family of admissible self-similar arcs containing the
+  Koch curve, so §12's "not in a common family" was wrong — the two-branch normal form contains
+  Koch once reversal and reflection are identified by the Koch symmetry $F(1-u)=1-\overline{F(u)}$;
+* $D$ decreases on both sides of $t=\tfrac12$ with non-zero one-sided slopes ($-0.56$ above,
+  $-0.78$ below): Koch is a *corner maximum* along the family;
+* hence there **is** a first-order descent direction at the Koch curve. **No stress exists**, and the
+  Koch curve is not even a stationary point of the distortion functional. The finite-level
+  multiplier residuals of §10 ($1.95,1.78,1.11,1.08,0.41$) were telling the truth.
+
+Nothing about the bounds changes: Koch remains the only *proved* explicit bound at $2.0968$; what
+changes is that it is now clear it is not a critical point — the distortion functional has a corner
+there, and the descent from it leads to the two-piece arc at $t\approx0.563$ and $D=2.042$.
