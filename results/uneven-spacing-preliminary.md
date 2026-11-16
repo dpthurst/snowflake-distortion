@@ -393,3 +393,38 @@ shapes are the same S curve (§3) --- and all three families are legitimate disc
 i.i.d. rate is genuinely better or only looks so at these $m$ cannot be settled from three points:
 its increments are $0.059$ ($m=100\to200$) and $0.057$ ($200\to400$), a decay ratio of $0.96$ per
 doubling, the same as the uniform ladder's $0.95$.
+
+## 12. Does the two-piece arc (2.042) imply a descent at Koch?
+
+**They are not in a common self-similar family.** Koch is a four-branch self-similar arc, weights
+$(1/4,1/4,1/4,1/4)$, ratios $1/3$, directions $(0,60^\circ,-60^\circ,0)$, no reflections or
+reversals; the two-piece arc has two branches, unequal weights $(t,1-t)$ with $t=0.563$, ratios
+$t^\alpha,(1-t)^\alpha$, one reflection and one reversal. The number of branches, the weight vector
+and the sign/reflection pattern are all discrete data at a fixed exponent ($r_i=w_i^\alpha$,
+$\sum w_i=1$); you can only pass between them by degenerating branches, which is not a path of
+admissible arcs. So there is no one-parameter self-similar family containing both.
+
+**A better competitor elsewhere gives no local information.** The naive path — interpolate the two
+*parametrisations*, $\gamma_s=(1-s)F_{\rm Koch}+sF_{2\rm pc}$ on a common uniform parameter grid —
+does not descend at all:
+
+```
+   s        0      0.001     0.003     0.01      0.03      0.1       0.3
+   D(s)  2.096805  2.103048  2.115649  2.160984  2.302097  2.987034  16.29
+```
+
+$D$ *increases* immediately and blows up in the middle (the two curves are very different, so the
+convex combination develops tiny chords). Existence of a better curve somewhere says only that Koch
+is not the *global* minimiser, which was never in doubt; a stress is a *local* object.
+
+**A trap in the comparison itself.** $D$ depends on the parametrisation. The two-piece arc's $2.042$
+is in *its own* self-similar parametrisation; evaluated on the uniform parameter grid the same point
+set scores $2.652$. So "$2.042<2.097$" compares two admissible arcs *each in its natural
+parametrisation* — legitimate as a comparison of curves, but it is not a path between them, and it
+does not identify a direction at Koch.
+
+**What would imply a descent** is a local family: admissible arcs $\gamma_s$, $s\in[0,\varepsilon)$,
+$\gamma_0=F_{\rm Koch}$, with $D(\gamma_s)<D(\gamma_0)$ for small $s>0$. The four-branch family of
+§10 is exactly such a family (free weights, Koch directions, closure), and there $D$ increases in
+every direction tested (slopes $+0.05$ to $+7.5$). Finding a family that *does* descend near Koch
+would settle the stress question negatively at once; nothing here does.
