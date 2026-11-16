@@ -1,0 +1,235 @@
+% Build from this directory so that \graphicspath finds ../figures:
+%   cd notes && latexmk -pdf -outdir=../.scratch/tex-build improving-koch-extremals.tex
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.35cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Improving on the Koch extremal},pdfauthor={Open Math OS agent}}
+\setlist{nosep,leftmargin=*}
+\graphicspath{{../figures/}}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\alp}{\alpha}
+\title{Improving on the Koch extremal\\[2pt]
+\large two explicit arcs below $2.0968$, and the finite-$m$ ladder\\[6pt]
+\normalsize working note --- problem set-up, nothing new certified}
+\author{Open Math OS agent}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent The Koch arc gives the only \emph{proved} explicit distortion for the
+$\alp$-snowflake of an interval, $D=\sqrt{633}\,23^{-\alp}=2.096805160875\ldots$
+with $\alp=\log_4 3$. Two self-similar arcs with reflections and parameter reversals are
+recorded here that measure $D=2.04204$ (two pieces) and $D=2.017935389$ (three pieces), i.e.\
+$2.6\%$ and $3.8\%$ below Koch. Both are numerical constructions, not certificates. Alongside them
+we collect the best known positions for $m=100,\dots,1600$ points, whose distortions
+$1.436$--$1.636$ lie far below any explicit curve, and we state the gap between the two
+as the problem.
+\end{abstract}
+
+\section{The quantity}
+
+Let $\alp=\log 3/\log 4=0.7924812504\ldots$ For an injective arc $\gamma\colon[0,1]\to\R^2$ put
+\[
+  r_\gamma(x,y)=\frac{|\gamma(x)-\gamma(y)|}{|x-y|^{\alp}}\ (x\ne y),
+  \qquad
+  D(\gamma)=\frac{\sup r_\gamma}{\inf r_\gamma}\in[1,\infty].
+\]
+$D$ is invariant under similarities of the plane and under reparametrisation by an affine map of
+$[0,1]$, and $D(\gamma)<\infty$ exactly when $\gamma$ is bi-H\"older with exponent $\alp$ both ways,
+i.e.\ when $\gamma$ is a bi-Lipschitz image of the snowflake $([0,1],|\cdot|^{\alp})$.
+Write
+\[
+  D_\infty=\inf\{D(\gamma):\ \gamma \text{ injective, } D(\gamma)<\infty\}.
+\]
+
+\paragraph{What is proved.} For the self-similar Koch parametrisation $F$,
+\begin{equation}\label{eq:koch}
+  2\cdot 6^{-\alp}\ \le\ \frac{|F(x)-F(y)|}{|x-y|^{\alp}}\ \le\ 2\sqrt{211}\cdot 69^{-\alp}
+  \qquad (x\ne y),
+\end{equation}
+with $2\cdot6^{-\alp}=0.4834590784$ and $2\sqrt{211}\cdot69^{-\alp}=1.0137194906$, both sharp;
+hence $D(F)=\sqrt{633}\,23^{-\alp}=2.096805160875153\ldots$. The two-sided inequality and the
+sharpness of both constants are proved in the companion note \texttt{koch-extremals.tex}
+(reduction to a compact dyadic pair of parameters and a directed-interval computation).
+This is, as far as the workspace knows, the only proved explicit bound of this kind, and it is
+an upper bound for $D_\infty$: no explicit lower bound is known.
+
+\section{Two explicit arcs below Koch}
+
+Both are self-similar with a reflection and a reversal of the parameter, which is what buys the
+improvement: a plain four-piece similar arc reproduces the Koch value, and the freedom to reflect
+one piece and traverse another backwards breaks the symmetry that forces \eqref{eq:koch} to be
+attained.
+
+\subsection*{Two pieces}
+
+Let $t=0.563$, $r_0=t^{\alp}$, $r_1=(1-t)^{\alp}$, and let $b_0,b_1\in\mathbb{C}$ satisfy
+$|b_0|=r_0$, $|b_1|=r_1$, $b_0-b_1=1$ (so the pieces close). Define $\gamma$ by
+\[
+  \gamma(x)=b_0\,\overline{\gamma(x/t)}\quad (x\le t),
+  \qquad
+  \gamma(x)=1+b_1\,\gamma\!\left(\frac{1-x}{1-t}\right)\quad (x\ge t).
+\]
+The first branch reflects, the second reverses, and $\gamma(0)=0$, $\gamma(1)=1$.
+Measured at level $16$ ($m=65537$), the deepest level at which the extrema had stopped moving,
+this gives $D=2.04204\pm2\times10^{-5}$; a sweep of $t\in[0.45,0.70]$ over all sixteen
+(sign, reflection) patterns makes $(\sigma=(1,-1),\ \epsilon=(1,0))$ the unique best, flat in $t$
+over $[0.555,0.570]$. The runner-up pattern is the forward unequal two-piece system at $t=0.615$,
+$D=2.0635$.
+
+\subsection*{Three pieces, in closed form}
+
+With $w=(\sqrt2-1,\ 3-2\sqrt2,\ \sqrt2-1)$, $\sigma=(+1,-1,-1)$, $\epsilon=(1,0,0)$, put
+$r_i=w_i^{\alp}$,
+\[
+  b_1=-r_1,\qquad
+  \operatorname{Re}b_0=\tfrac{1-r_1}{2},\qquad
+  \operatorname{Im}b_0=\sqrt{r_0^2-(\operatorname{Re}b_0)^2},\qquad
+  b_2=-\overline{b_0}.
+\]
+Then $b_0-b_1-b_2=1$ identically, so the construction closes with no free parameter and no
+numerical optimisation. Piece $i$ covers the parameter interval $[a_i,a_i+w_i]$, $a=(0,w_0,w_0+w_1)$,
+is traversed forward if $\sigma_i=+1$ and reversed otherwise, and carries
+$S_i(z)=C_i+b_i\cdot(\bar z\text{ if }\epsilon_i\text{ else }z)$ with
+$C_i=A_i$ (forward) or $A_i-b_i$ (reversed), $A_1=0$, $A_{i+1}=A_i+\sigma_ib_i$.
+Measured at levels $9$--$11$ ($m=19684,\,59050,\,177148$) the value is
+\[
+  D=2.017935389433,\qquad r\in[0.539784127329,\ 1.089249493191],
+\]
+identical to twelve digits across the three levels and stable to $3\times10^{-11}$ between the
+last two. Its minimum chord is $1.7\times10^{-6}$ of the diameter at $m=59050$, at the deepest
+parameter gap, so there is no self-contact.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{explicit-curves.png}
+  \caption{The Koch arc (left, proved sharp), the two-piece reversible arc (middle,
+  $D=2.04204$) and the three-piece reversible arc (right, $D=2.017935$), each drawn at a
+  level where the picture is settled and endpoint-normalised.}
+  \label{fig:curves}
+\end{figure}
+
+\begin{remark}[what these numbers are]
+Both are \emph{measurements at a deep level}, not certificates. A level-$K$ configuration sees
+only pairs of its own nodes, so its ratio is a lower bound for the ratio of the arc and can only
+increase with $K$: our own recomputation gives $2.04147$ at $K=10$ and $2.015528$ at $K=6$ for the
+two curves, i.e.\ $0.1$--$0.2\%$ below the quoted values, which is the size of the drift between
+levels. For the two-piece arc the extrema needed $K=16$ before they stopped moving; for the
+three-piece they were stable by $K=9$. A certified statement would need the exact cross-piece
+functional (the pair-graph variational problem) rather than deeper sampling.
+\end{remark}
+
+\section{The finite-\texorpdfstring{$m$}{m} ladder}
+
+For $m\ge2$ let $D_m$ be the least distortion of an $m$-point configuration
+$v_0,\dots,v_{m-1}\in\R^2$,
+\[
+  D_m=\min_v\ \frac{\max_{i<j}|v_i-v_j|/|i-j|^{\alp}}{\min_{i<j}|v_i-v_j|/|i-j|^{\alp}} .
+\]
+Two elementary inequalities tie this to $D_\infty$:
+\begin{itemize}
+\item $D_m\le D_{m+1}$, since deleting a point cannot increase the maximum ratio or decrease the
+  minimum;
+\item $D_m\le D_m(\gamma)\le D(\gamma)$ for any $\gamma$, sampling at the $m$ uniform parameters.
+\end{itemize}
+Hence $D_m$ is nondecreasing and $D_m\le D_\infty$. That the two agree,
+$D_m\to D_\infty$, follows from compactness once the $D_m$ are bounded: after the endpoint gauge
+$|w_i-w_j|\in[(|i-j|h)^{\alp},\,D_m(|i-j|h)^{\alp}]$ with $h=1/(m-1)$, so linear interpolation
+in the index gives an equicontinuous, uniformly bounded family, and any subsequential limit is an
+optimal curve satisfying $|\gamma(x)-\gamma(y)|\in[|x-y|^{\alp},\Lambda|x-y|^{\alp}]$.
+So the ladder \emph{is} the continuum problem, only sampled.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{rrll}
+\toprule
+$m$ & best known $D_m$ & file & status\\
+\midrule
+$40$    & $1.3523099782$ & \texttt{final\_m40.npz}      & stationary\\
+$100$   & $1.4362283999$ & \texttt{final\_m100.npz}     & stationary\\
+$200$   & $1.5031685289$ & \texttt{descended\_m200.npy} & stationary\\
+$400$   & $1.5417920000$ & \texttt{m400\_converged.npy} & first-order certified\\
+$800$   & $1.5900261898$ & \texttt{m800\_converged.npy} & first-order certified\\
+$1600$  & $1.6355308997$ & \texttt{s\_m1600\_plain.npy} & stationary, not certified\\
+\bottomrule
+\end{tabular}
+\caption{Best known $m$-point distortions. ``First-order certified'' means a multiplier vector on
+the tight maximum and minimum pairs exists, so no descent direction does; it says nothing about
+other basins, and no $D_m$ here is proved optimal.}
+\label{tab:ladder}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{ladder-m.png}
+  \caption{The configurations of Table~\ref{tab:ladder}, endpoint-gauged. From $m=100$ upward they
+  are visibly the same S-shaped profile with progressively finer microstructure; this is the
+  sequence whose limit one wants to describe.}
+  \label{fig:ladder}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.68\textwidth]{ladder-D.png}
+  \caption{The ladder against the explicit arcs: $D_m$ still climbing ($1.35\to1.64$) while the
+  best explicit curves sit at $2.02$--$2.04$. The vertical gap of about $0.4$ is the open problem.}
+  \label{fig:gap}
+\end{figure}
+
+\section{The gap, and what would close it}
+
+Figure~\ref{fig:gap} is the whole point of this note: the ladder is a monotone sequence of upper
+bounds for $D_\infty$ that has reached $1.6355$ at $m=1600$, while the best explicit arc is
+$2.0179$ and the only proved one is $2.0968$. Nothing in hand says which side is close to
+$D_\infty$.
+
+\begin{enumerate}[label=(\alph*)]
+\item \textbf{A certified arc below Koch.} The three-piece construction is explicit enough to be a
+  theorem candidate: closed-form parameters, closure exact in $\R$, no optimisation. What is
+  missing is a proved bound on the cross-piece pairs, i.e.\ a two-sided version of \eqref{eq:koch}
+  for this map system, presumably by the same dyadic-parameter reduction used for Koch but with
+  three addresses instead of four. This seems the most tractable genuinely new result in reach.
+\item \textbf{Can an explicit arc reach the ladder?} If $D_\infty\approx1.6$--$1.7$ the existing
+  constructions are far from optimal and a different idea is needed. The data suggest the optima
+  are \emph{not} self-similar in the strict sense: their own sub-arcs are not copies, and the
+  exact self-similar candidates that were tried all sit above $2.0$.
+\item \textbf{Is the infimum attained?} By the compactness above, a limit of near-optimal
+  configurations is optimal; what is unclear is whether the limit is unique, and the numerical
+  ladder shows many distinct stationary configurations within a fraction of a percent
+  (31 at $m=40$, 40 at $m=100$), so uniqueness of the \emph{selected} branch is not to be expected
+  without a selection rule.
+\item \textbf{Structure of the ladder.} The configurations' self-overlaps, their near-ties and the
+  shape of the multiplier measures are the natural diagnostics; a companion note records what the
+  overlap search says (many approximate self-similarities, thinning as $m$ grows).
+\end{enumerate}
+
+\section*{What is proved here, and what is not}
+
+\begin{itemize}
+\item Proved (elsewhere): \eqref{eq:koch} with both constants sharp; hence $D_\infty\le2.0968$.
+\item Measured, not proved: $D=2.04204$ and $D=2.017935389$ for the two explicit arcs; every entry
+  of Table~\ref{tab:ladder}; the monotone ladder $1.3523\le\cdots\le1.6355$.
+\item Not known: any lower bound for $D_\infty$; whether either explicit arc is optimal; whether
+  $D_m$ converges at all rapidly enough to be extrapolated.
+\end{itemize}
+
+\appendix
+\section*{Reproduction}
+\begin{itemize}
+\item \texttt{scripts/explicit\_curves.py} builds both arcs from the formulas above and prints
+  the level-$K$ ratios; \texttt{scripts/plot\_explicit\_and\_ladder.py} draws
+  Figures~\ref{fig:curves}--\ref{fig:gap}.
+\item The configurations of Table~\ref{tab:ladder} are stored in the paths named there;
+  \texttt{scripts/optimise\_m400.py} produced the two certified rows.
+\end{itemize}
+
+\end{document}
