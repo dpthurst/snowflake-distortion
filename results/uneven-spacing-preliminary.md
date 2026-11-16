@@ -381,8 +381,9 @@ two columns below.
 ```
 (*at $m=96$; the $\kappa=4$ run at $m=100$ was not made.)
 
-So i.i.d. is the lowest of the three families at every common $m$, by $2.0\%$, $1.5\%$, $1.3\%$
-over uniform at $m=100,200,400$; the gain over $\kappa=4$ is about $1\%$. And the draws agree to
+So i.i.d. is the lowest of the three families at every common $m$: taking the best draw, it is
+below uniform by $2.2\%$, $1.8\%$, $1.3\%$ at $m=100,200,400$, and below $\kappa=4$ by $1.5\%$ and
+$1.1\%$ at $m=200,400$. And the draws agree to
 $0.1$--$0.5\%$ once the homotopy is used, which is what makes the comparison meaningful.
 
 The ordering i.i.d. $<$ $\kappa=4$ $<$ uniform at every $m$ is what §5 predicts: more allowed
@@ -390,5 +391,5 @@ unevenness, lower $D$ at fixed $m$, by a diminishing amount. It is still a *samp
 shapes are the same S curve (§3) --- and all three families are legitimate discretisations
 (asymptotically uniform sampling), so they share the limit and differ only in rate. Whether the
 i.i.d. rate is genuinely better or only looks so at these $m$ cannot be settled from three points:
-its increments are $0.063$ ($m=100\to200$) and $0.053$ ($200\to400$), decaying like the $\kappa=4$
-ones.
+its increments are $0.059$ ($m=100\to200$) and $0.057$ ($200\to400$), a decay ratio of $0.96$ per
+doubling, the same as the uniform ladder's $0.95$.
