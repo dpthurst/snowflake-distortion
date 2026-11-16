@@ -96,3 +96,48 @@ property of the S branch already.
   $m\ge96$); or compare sampling *densities* (the parameter measure) rather than point sets; or run
   the sub-arc self-similarity diagnostic directly on the uneven optima, which is the test that
   distinguishes "a different kind of optimum" from "a different sampling of the same curve".
+
+## 5. Is the gain "just the prevalence of large arcs"?
+
+Suggested hypothesis: at fixed $m$ an uneven parametrisation might win simply because it offers
+long parameter spans whose ratios are slack, i.e. because "large arcs" are prevalent. The data says
+no, on three counts (all at $m=32$ unless stated).
+
+**The optimiser does not make large arcs.** At $\rho=32$ the longest gap is $2.5\times$ the mean gap
+($0.082$ against $0.032$) and the shortest is $0.08\times$: it *clusters* points, it does not open
+long arcs. Across $m=8\dots32$ at $\rho=32$ the largest gap is $2.4$–$4.8\times$ the mean.
+
+**The gain does not need them.** Gaps confined to $[0.65,1.4]\times$ the mean ($\rho=2$, so no long
+arcs at all) already recover $7$–$20\%$ of the $\rho=1\to32$ gain, $\rho=4$ recovers $28$–$43\%$ and
+$\rho=16$ recovers $68$–$91\%$; the gain grows roughly linearly in $\log\rho$ with no threshold.
+
+**The binding pairs are not the long ones.** At $m=32$:
+
+```
+                     D        max r at span   min r at span    r over spans<0.05   r over spans>0.5
+ uniform          1.33192    0.387 (1.1x)     0.452 (1.3x)       0.789-0.938        0.789-1.050
+ rho=2            1.31850    0.641 (1.8x)     0.535 (1.5x)       0.787-0.924        0.787-1.038
+ rho=32           1.26423    0.805 (1.9x)     0.538 (1.2x)       0.825-1.043        0.825-1.043
+ random draw 0    1.29296     -                -                  0.804-1.038        0.804-1.039
+```
+
+(spans in ordinary units, with "x" the span divided by the mean span of all pairs.)
+
+The binding ratios sit at spans of $1.1$–$1.9\times$ the mean in every case --- never at the longest
+arcs --- and the long-span ratios are if anything *narrower* than the rest, not slack in a way that
+helps.
+
+**What the gain actually is.** It is a rise of the *minimum* ratio: the smallest ratio goes from
+$0.789$ (uniform) to $0.825$ ($\rho=32$), while the largest barely moves ($1.050\to1.043$). In the
+uniform optimum the short-span pairs sit at the bottom of the ratio range ($0.789$--$0.938$ for spans
+below $0.05$, against $1.050$ for long spans): the small-scale chords are systematically too short.
+Uneven spacing lets the finite configuration place its points so that short and long spans have the
+*same* ratio range ($0.825$--$1.043$ in both), i.e. it equalises across scales at fixed $m$, which the
+uniform grid blocks. The correlation between $\log$ span and $\log$ ratio barely changes
+($+0.54$ uniform, $+0.48$ at $\rho=32$), so this is a shift of the ratio range, not a change of
+structure.
+
+In short: the lower $D$ is a *sampling* effect, as suspected, but the mechanism is the extra freedom
+to place the points (which removes a scale bias), not the presence of long arcs. Since every fixed
+$\rho$ still has $D_m(\rho)\to D_\infty$, it buys rate of convergence, not a different limit.
+Caveat: this diagnostic is at $m=32$; it should be repeated at the largest $m$ we can afford.
