@@ -210,3 +210,85 @@ bounds*, not the limit. For the actual continuum value the more promising route 
 stationarity structure (stress measure, variational inequality) that the earlier sessions started,
 with a refinement scheme that inserts points where the stress concentrates --- that converges to a
 stationary point of the continuum problem rather than crawling up the $m$-ladder.
+
+## 8. The $\kappa=4$ family at large $m$ (200, 400)
+
+Deterministic, warm-started (`scripts/uneven_large.py`, results `results/uneven_k4_m*.npz`,
+`results/uneven-kappa4-large.json`, `results/uneven-kappa4-m400.json`). Gaps and positions both
+optimised, gap ratio bounded by 4; every run uses the full bound (gap ratio 3.45–3.69), so the
+constraint is active, not a near-uniform optimum.
+
+```
+   m       32        64        96        128       200       400
+ kappa=4  1.30524   1.38756   1.42510   1.45258   1.48548   1.53749
+ uniform  1.33192   1.39536*  1.43403   -         1.49086   1.54179
+ gain     3.6%      0.56%     0.52%     -         0.36%     0.28%
+```
+(*interpolated in $\log m$ between the uniform rungs.)
+
+* The gap between the two families **shrinks**: $3.6\%$ at $m=32$, $0.5$–$0.6\%$ at $m=64$–96,
+  $0.2$–$0.4\%$ at $m=128$–400. So the unevenness buys a *transient* advantage, as it must if both
+  families converge to the same $D_\infty$.
+* **The increments do not decay faster.** Per doubling of $m$: $\kappa=4$ gives
+  $0.082, 0.064, 0.066, 0.051, 0.052$; the uniform ladder gives $0.064, 0.055, 0.051, 0.048, 0.046$.
+  At matched $m$ the two are the same to about $0.005$; the $\kappa=4$ ladder simply sits lower.
+* **Extrapolation.** A fit $D_m=D_\infty-cm^{-s}$ gives, for $\kappa=4$,
+  $D_\infty=1.768$, $c=1.19$, $s=0.273$, residuals $\le0.0025$; for the uniform ladder
+  $D_\infty=2.161$, $s=0.116$, which is **inadmissible** ($2.161>2.0968$, the proved Koch ceiling).
+  The $\kappa=4$ extrapolation is plausible but should not be trusted: the model is arbitrary, the
+  residuals are comparable to the whole gap between the families, and $s$ is fitted to five points.
+  What it does say is that the uniform ladder is in a regime where extrapolation cannot be used at
+  all, while a bounded-unevenness ladder is not.
+* **Noise.** Repeated runs at $m=200$ differ by $0.0016$ ($1.48380$ against $1.48548$), i.e. $0.1\%$;
+  the $m=400$ value is a single run. So the $0.2$–$0.4\%$ gaps at large $m$ are at the edge of what
+  this optimiser resolves, and the trend (shrinking gap) is the part to trust, not the individual
+  numbers.
+
+## 9. What exactly is the "stress measure"
+
+Two levels; the finite one is implemented (`slp2.stress`), the continuum one is a programme.
+
+**Finite $m$.** Free coordinates $x\in\mathbb{R}^{2(m-2)}$ (positions after the similarity gauge), and
+for each pair $a=(i,j)$ the log-ratio $L_a(x)=\log r_{ij}=\log|v_i-v_j|-\alpha\log|i-j|$. The problem
+$\min_x\ \max_a L_a-\min_b L_b$ has the KKT conditions: there are weights
+$\lambda\in\Delta(E^+)$, $\mu\in\Delta(E^-)$ on the tight sets
+$E^+=\{a:L_a=\max L\}$, $E^-=\{b:L_b=\min L\}$ with
+\[
+  \sum_{a\in E^+}\lambda_a\nabla L_a \;=\; \sum_{b\in E^-}\mu_b\nabla L_b ,
+\]
+and each $\nabla L_a$ is supported on the two endpoints of $a$ with value
+$\pm(v_i-v_j)/|v_i-v_j|^2$ — a unit vector along the chord divided by its length. So the certificate
+is a *pair of probability measures on the tight pairs* whose fields balance at every free vertex:
+$\lambda$ pulls along the longest chords, $\mu$ pushes along the shortest. `slp2.stress` solves
+exactly this feasibility LP (status 0 = a certificate exists); that is what "first-order certified"
+means in Table 1. At $m=200$ it is $48+346$ pairs, at $m=400$ it is $80+695$ (arc branch) — thousands
+of coefficients, so the measures are far from unique.
+
+**Continuum.** A pair of Borel probability measures $\sigma^+$ on $[0,1]^2$ supported on
+$E^+=\{(x,y):r(x,y)=M\}$ and $\sigma^-$ supported on $E^-=\{(x,y):r(x,y)=m_0\}$, such that for every
+test field $\psi\in C_c((0,1);\mathbb{R}^2)$
+\[
+  \iint \psi(x)\cdot\Phi(x,y)\,d\sigma^+(x,y) \;=\; \iint \psi(x)\cdot\Phi(x,y)\,d\sigma^-(x,y),
+  \qquad \Phi(x,y)=\frac{\gamma(x)-\gamma(y)}{|\gamma(x)-\gamma(y)|^2},
+\]
+i.e. the first variation of $M$ and of $m_0$ agree in every direction — the curve is a stationary
+point of the minimax. Equivalently, with $\sigma=\sigma^+-\sigma^-$, the stress field
+$S(x)=\int\Phi(x,y)\,d\sigma_x(y)$ vanishes (Lebesgue-a.e. $x$), where $\sigma_x$ is the
+disintegration at $x$.
+
+Two points of care. (i) $|\Phi|\sim|x-y|^{-\alpha}\to\infty$ on the diagonal, so the integrals are
+principal values: the equation only makes sense if $\sigma^+$ and $\sigma^-$ have matching
+short-distance behaviour near $y=x$. That is not an artefact — the numerics show the extrema
+recurring at *every* scale (contiguous blocks of the $m=400$ configuration reproduce $D$ to
+$1.2\times10^{-13}$), so mass genuinely accumulates on the diagonal, and the balance has to be
+imposed scale by scale. (ii) The multipliers are not unique at these $m$ (thousands of tight pairs,
+highly degenerate LP), so the continuum statement requires a canonical selection — the earlier
+session used a least-TV selection; weak-* convergence of the selected measures along a
+shape-compatible branch is the test that was proposed and not carried out
+(`results/limiting_curve_directions.md`).
+
+**What one would do with it.** Compute $(\lambda,\mu)$ at each $m$ (a small LP), read the marginals
+on the index $i$, and insert points where the marginal mass or the residual $|S(x)|$ is largest:
+an adaptive refinement driven by the stress, which converges to a stationary curve instead of
+crawling up the $m$-ladder. Nothing of this is carried out; the finite LP is the only part that
+exists in code.
