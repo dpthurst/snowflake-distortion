@@ -463,8 +463,10 @@ Consequences:
 * the two-piece family **is** a one-parameter family of admissible self-similar arcs containing the
   Koch curve, so §12's "not in a common family" was wrong — the two-branch normal form contains
   Koch once reversal and reflection are identified by the Koch symmetry $F(1-u)=1-\overline{F(u)}$;
-* $D$ decreases on both sides of $t=\tfrac12$ with non-zero one-sided slopes ($-0.56$ above,
-  $-0.78$ below): Koch is a *corner maximum* along the family;
+* $D$ is *monotone decreasing* along the family through $t=\tfrac12$ --- $2.1104$ at $t=0.48$,
+  $2.096805$ at $0.50$, $2.0901$ at $0.51$, $2.0639$ at $0.54$, $2.0415$ at $0.563$ --- with the
+  slope changing across the Koch point from $-0.78$ (below) to $-0.56$ (above): the extremal pairs
+  reorganise there, but the descent is first order on both sides;
 * hence there **is** a first-order descent direction at the Koch curve. **No stress exists**, and the
   Koch curve is not even a stationary point of the distortion functional. The finite-level
   multiplier residuals of §10 ($1.95,1.78,1.11,1.08,0.41$) were telling the truth.
