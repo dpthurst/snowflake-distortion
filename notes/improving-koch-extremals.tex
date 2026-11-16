@@ -5,7 +5,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{microtype}
+\usepackage[protrusion=true,expansion=false]{microtype}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Improving on the Koch extremal},pdfauthor={Open Math OS agent}}
@@ -32,7 +32,11 @@ recorded here that measure $D=2.04204$ (two pieces) and $D=2.017935389$ (three p
 $2.6\%$ and $3.8\%$ below Koch. Both are numerical constructions, not certificates. Alongside them
 we collect the best known positions for $m=100,\dots,1600$ points, whose distortions
 $1.436$--$1.636$ lie far below any explicit curve, and we state the gap between the two
-as the problem.
+as the problem. The finite-$m$ searches return two macro-shapes --- S-shaped and one-sided arcs ---
+which are recorded separately, per branch, together with the bar that measures how far each rung
+could move without leaving the search. Section~\ref{sec:prior} records what was known before: that
+the exponent is forced, that some distortion is unavoidable, and that the elementary estimate
+bounds only one of the two constants.
 \end{abstract}
 
 \section{The quantity}
@@ -67,6 +71,54 @@ attaining pairs are evaluated in Eisenstein arithmetic, and the inequalities the
 by directed-interval branch-and-bound with reported box counts, residual cells and margins. So the
 statement is computer-assisted rather than formalised end to end: the value at $(5/16,11/16)$ is
 formalised in Lean, the global enclosure is not.
+
+\section{What was known, and what is forced}\label{sec:prior}
+
+The two-sided inequality is not a new problem, only a newly sharpened one, and it is worth
+saying exactly what was in hand before the computation of the companion note.
+
+\paragraph{The exponent is forced once the curve is fixed.} If $\gamma\colon[0,1]\to\R^2$ is
+injective with $D(\gamma)<\infty$ then $\gamma$ is bi-Lipschitz onto its image as a map
+$([0,1],|\cdot|^{\alp})\to\R^2$, so its image has Hausdorff dimension $1/\alp$ (Hausdorff dimension
+is a bi-Lipschitz invariant). A curve of Hausdorff dimension $d$ therefore admits such a
+parametrisation only with $\alp=1/d$; for the Koch curve $d=\log4/\log3$, which gives
+$\alp=\log3/\log4$. So the exponent is not a choice: it is the dimension of the set being
+parametrised, and changing it changes the set. The constant is a different matter. The qualitative theorem behind this --- the snowflake
+of a segment admits a Lipschitz, but no bi-Lipschitz, parametrisation --- is classical; see
+J.~Heinonen, \emph{Lectures on Lipschitz Analysis}, Remark~2.15, and J.~T.~Tyson and J.-M.~Wu,
+\emph{Characterisations of snowflake metric spaces}, the references recorded in the companion
+note.
+
+\paragraph{Some distortion is unavoidable.} $D(\gamma)\ge1$ by definition, and equality is
+impossible. If $D(\gamma)=1$ for an injective $\gamma$, the four parameters
+$0,\tfrac14,\tfrac12,\tfrac34$ map to four coplanar points whose six mutual distances are
+$\tfrac1{4^{\alp}}$ times
+\[
+  1,\quad 1,\quad 1,\quad \sqrt3,\quad \sqrt3,\quad 3^{\alp},
+\]
+because $2^{\alp}=\sqrt3$ and $4^{\alp}=3$. No planar quadruple has those distances: the
+Cayley--Menger determinant of the six numbers is $4.416341098\neq0$ (and $0.006058081068\neq0$ at
+the normalisation $|x-y|=\tfrac14$), while four points in $\R^2$ have vanishing determinant. So
+every injective arc has $D(\gamma)>1$, the infimum is not attained, and $D_\infty>1$ --- the
+question is not vacuous. The first quantitative case is $m=4$: the best configuration found has
+$D=1.062766196$, which is a search result and not a proof.
+
+\paragraph{An explicit bound, and why the constant is the whole problem.} The elementary
+self-similarity estimate bounds $\rho$ from above and nothing from below. Let $x<y$ and choose $k$
+with $4^{-k-1}<y-x\le4^{-k}$; then $x,y$ lie in at most two consecutive dyadic intervals of length
+$4^{-k}$, so $|F(x)-F(y)|\le2\cdot3^{-k}$ (a level-$k$ piece has diameter $3^{-k}$, the initial
+piece diameter $1$), while $|x-y|^{\alp}>4^{-\alp(k+1)}=3^{-k-1}$. Hence
+\begin{equation}\label{eq:crude}
+  \rho(x,y)\le 6\qquad(x\neq y),
+\end{equation}
+against the sharp $2\sqrt{211}\cdot69^{-\alp}=1.0137194906$. The same two-cell argument says
+nothing at all near the joints, where $|x-y|$ and $|F(x)-F(y)|$ vanish together, and that is where
+all the difficulty is: the lower side is a renormalisation, not an estimate. In particular
+\eqref{eq:crude} does not by itself bound $D$, since $D=\rho_{\max}/\rho_{\min}$ and it gives no
+lower bound for $\rho_{\min}$; feeding the sharp $\rho_{\min}$ into it would give $D\le12.41$, six
+times the truth. So the elementary bracket was $1<D\le6/\rho_{\min}$ with $\rho_{\min}$ unknown:
+as recorded in the companion note, no numerical value for either optimal constant was found in the
+literature, which records the exponent and the qualitative statement only.
 
 \section{Two explicit arcs below Koch}
 
@@ -155,7 +207,7 @@ three-piece they were stable by $K=9$. A certified statement would need the exac
 functional (the pair-graph variational problem) rather than deeper sampling.
 \end{remark}
 
-\section{The finite-\texorpdfstring{$m$}{m} ladder}
+\section{The finite-\texorpdfstring{$m$}{m} ladder}\label{sec:ladder}
 
 For $m\ge2$ let $D_m$ be the least distortion of an $m$-point configuration
 $v_0,\dots,v_{m-1}\in\R^2$,
@@ -175,40 +227,87 @@ in the index gives an equicontinuous, uniformly bounded family, and any subseque
 optimal curve satisfying $|\gamma(x)-\gamma(y)|\in[|x-y|^{\alp},\Lambda|x-y|^{\alp}]$.
 So the ladder \emph{is} the continuum problem, only sampled.
 
+\paragraph{Two macro-shapes, kept apart.} The searches return two families that do not mix. In the
+first the gauged curve crosses its chord and carries one lobe on each side of it --- the S-shaped
+branch of Figure~\ref{fig:ladder}. In the second it stays on one side, a single arch with a fractal
+top, and its levels are compatible with one another across $m$ (Figure~\ref{fig:arc}). Both refine
+coherently, so both are candidates for a limiting curve, and neither is selected here; what is
+clear is that a ladder mixing them is not a sequence. Table~\ref{tab:ladder} therefore lists both,
+and the rungs are quoted per branch.
+
+\paragraph{The $m=200$ rung.} It used to be the arc, $1.5031685289$. An S-branch local minimum
+exists at $m=200$: started from the $m=100$ S configuration with midpoints inserted and a kick, the
+exact-minimax SLP converges in three rounds to
+\[
+  D_{200}=1.4908552600,
+\]
+with a multiplier certificate (48 tight maximum and 346 tight minimum pairs; the neighbouring
+rounds give $1.4908867897$ and $1.4908781151$, so the value is stable at the fifth digit). That is
+$0.82\%$ below the arc and $3.80\%$ above the $m=100$ value, so the ladder stays monotone, and it
+is the entry in Table~\ref{tab:ladder} and the panel in Figure~\ref{fig:ladder}.
+
 \begin{table}[t]
 \centering
-\begin{tabular}{rrll}
+\small
+\begin{tabular}{rrllrl}
 \toprule
-$m$ & best known $D_m$ & file & status\\
+ & \multicolumn{3}{c}{S branch} & \multicolumn{2}{c}{one-sided arc branch}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+$m$ & best known $D_m$ & file & status & best known $D$ & status\\
 \midrule
-$40$    & $1.3523099782$ & \texttt{final\_m40.npz}      & stationary\\
-$100$   & $1.4362283999$ & \texttt{final\_m100.npz}     & stationary\\
-$200$   & $1.5031685289$ & \texttt{descended\_m200.npy} & stationary\\
-$400$   & $1.5417920000$ & \texttt{m400\_converged.npy} & first-order certified\\
-$800$   & $1.5900261898$ & \texttt{m800\_converged.npy} & first-order certified\\
-$1600$  & $1.6355308997$ & \texttt{s\_m1600\_plain.npy} & stationary, not certified\\
+$40$   & $1.3523099782$ & \texttt{final\_m40.npz}      & stationary            & $1.3692601379$ & certified\\
+$100$  & $1.4362283999$ & \texttt{final\_m100.npz}     & stationary            & $1.4475037000$ & certified\\
+$200$  & $1.4908552600$ & \texttt{m200\_S.npy}         & first-order certified & $1.5031685289$ & stationary\\
+$400$  & $1.5417920000$ & \texttt{m400\_converged.npy} & first-order certified & $1.5487020131$ & certified\\
+$800$  & $1.5900261898$ & \texttt{m800\_converged.npy} & first-order certified & $1.5939535359$ & not certified\\
+$1600$ & $1.6355308997$ & \texttt{s\_m1600\_plain.npy} & stationary            & $1.6315839649$ & not certified\\
 \bottomrule
 \end{tabular}
-\caption{Best known $m$-point distortions. ``First-order certified'' means a multiplier vector on
-the tight maximum and minimum pairs exists, so no descent direction does; it says nothing about
-other basins, and no $D_m$ here is proved optimal.}
+\caption{Best known $m$-point distortions, in the two macro-shapes that the searches keep returning:
+the S-shaped branch, whose gauged curve has one lobe on each side of its chord, and the one-sided
+arc branch, which stays on one side of it (Figure~\ref{fig:arc}). ``First-order certified'' (or
+``certified'') means a multiplier vector on the tight maximum and minimum pairs exists, so no
+descent direction does; it says nothing about other basins, and no $D_m$ here is proved optimal.
+The two branches are listed separately because mixing them makes the ladder jump: the entry at
+$m=200$ used to be the arc, which is $0.8\%$ above the S value now recorded there.}
 \label{tab:ladder}
 \end{table}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{ladder-m.png}
-  \caption{The configurations of Table~\ref{tab:ladder}, endpoint-gauged. From $m=100$ upward they
-  are visibly the same S-shaped profile with progressively finer microstructure; this is the
-  sequence whose limit one wants to describe.}
+  \caption{The S-branch configurations of Table~\ref{tab:ladder}, endpoint-gauged. From $m=100$
+  upward they are visibly the same S-shaped profile with progressively finer microstructure; this
+  is the sequence whose limit one wants to describe. The $m=200$ panel is the one found for
+  \S\ref{sec:ladder}; the stored configuration it replaces had no lobe on the lower side at all.}
   \label{fig:ladder}
 \end{figure}
 
+
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.68\textwidth]{ladder-D.png}
-  \caption{The ladder against the explicit arcs: $D_m$ still climbing ($1.35\to1.64$) while the
-  best explicit curves sit at $2.02$--$2.04$. The vertical gap of about $0.4$ is the open problem.}
+  \includegraphics[width=\textwidth]{arc-m.png}
+  \caption{The other branch: the best known one-sided (arc) configurations, endpoint-gauged. Here
+  the gauged curve stays on one side of its chord --- one arch, no inflection --- and the family
+  refines coherently with $m$ just as the S branch does. Its values are above the S branch from
+  $m=40$ to $m=800$, by $1.25\%$, $0.79\%$, $0.83\%$, $0.45\%$ and $0.25\%$, and below it at
+  $m=1600$ by $0.24\%$; the $m=1600$ pair is not certified, so that last ordering is provisional.
+  Nothing here selects a branch: the two are recorded because a numerical ladder that mixes them
+  is not a sequence.}
+  \label{fig:arc}
+\end{figure}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{ladder-D.png}
+  \caption{Left: the ladder against the explicit arcs --- $D_m$ still climbing ($1.35\to1.64$)
+  while the best explicit curves sit at $2.02$--$2.04$; the vertical gap of about $0.4$ is the
+  open problem. The bar on each point reaches the best value known in the \emph{other} branch at
+  the same $m$ (the open squares), which is the only measured estimate of how far the point could
+  move without leaving the search: it is $1.25\%$ of $D_m$ at $m=40$ and falls to $0.24\%$ at
+  $m=1600$, where the arc is the better of the two. Right: that gap as a percentage. A branch
+  crossing at $m=1600$ is not evidence that either branch is optimal --- only that the two are
+  converging, so that the value of $D_\infty$ is pinned to within a per-cent by $m=1600$,
+  whichever branch is used.}
   \label{fig:gap}
 \end{figure}
 
@@ -242,23 +341,43 @@ $D_\infty$.
 \section*{What is proved here, and what is not}
 
 \begin{itemize}
-\item Proved (elsewhere): \eqref{eq:koch} with both constants sharp; hence $D_\infty\le2.0968$.
+\item Proved (elsewhere, in the companion note): \eqref{eq:koch} with both constants sharp; hence
+  $D_\infty\le2.0968$.
+\item Proved here, and elementary: $D(\gamma)>1$ for every injective arc, so $D_\infty>1$
+  (\S\ref{sec:prior}, Cayley--Menger); and $\rho\le6$, i.e. \eqref{eq:crude}, which bounds the upper
+  constant alone.
 \item Measured, not proved: $D=2.04204$ and $D=2.017935389$ for the two explicit arcs; every entry
-  of Table~\ref{tab:ladder}; the monotone ladder $1.3523\le\cdots\le1.6355$.
-\item Not known: any lower bound for $D_\infty$; whether either explicit arc is optimal; whether
-  $D_m$ converges at all rapidly enough to be extrapolated.
+  of Table~\ref{tab:ladder}, in both branches; the monotone ladders
+  $1.3523\le\cdots\le1.6355$ (S) and $1.3693\le\cdots\le1.6316$ (arc).
+\item Not known: any lower bound for $D_\infty$; whether either explicit arc is optimal; which
+  branch, if either, converges to the limit; whether $D_m$ converges rapidly enough to be
+  extrapolated.
 \end{itemize}
 
 \appendix
 \section*{Reproduction}
+\begin{sloppypar}
 \begin{itemize}
 \item \texttt{scripts/explicit\_curves.py} builds both arcs from the formulas above and prints
-  the level-$K$ ratios; \texttt{scripts/plot\_explicit\_and\_ladder.py} draws
-  Figures~\ref{fig:curves} and \ref{fig:ladder}--\ref{fig:gap}.
+  the level-$K$ ratios. The script
+  \texttt{scripts/plot\_explicit\_and\_ladder.py} draws
+  Figures~\ref{fig:curves}, \ref{fig:ladder}, \ref{fig:arc} and \ref{fig:gap}.
 \item \texttt{scripts/plot\_construction\_stages.py} draws Figure~\ref{fig:stages}; it checks its
   own vertices against \texttt{explicit\_curves.py} before plotting.
-\item The configurations of Table~\ref{tab:ladder} are stored in the paths named there;
-  \texttt{scripts/optimise\_m400.py} produced the two certified rows.
+\item The S-branch configurations of Table~\ref{tab:ladder} are stored in the paths named there;
+  \texttt{scripts/optimise\_m400.py} produced the certified rows, including the new $m=200$ one
+  (\texttt{--m 200 --start} a kicked upsampling of the $m=100$ configuration).
+\item The arc branch is in the files \texttt{arc40.npy}, \texttt{arc100.npy},
+  \texttt{descended\_m200.npy}, \texttt{arc400.npy}, \texttt{arc\_m800.npy} and
+  \texttt{arc\_m1600.npy}, under \texttt{results/}, \texttt{.scratch/} and
+  \texttt{.ultramath/smwhdqmht/m1/} respectively; the last-named script draws
+  Figures~\ref{fig:arc} and~\ref{fig:gap}.
+\item \texttt{scripts/restart\_study.py} re-runs a cheap optimisation from perturbed and resampled
+  starts at each rung and records the values in \texttt{results/restart-study.json}. With the cheap
+  budget it lands $0.1$--$1\%$ above the polished values at $m\ge200$, so it measures how much the
+  answer depends on where the search starts rather than where the minimum is; together with the
+  branch gaps it is what the bars of Figure~\ref{fig:gap} show.
 \end{itemize}
+\end{sloppypar}
 
 \end{document}

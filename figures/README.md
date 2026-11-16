@@ -15,9 +15,13 @@ Reproduce with:  python3 scripts/plot_koch_extremals.py
 reversible arc (the two explicit arcs below the Koch constant). Reproduce with:
 python3 scripts/plot_explicit_and_ladder.py
 
-`ladder-m.png` — best known configurations at m=100,200,400,800,1600.
-`ladder-D.png` — D_m against m, with the explicit bounds as reference lines.
-Figure 3 of notes/improving-koch-extremals.pdf.
+`ladder-m.png` — best known S-branch configurations at m=100,200,400,800,1600 (dotted:
+the chord, which the S crosses).
+`ladder-D.png` — D_m against m against the explicit bounds, with the bar to the other
+branch at each m, and that gap as a percentage. Figure 5 of the note.
+
+`arc-m.png` — the one-sided (arc) branch at m=40..1600: the gauged curve touches its chord
+but never crosses it. Figure 4 of the note.
 
 `construction-stages.png` — the two explicit constructions at levels 1,2,3 and at the
 level where the picture settles: each segment is replaced by N scaled/rotated copies
