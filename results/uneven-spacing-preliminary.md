@@ -511,8 +511,9 @@ the adaptive scheme of §9.
 ### Is the stress better behaved on uneven nodes?
 
 The plot above is the *uniform* ladder, and the uneven experiments do converge faster in $D$. So it is
-natural to ask whether the stress is cleaner there. It is not: **on uneven nodes there is no stress
-at all.**
+natural to ask whether the stress is cleaner there. As stated below, the uneven optima have no
+stress; but that is because they were never polished, and the polished question is *not settled* ---
+see the end of this section.
 
 `scripts/stress_uneven.py` reuses the same machinery with only `loggap` changed to
 $\log(x_j-x_i)$, so `grad_rows`, the SLP and the multiplier LP all apply to an uneven configuration
@@ -536,7 +537,33 @@ lower $D$ at fixed $m$ --- it escapes the rigidity that forces thousands of ties
 means there are no multipliers to plot: the uneven family is better for *values* and empty for
 *stress*.
 
-Two checks on that conclusion. The uneven optima come from a smoothed surrogate, so they are only
+**The polishing test, and why the conclusion above is provisional.** A KKT point of the $m$-point
+minimax must have at least $2(m-2)+2$ tight pairs --- that many equations for the multipliers ---
+i.e. about $2m$: the certified uniform configurations have $48+346=394$ at $m=200$ and
+$70+706=776$ at $m=400$, right at the count. The uneven configurations have $1+1$ or $1+2$. So
+either they are far from converged or they are not stationary at all. Polishing at *frozen*
+spacings, three ways (`scripts/polish_uneven.py`, `scripts/polish_continuation.py`):
+
+* from the $\kappa=4$ configuration, ten rounds of (L-BFGS at $\beta\le10^7$ + SLP, 300 iterations):
+  $D=1.4854753\to1.4853659$, still status 2, tight counts $4$--$9$ max, $8$--$24$ min --- the
+  configuration keeps creeping down and no contact structure forms;
+* SLP-only continuation from the *certified uniform* configuration while the spacings move to the
+  $\kappa=4$ target in ten steps: $D=1.4909\to2.73$ and status 2 with $1+1$ ties --- the SLP loses
+  the configuration as soon as the spacings move, so the step must be much smaller;
+* ten rounds of (gentle L-BFGS $\beta\le10^5$ + SLP) from the uniform shape on the target spacings:
+  $D\to1.4866$, status 2, $1+2$ ties --- a different (worse) local minimum than the $\kappa=4$ run's
+  $1.4855$, again without contact.
+
+So none of the polishes reaches a stationary point, and all of them leave the tight count at $O(10)$
+against the required $\approx2m$. The honest state is therefore: **whether a properly polished uneven
+optimum has a stress is open**; what the evidence does show is that polishing from these starts is
+slow and does not build the marginal-contact structure. The diagnostic to watch is the tight count
+--- a converged uneven optimum must reach $\approx2m$, and none of these runs got past a few dozen.
+What would fix it: an SLP with row-normalised gradients (the gradients scale like $1/\text{chord}$,
+which at gap ratios of $10^3$ is a $10^3$ spread and wrecks the trust region), or a continuation in
+much smaller spacing steps with the L-BFGS kept at moderate $\beta$.
+
+Two further checks on the unpolished conclusion. The uneven optima come from a smoothed surrogate, so they are only
 approximately stationary: the direction that decreases the longest chord and increases the shortest
 changes $D$ by $+2.5\times10^{-7}$ for a step of $10^{-6}$, i.e. the two chord gradients are
 *nearly* parallel, and an exact-minimax polish in the uneven setting (the SLP with uneven `loggap`)
