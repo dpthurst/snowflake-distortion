@@ -56,7 +56,7 @@ def main():
     v5 = np.load(ROOT / "data/m5_best.npy")
     panel(axes[2], v5, ratios(v5).max() / ratios(v5).min(), "$m=5$: four steps $=1/3$")
     v6 = np.load(ROOT / "data/m6_best.npy")
-    panel(axes[3], v6, ratios(v6).max() / ratios(v6).min(), "$m=6$")
+    panel(axes[3], v6, ratios(v6).max() / ratios(v6).min(), "$m=6$: five steps equal")
     for ax, v in zip(axes, (v3, v4, v5, v6)):
         r = ratios(core.gauge(v))
         print("  ratios:", np.round(r, 6), " D =", np.round(r.max() / r.min(), 9))

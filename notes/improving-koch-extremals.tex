@@ -48,7 +48,7 @@ could move without leaving the search. Section~\ref{sec:prior} records what was 
 the exponent is forced, that some distortion is unavoidable, and that the elementary estimate
 bounds only one of the two constants. The first rung is settled exactly: $D_4=\sqrt{(1+c)/(3c)}$
 with $c=3^{-\alp}$, certified by interval branch-and-bound, and with it $D_5$ and $D_6$; the best
-certified lower bound is $D_\infty\ge1.1195$.
+certified lower bound is $D_\infty\ge1.1274$.
 \end{abstract}
 
 \section{The quantity}
@@ -77,8 +77,8 @@ hence $D(F)=\sqrt{633}\,23^{-\alp}=2.096805160875153\ldots$. The two-sided inequ
 sharpness of both constants are proved in the companion note \texttt{koch-extremals.tex}
 (reduction to a compact dyadic pair of parameters and a directed-interval computation).
 This is, as far as the workspace knows, the only proved explicit bound of this kind, and it is
-an upper bound for $D_\infty$: the lower bound $D_\infty\ge1.1195$ comes the other way,
-from the $m=4$ configuration of \S\ref{sec:m4}. The sharpness is part of the
+an upper bound for $D_\infty$: the lower bound $D_\infty\ge1.1274$ comes the other way,
+from the $m=6$ configuration of \S\ref{sec:m4}. The sharpness is part of the
 same note: the two-sided inequality is reduced exactly to a compact dyadic parameter pair, the two
 attaining pairs are evaluated in Eisenstein arithmetic, and the inequalities themselves are closed
 by directed-interval branch-and-bound with reported box counts, residual cells and margins. So the
@@ -114,8 +114,8 @@ Cayley--Menger determinant of the six numbers is $4.416341098\neq0$ (and $0.0060
 the normalisation $|x-y|=\tfrac14$), while four points in $\R^2$ have vanishing determinant. So
 every injective arc has $D(\gamma)>1$, the infimum is not attained, and $D_\infty>1$ --- the
 question is not vacuous. The first quantitative cases are settled too: $D_4=1.062765923076\ldots$,
-$D_5=1.093091\ldots$ and $D_6=1.12\ldots$, each with a computer-assisted certificate
-(\S\ref{sec:m4}), so $D_\infty\ge1.1195$: distortion is forced, and by a measurable amount.
+$D_5=1.09309\ldots$ and $D_6=1.1281\ldots$, each with a computer-assisted certificate
+(\S\ref{sec:m4}), so $D_\infty\ge1.1274$: distortion is forced, and by a measurable amount.
 
 \paragraph{An explicit bound, and why the constant is the whole problem.} The elementary
 self-similarity estimate bounds $\rho$ from above and nothing from below. Let $x<y$ and choose $k$
@@ -302,18 +302,31 @@ $m$ & certified window for $D_m$ & width & cost \\
 \midrule
 4 & $[1.0627659230747,\ 1.0627659230764]$ & $1.7\times10^{-12}$ & $54\,163$ boxes, $0.07$\,s \\
 5 & $[1.093090076,\ 1.093091076]$         & $10^{-6}$           & $80$ boxes, $0.7$\,s \\
-6 & $[1.119534712,\ 1.129534712]$         & $10^{-2}$           & $268$ boxes, $1.8$\,s \\
+6 & $[1.127430051,\ 1.128130050]$         & $7.0\times10^{-4}$  & $5.6\times10^{5}$ boxes, $12$\,s \\
 $\ge7$ & fails: $1.5\times10^{6}$ boxes at width $10^{-2}$, bound still below $1.01$ & & \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-So $D_\infty\ge1.1195$, the bound coming from $m=6$ (the $m=5$ window is narrower but $0.03$ lower).
+So $D_\infty\ge1.127430051$, the bound coming from $m=6$ (the $m=5$ window is narrower but $0.034$
+lower).
 The method is the same code at every $m$ (\texttt{scripts/certify\_mm.py}); what limits $m$ is the
 dimension. The bound is first order in the box width, so the work grows steeply with $2(m-2)$: the
-$m=4$ window closes to $10^{-12}$, $m=5$ to $10^{-6}$, $m=6$ only to $10^{-2}$, and at $m=7$ the box
-budget is exhausted with the bound still below $1.01$. The $m=4$ case is special in having a closed
-form, which is why it is proved below in full.
+$m=4$ window closes to $10^{-12}$, $m=5$ to $10^{-6}$, $m=6$ to $7\times10^{-4}$, and at $m=7$ the
+box budget is exhausted with the bound still below $1.01$. The $m=4$ case is special in having a
+closed form, which is why it is proved below in full.
+
+The $m=6$ row is worth reading twice, because the window it gives was not affordable until the
+configuration was improved. A search of $20\,000$ random starts, each annealed on the smooth
+surrogate and then polished by sequential LP on the exact range, converges in every one of them to
+the same configuration, with $D=1.1281300496$ against the $1.129534712$ recorded earlier: that
+lowers the a priori budget $\bar D$ (and with it the a priori box), and the sharper target is what
+the branch-and-bound can then close to $7\times10^{-4}$ in twelve seconds of box arithmetic. The optimum is
+rigid, like the $m=5$ one: all five steps have the same ratio and so does the
+end-to-end chord, $|v_i-v_{i+1}|=c$ for every $i$ and $|v_5-v_0|=5^{\alp}c$, and the five pairs at
+spans two and three are the tight maximum ones. It is also a genuine stationary point: an explicit
+multiplier vector exists on those $5+6$ tight pairs (\texttt{slp2.stress} returns status $0$), so
+no descent direction leaves it.
 
 \begin{figure}[t]
   \centering
@@ -322,10 +335,11 @@ form, which is why it is proved below in full.
   nodes numbered. $m=3$: all three ratios equal $2^{-\alp}$, i.e.\ an isosceles triangle with sides
   $1,2^{-\alp},2^{-\alp}$; $D=1$ exactly. $m=4$: four chords exactly $c=3^{-\alp}$ (the three
   steps and the end-to-end chord) and two chords $\sqrt{c(1+c)}/\sqrt3$. $m=5$: four steps exactly
-  $1/3$ and the three chord-of-two steps equal. $m=6$: no such rigid structure, but the same
-  pattern of two families of equal chords. The shapes get progressively less triangular --- a single
-  corner, an $M$, an arch --- and $m=6$ still lies entirely on one side of its chord; the two-lobed
-  $S$ of Figure~\ref{fig:ladder} appears only at the larger $m$.}
+  $1/3$ and the three chord-of-two steps equal. $m=6$: five steps of equal ratio and an end-to-end
+  chord at that same ratio, $|v_5-v_0|=5^{\alp}|v_0-v_1|$; the tight maximum pairs are the five at
+  spans two and three. The shapes get progressively less triangular --- a single corner, an $M$, an
+  arch --- and $m=6$ still lies entirely on one side of its chord; the two-lobed $S$ of
+  Figure~\ref{fig:ladder} appears only at the larger $m$.}
   \label{fig:smallm}
 \end{figure}
 
@@ -521,7 +535,7 @@ exactly self-similar curve.
   \caption{Left: the ladder against the explicit arcs --- $D_m$ still climbing ($1.35\to1.64$)
   while the best explicit curves sit at $2.02$--$2.04$; the vertical gap of about $0.4$ is the
   open problem. The dotted purple line is the certified lower bound
-  $D_\infty\ge1.1195$ of \S\ref{sec:m4}, the red the proved upper bound: the problem
+  $D_\infty\ge1.1274$ of \S\ref{sec:m4}, the red the proved upper bound: the problem
   lives in the strip between them, and the ladder shows that neither end is close. The bar on each
   point reaches the best value known in the \emph{other} branch at the same $m$ (the open squares),
   which is the only measured estimate of how far the point could move without leaving the search: it is $1.25\%$ of $D_m$ at $m=40$ and falls to $0.24\%$ at
@@ -594,11 +608,11 @@ $D_\infty$.
   (\S\ref{sec:prior}, Cayley--Menger); and $\rho\le6$, i.e. \eqref{eq:crude}, which bounds the upper
   constant alone.
 \item Proved here, computer-assisted: the windows of \S\ref{sec:m4} for $m=4,5,6$; in particular
-  $D_4=1.062765923076\ldots$ (Proposition~\ref{prop:m4}) and $D_\infty\ge1.1195$.
+  $D_4=1.062765923076\ldots$ (Proposition~\ref{prop:m4}) and $D_\infty\ge1.127430051$.
 \item Measured, not proved: $D=2.04204$ and $D=2.017935389$ for the two explicit arcs; every entry
   of Table~\ref{tab:ladder}, in both branches; the monotone ladders
   $1.3523\le\cdots\le1.6355$ (S) and $1.3693\le\cdots\le1.6316$ (arc).
-\item Not known: any lower bound for $D_\infty$ beyond $1.1195$ (that is, any $D_m$ with $m\ge7$,
+\item Not known: any lower bound for $D_\infty$ beyond $1.1274$ (that is, any $D_m$ with $m\ge7$,
   or a tighter window at $m=6$);
   whether either explicit arc is optimal; which
   branch, if either, converges to the limit; whether $D_m$ converges rapidly enough to be
@@ -625,7 +639,7 @@ $D_\infty$.
 \item The last-named script draws Figures~\ref{fig:arc} and~\ref{fig:gap} from the
   \texttt{arc*.npy} and \texttt{s\_m*.npy} files in \texttt{data/}.
 \item \texttt{scripts/certify\_mm.py} is the certificate of \S\ref{sec:m4} for any $m$; e.g.
-  \texttt{--m 5 --eps 1e-6}, \texttt{--m 6 --eps 1e-2 --Dbar 1.129534712}. It prints the certified
+  \texttt{--m 5 --eps 1e-6}, \texttt{--m 6 --eps 7e-4 --Dbar 1.1281300506}. It prints the certified
   window; $m=4$ with \texttt{--m 4 --eps 1e-12} reproduces \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
   is the $\alp=\tfrac12$ ladder of \S\ref{sec:prior} (results in \texttt{results/ladder-half.json}).
 \item \texttt{scripts/restart\_study.py} re-runs a cheap optimisation from perturbed and resampled

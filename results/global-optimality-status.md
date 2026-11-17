@@ -55,7 +55,7 @@ interval arithmetic.
 ```
 m=4   1.062766196
 m=5   1.093091572
-m=6   1.128130873
+m=6   1.128130050
 ```
 
 ## What could actually be certified
