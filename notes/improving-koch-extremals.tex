@@ -47,8 +47,8 @@ which are recorded separately, per branch, together with the bar that measures h
 could move without leaving the search. Section~\ref{sec:prior} records what was known before: that
 the exponent is forced, that some distortion is unavoidable, and that the elementary estimate
 bounds only one of the two constants. The first rung is settled exactly: $D_4=\sqrt{(1+c)/(3c)}$
-with $c=3^{-\alp}$, certified by interval branch-and-bound, so $D_\infty\ge1.0627659$ --- the only
-lower bound in evidence.
+with $c=3^{-\alp}$, certified by interval branch-and-bound, and with it $D_5$ and $D_6$; the best
+certified lower bound is $D_\infty\ge1.1195$.
 \end{abstract}
 
 \section{The quantity}
@@ -77,7 +77,7 @@ hence $D(F)=\sqrt{633}\,23^{-\alp}=2.096805160875153\ldots$. The two-sided inequ
 sharpness of both constants are proved in the companion note \texttt{koch-extremals.tex}
 (reduction to a compact dyadic pair of parameters and a directed-interval computation).
 This is, as far as the workspace knows, the only proved explicit bound of this kind, and it is
-an upper bound for $D_\infty$: the lower bound $D_\infty\ge1.0628$ comes the other way,
+an upper bound for $D_\infty$: the lower bound $D_\infty\ge1.1195$ comes the other way,
 from the $m=4$ configuration of \S\ref{sec:m4}. The sharpness is part of the
 same note: the two-sided inequality is reduced exactly to a compact dyadic parameter pair, the two
 attaining pairs are evaluated in Eisenstein arithmetic, and the inequalities themselves are closed
@@ -113,9 +113,9 @@ because $2^{\alp}=\sqrt3$ and $4^{\alp}=3$. No planar quadruple has those distan
 Cayley--Menger determinant of the six numbers is $4.416341098\neq0$ (and $0.006058081068\neq0$ at
 the normalisation $|x-y|=\tfrac14$), while four points in $\R^2$ have vanishing determinant. So
 every injective arc has $D(\gamma)>1$, the infimum is not attained, and $D_\infty>1$ --- the
-question is not vacuous. The first quantitative case is $m=4$, and it can be settled: $D_4=1.062765923076\ldots$, with a
-computer-assisted certificate, in \S\ref{sec:m4}. So $D_\infty\ge1.0628$: distortion is forced, and
-by a measurable amount.
+question is not vacuous. The first quantitative cases are settled too: $D_4=1.062765923076\ldots$,
+$D_5=1.093091\ldots$ and $D_6=1.12\ldots$, each with a computer-assisted certificate
+(\S\ref{sec:m4}), so $D_\infty\ge1.1195$: distortion is forced, and by a measurable amount.
 
 \paragraph{An explicit bound, and why the constant is the whole problem.} The elementary
 self-similarity estimate bounds $\rho$ from above and nothing from below. Let $x<y$ and choose $k$
@@ -283,10 +283,39 @@ optimal curve satisfying $|\gamma(x)-\gamma(y)|\in[|x-y|^{\alp},\Lambda|x-y|^{\a
 So the ladder \emph{is} the continuum problem, only sampled.
 
 
-\subsection*{The first rung, exactly: \texorpdfstring{$D_4$}{D4}}\label{sec:m4}
+\subsection*{The first rungs, certified}\label{sec:m4}
 
-The $m=4$ problem is the one case where a global minimum can be certified outright, and it is
-worth doing because it is the only lower bound for $D_\infty$ in reach.
+The first few rungs can be settled outright by interval branch-and-bound, and they are the only
+lower bounds for $D_\infty$ in reach. After the similarity gauge the $m$-point problem has $2(m-2)$
+free real coordinates --- four at $m=4$, six at $m=5$, eight at $m=6$ --- and the bound proved on a
+box is that $D\ge\max_{i\ne j}\underline r_i/\overline r_j$, with each $r_{ij}$ enclosed by outward
+rounded rectangle arithmetic; boxes whose bound exceeds the target are discarded and the rest are
+bisected. The a priori box comes from $D\le\bar D$, which forces every ratio into
+$[r_{\min},\bar D r_{\min}]$ with $r_{\min}=1/|i-j|^{\alp}$ at the reference pair $(0,m-1)$:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrll}
+\toprule
+$m$ & certified window for $D_m$ & width & cost \\
+\midrule
+4 & $[1.0627659230747,\ 1.0627659230764]$ & $1.7\times10^{-12}$ & $54\,163$ boxes, $0.07$\,s \\
+5 & $[1.093090076,\ 1.093091076]$         & $10^{-6}$           & $80$ boxes, $0.7$\,s \\
+6 & $[1.119534712,\ 1.129534712]$         & $10^{-2}$           & $268$ boxes, $1.8$\,s \\
+$\ge7$ & fails: $1.5\times10^{6}$ boxes at width $10^{-2}$, bound still below $1.01$ & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+So $D_\infty\ge1.1195$, the bound coming from $m=6$ (the $m=5$ window is narrower but $0.03$ lower).
+The method is the same code at every $m$ (\texttt{scripts/certify\_mm.py}); what limits $m$ is the
+dimension. The bound is first order in the box width, so the work grows steeply with $2(m-2)$: the
+$m=4$ window closes to $10^{-12}$, $m=5$ to $10^{-6}$, $m=6$ only to $10^{-2}$, and at $m=7$ the box
+budget is exhausted with the bound still below $1.01$. The $m=4$ case is special in having a closed
+form, which is why it is proved below in full.
+
+Below, the $m=4$ case in full, since it is the one with a closed form.
 
 \begin{proposition}\label{prop:m4}
 Let $c=3^{-\alp}=0.4186878435451467$ and $K=\sqrt{(1+c)/(3c)}$. Then
@@ -328,8 +357,10 @@ configurations produced none with $D\le K$ outside the a priori box.
 
 The minimiser is the symmetric bent chain $v_2=1-\overline{v_1}$, with four tight minimum pairs and
 two tight maximum pairs; the certificate pins its position as well as the value, since every box
-more than $10^{-12}$ away from it is discarded. Nothing here extends to $m=6$: that problem is
-eight-dimensional, and the box count grows like the square of the volume ratio.
+more than $10^{-12}$ away from it is discarded. The $m=5$ optimum has an equally rigid shape: four
+consecutive chords exactly $1/3$ and the three chord-of-two steps equal, which is why the window
+there closes to $10^{-6}$ with eighty boxes. What stops the method is dimension, not difficulty:
+$m=7$ would need ten coordinates and the first-order bound is too weak to close.
 
 \paragraph{Two macro-shapes, kept apart.} The searches return two families that do not mix. In the
 first the gauged curve crosses its chord and carries one lobe on each side of it --- the S-shaped
@@ -475,7 +506,7 @@ exactly self-similar curve.
   \caption{Left: the ladder against the explicit arcs --- $D_m$ still climbing ($1.35\to1.64$)
   while the best explicit curves sit at $2.02$--$2.04$; the vertical gap of about $0.4$ is the
   open problem. The dotted purple line is the certified lower bound
-  $D_\infty\ge1.0627659$ of Proposition~\ref{prop:m4}, the red the proved upper bound: the problem
+  $D_\infty\ge1.1195$ of \S\ref{sec:m4}, the red the proved upper bound: the problem
   lives in the strip between them, and the ladder shows that neither end is close. The bar on each
   point reaches the best value known in the \emph{other} branch at the same $m$ (the open squares),
   which is the only measured estimate of how far the point could move without leaving the search: it is $1.25\%$ of $D_m$ at $m=40$ and falls to $0.24\%$ at
@@ -547,12 +578,13 @@ $D_\infty$.
 \item Proved here, and elementary: $D(\gamma)>1$ for every injective arc, so $D_\infty>1$
   (\S\ref{sec:prior}, Cayley--Menger); and $\rho\le6$, i.e. \eqref{eq:crude}, which bounds the upper
   constant alone.
-\item Proved here, computer-assisted: $D_4=1.062765923076\ldots$, so $1.0627659\le D_\infty$
-  (Proposition~\ref{prop:m4}).
+\item Proved here, computer-assisted: the windows of \S\ref{sec:m4} for $m=4,5,6$; in particular
+  $D_4=1.062765923076\ldots$ (Proposition~\ref{prop:m4}) and $D_\infty\ge1.1195$.
 \item Measured, not proved: $D=2.04204$ and $D=2.017935389$ for the two explicit arcs; every entry
   of Table~\ref{tab:ladder}, in both branches; the monotone ladders
   $1.3523\le\cdots\le1.6355$ (S) and $1.3693\le\cdots\le1.6316$ (arc).
-\item Not known: any lower bound for $D_\infty$ beyond $1.0628$ (that is, any $D_m$ with $m\ge5$);
+\item Not known: any lower bound for $D_\infty$ beyond $1.1195$ (that is, any $D_m$ with $m\ge7$,
+  or a tighter window at $m=6$);
   whether either explicit arc is optimal; which
   branch, if either, converges to the limit; whether $D_m$ converges rapidly enough to be
   extrapolated.
@@ -576,8 +608,9 @@ $D_\infty$.
   \texttt{arc\_m1600.npy}, under \texttt{results/}, \texttt{.scratch/} and
   \texttt{.ultramath/smwhdqmht/m1/} respectively; the last-named script draws
   Figures~\ref{fig:arc} and~\ref{fig:gap}.
-\item \texttt{scripts/certify\_m4.py} is the certificate of Proposition~\ref{prop:m4}; it prints
-  the certified window and writes \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
+\item \texttt{scripts/certify\_mm.py} is the certificate of \S\ref{sec:m4} for any $m$; e.g.
+  \texttt{--m 5 --eps 1e-6}, \texttt{--m 6 --eps 1e-2 --Dbar 1.129534712}. It prints the certified
+  window; $m=4$ with \texttt{--m 4 --eps 1e-12} reproduces \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
   is the $\alp=\tfrac12$ ladder of \S\ref{sec:prior} (results in \texttt{results/ladder-half.json}).
 \item \texttt{scripts/restart\_study.py} re-runs a cheap optimisation from perturbed and resampled
   starts at each rung and records the values in \texttt{results/restart-study.json}. With the cheap
