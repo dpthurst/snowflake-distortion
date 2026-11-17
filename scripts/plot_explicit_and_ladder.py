@@ -21,11 +21,11 @@ import explicit_curves as ec         # noqa: E402
 KOCK_D = np.sqrt(633) * 23 ** -ec.ALPHA
 
 LADDER = [
-    (100, ROOT / ".scratch/final_m100.npz", "npz"),
-    (200, ROOT / "results/m200_S.npy", "npy"),
-    (400, ROOT / "results/m400_converged.npy", "npy"),
-    (800, ROOT / "results/m800_converged.npy", "npy"),
-    (1600, ROOT / ".ultramath/smwhdqmht/m1/s_m1600_plain.npy", "npy"),
+    (100, ROOT / "data/s_m100.npy", "npy"),
+    (200, ROOT / "data/s_m200.npy", "npy"),
+    (400, ROOT / "data/s_m400.npy", "npy"),
+    (800, ROOT / "data/s_m800.npy", "npy"),
+    (1600, ROOT / "data/s_m1600.npy", "npy"),
 ]
 
 
@@ -84,12 +84,12 @@ def fig_ladder():
 
 
 ARC = [
-    (40, ROOT / "results/arc40.npy", "npy"),
-    (100, ROOT / "results/arc100.npy", "npy"),
-    (200, ROOT / ".scratch/descended_m200.npy", "npy"),
-    (400, ROOT / "results/arc400.npy", "npy"),
-    (800, ROOT / ".ultramath/smwhdqmht/m1/arc_m800.npy", "npy"),
-    (1600, ROOT / ".ultramath/smwhdqmht/m1/arc_m1600.npy", "npy"),
+    (40, ROOT / "data/arc40.npy", "npy"),
+    (100, ROOT / "data/arc100.npy", "npy"),
+    (200, ROOT / "data/arc200.npy", "npy"),
+    (400, ROOT / "data/arc400.npy", "npy"),
+    (800, ROOT / "data/arc800.npy", "npy"),
+    (1600, ROOT / "data/arc1600.npy", "npy"),
 ]
 
 

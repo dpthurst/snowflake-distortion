@@ -34,7 +34,7 @@ def restricted(x, v, i0, i1):
 
 def main():
     # the ladder configuration
-    v = core.gauge(np.load(ROOT / "results/m800_converged.npy"))
+    v = core.gauge(np.load(ROOT / "data/s_m800.npy"))
     m = len(v)
     x = np.linspace(0, 1, m)
     D = restricted(x, v, 0, m - 1)

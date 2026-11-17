@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import align_core as core       # noqa: E402
 import search_overlaps as so    # noqa: E402
 
-SRC = ROOT / ".ultramath/smwhdqmht/m1/s_m1600_plain.npy"
+SRC = ROOT / "data/s_m1600.npy"
 
 
 def main():

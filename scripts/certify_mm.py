@@ -130,8 +130,10 @@ def main():
     m = args.m
     G = gap_intervals(m)
     if args.Dbar is None:
-        row = json.loads((ROOT / "results/m5_best.npz").exists() and "{}" or "{}")
-        args.Dbar = float(np.load(ROOT / "results/m5_best.npz")["D"])
+        v = np.load(ROOT / f"data/m{m}_best.npy")
+        i, j = np.triu_indices(m, 1)
+        r = np.abs(v[i] - v[j]) / np.abs(i - j) ** float(ALPHA)
+        args.Dbar = float(r.max() / r.min())
     Dbar = args.Dbar
     L = Dbar - args.eps
     boxes = initial_box(m, Dbar, G)

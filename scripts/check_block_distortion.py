@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / '.ultramath/smwhdqmht/m1/s_m800_plain.npy'
+SOURCE = ROOT / 'data/s_m800.npy'
 v = np.load(SOURCE)
 assert v.shape == (800,) and np.isfinite(v).all()
 N = len(v)
