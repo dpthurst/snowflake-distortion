@@ -14,10 +14,15 @@ $D_6\in[1.127430051,1.128130050]$ on the uniform grid and $[1.129164878,1.135164
 non-uniform parameter patterns, hence $1.1292\le D_\infty\le2.0968$. Best known rungs climb from
 $1.352$ at $m=40$ to $1.636$ at $m=1600$.
 
+At $\alpha=\tfrac12$ a planar finite-distortion embedding is ruled out by Besicovitch--Schoenberg,
+*On Jordan arcs and Lipschitz classes of functions defined on them*, Acta Math. **106** (1961),
+113--136: if $\gamma$ embeds the $1/2$-snowflaked interval in $\mathbb R^2$ with
+$|\gamma(x)-\gamma(y)|\ge c|x-y|^{1/2}$, then the inverse on $J=\gamma([0,1])$ is uniformly
+Lipschitz-$x^2$ since $|x-y|\le c^{-2}|\gamma(x)-\gamma(y)|^2$. Their Theorem 6 (p. 117) forces the
+inverse to be constant, which is impossible for an injection. So $D_\infty(1/2)=\infty$.
+
 **Open.** Any better lower bound (a second-order bound might reach $m=7,8$); whether either explicit
-arc is optimal; which macro-shape, if any, the ladder converges to; and the critical exponent
-$\alpha=\tfrac12$, where a finite-distortion embedding of $[0,1]$ with distance $|x-y|^{1/2}$ is
-neither known nor excluded.
+arc is optimal; and which macro-shape, if any, the ladder converges to.
 
 ## Layout
 
