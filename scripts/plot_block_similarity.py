@@ -60,23 +60,33 @@ def main():
               f"block [{r['a']:.0f},{r['a']+r['L']:.0f}] arc [{r['c']:.0f},{r['c']+r['K']:.0f}]")
 
     t = np.linspace(0, 1, 401)
-    fig, axes = plt.subplots(2, 3, figsize=(6.4, 4.4))
-    for ax in axes.ravel()[len(chosen):]:
-        ax.axis("off")
-    for ax, r in zip(axes.ravel(), chosen):
+    fig, axes = plt.subplots(2, 5, figsize=(6.9, 3.9))
+    for ax, r in zip(axes[0], chosen):
         w = so.sample(V, r["a"] + t * r["L"])
         q = so.sample(V, r["c"] + t * r["K"])
         s, resid, size = so.shape_score(w, q)
         wn = (w - w.mean()) / np.abs(w - w.mean()).max()
         qn = (q - q.mean()) / np.abs(q - q.mean()).max() / s
-        ax.plot(wn.real, wn.imag, "-", lw=1.4, color="#1f6fd0")
-        ax.plot(qn.real, qn.imag, "--", lw=1.0, color="#c8342a")
+        ax.plot(wn.real, wn.imag, "-", lw=1.5, color="#1f6fd0")
+        ax.plot(qn.real, qn.imag, "--", lw=1.1, color="#c8342a")
         ax.set_aspect("equal"); ax.set_xticks([]); ax.set_yticks([])
-        ax.set_title(f"resid {resid:.3f}, size ratio {size:.2f}", fontsize=7.5)
+        ax.set_title(f"{resid:.3f}, size {size:.2f}", fontsize=7)
+        # where the two pieces sit on the whole curve
+        bx = axes[1][list(axes[0]).index(ax)]
+        bx.plot(V.real, V.imag, "-", lw=0.5, color="0.6")
+        ia, ib = int(round(r["a"])), int(round(r["a"] + r["L"]))
+        ic, id_ = int(round(r["c"])), int(round(r["c"] + r["K"]))
+        bx.plot(V[ia:ib].real, V[ia:ib].imag, "-", lw=1.8, color="#1f6fd0")
+        bx.plot(V[ic:id_].real, V[ic:id_].imag, "-", lw=1.8, color="#c8342a")
+        bx.set_aspect("equal"); bx.set_xticks([]); bx.set_yticks([])
+    for ax in axes[1][len(chosen):]:
+        ax.axis("off")
+    axes[0][0].set_ylabel("shapes", fontsize=7)
+    axes[1][0].set_ylabel("on the curve", fontsize=7)
     fig.suptitle("parts of the $m=1600$ curve that resemble other parts\n"
-                 "(blue: the block; red dashed: the other arc, normalised and turned back)",
-                 fontsize=8)
-    fig.tight_layout()
+                 "top: the block (blue) against the matching arc (red, normalised and turned back); "
+                 "bottom: where the two sit on the whole curve", fontsize=7.5)
+    fig.tight_layout(h_pad=0.6)
     out = ROOT / "figures/block-similarity.png"
     fig.savefig(out, dpi=170, facecolor="white", bbox_inches="tight",
                 pil_kwargs={"optimize": True})

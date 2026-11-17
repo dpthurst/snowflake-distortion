@@ -315,6 +315,19 @@ $m=4$ window closes to $10^{-12}$, $m=5$ to $10^{-6}$, $m=6$ only to $10^{-2}$, 
 budget is exhausted with the bound still below $1.01$. The $m=4$ case is special in having a closed
 form, which is why it is proved below in full.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{small-m-optima.png}
+  \caption{The optimal configurations at $m=3,4,5$, endpoint-gauged, with the chord dotted and the
+  nodes numbered. $m=3$: all three ratios equal $2^{-\alp}$, i.e.\ an isosceles triangle with sides
+  $1,2^{-\alp},2^{-\alp}$; $D=1$ exactly. $m=4$: four chords exactly $c=3^{-\alp}$ (the three
+  steps and the end-to-end chord) and two chords $\sqrt{c(1+c)}/\sqrt3$. $m=5$: four steps exactly
+  $1/3$ and the three chord-of-two steps equal. The shapes are progressively less "triangular":
+  $m=3$ is a single corner, $m=4$ an $M$, $m=5$ a $W$, and the ladder at $m=100$ and beyond settles
+  into the $S$ of Figure~\ref{fig:ladder}.}
+  \label{fig:smallm}
+\end{figure}
+
 Below, the $m=4$ case in full, since it is the one with a closed form.
 
 \begin{proposition}\label{prop:m4}
@@ -428,9 +441,10 @@ search did exactly that and produced spurious $3\%$ hits.)
   \centering
   \includegraphics[width=0.95\textwidth]{block-similarity.png}
   \caption{The best matches between different parts of the $m=1600$ configuration, one per bin of
-  size ratio: the block in blue, the other arc in red dashed after normalising and turning it back.
-  Residuals $0.10$--$0.17$ of the block diameter, at size ratios $0.51$, $0.80$, $1.00$, $1.22$,
-  $1.78$ and rotations up to $136^\circ$.}
+  size ratio. Top: the block in blue against the matching arc in red, dashed after normalising and
+  turning it back; residuals $0.10$--$0.17$ of the block diameter at size ratios $0.51$, $0.80$,
+  $1.00$, $1.22$, $1.78$, with rotations up to $136^\circ$. Bottom: where those two pieces sit on
+  the whole curve, which is drawn thin and grey.}
   \label{fig:similar}
 \end{figure}
 
