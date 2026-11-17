@@ -211,38 +211,48 @@ stationarity structure (stress measure, variational inequality) that the earlier
 with a refinement scheme that inserts points where the stress concentrates --- that converges to a
 stationary point of the continuum problem rather than crawling up the $m$-ladder.
 
-## 8. The $\kappa=4$ family at large $m$ (200, 400)
+## 8. The $\kappa=4$ family at large $m$ (200, 400, 800)
 
 Deterministic, warm-started (`scripts/uneven_large.py`, results `results/uneven_k4_m*.npz`,
-`results/uneven-kappa4-large.json`, `results/uneven-kappa4-m400.json`). Gaps and positions both
-optimised, gap ratio bounded by 4; every run uses the full bound (gap ratio 3.45–3.69), so the
-constraint is active, not a near-uniform optimum.
+`results/uneven-kappa4-large.json`, `results/uneven-kappa4-m400.json`,
+`results/uneven-kappa4-m800.json`). Gaps and positions both optimised, gap ratio bounded by 4;
+every run uses the full bound (gap ratio 3.45–3.69), so the constraint is active, not a near-uniform
+optimum. $m=800$ costs 6.3 min against 78 s at $m=400$, on the same five warm starts.
 
 ```
-   m       32        64        96        128       200       400
- kappa=4  1.30524   1.38756   1.42510   1.45258   1.48548   1.53749
- uniform  1.33192   1.39536*  1.43403   -         1.49086   1.54179
- gain     3.6%      0.56%     0.52%     -         0.36%     0.28%
+   m       32        64        96        128       200       400         800
+ kappa=4  1.30524   1.38756   1.42510   1.45258   1.48548   1.53749     1.58638
+ uniform  1.33192   1.39536*  1.43403   -         1.49086   1.54179     1.59003
+ gain     3.6%      0.56%     0.52%     -         0.36%     0.28%       0.23%
 ```
 (*interpolated in $\log m$ between the uniform rungs.)
 
 * The gap between the two families **shrinks**: $3.6\%$ at $m=32$, $0.5$–$0.6\%$ at $m=64$–96,
-  $0.2$–$0.4\%$ at $m=128$–400. So the unevenness buys a *transient* advantage, as it must if both
+  $0.2$–$0.4\%$ at $m=128$–800. So the unevenness buys a *transient* advantage, as it must if both
   families converge to the same $D_\infty$.
 * **The increments do not decay faster.** Per doubling of $m$: $\kappa=4$ gives
-  $0.082, 0.064, 0.066, 0.051, 0.052$; the uniform ladder gives $0.064, 0.055, 0.051, 0.048, 0.046$.
-  At matched $m$ the two are the same to about $0.005$; the $\kappa=4$ ladder simply sits lower.
+  $0.082, 0.064, 0.066, 0.051, 0.052, 0.049$; the uniform ladder gives
+  $0.064, 0.055, 0.051, 0.048, 0.046, 0.048$. At matched $m$ the two are the same to about $0.005$.
+  The $m=800$ rung is the first place they can be compared over two clean doublings: successive
+  increments have ratio $0.940$ ($\kappa=4$) against $0.947$ (uniform), i.e. the same decay to
+  within $1\%$, which is no evidence that bounding the gap ratio buys a better *rate*. The
+  $\kappa=4$ ladder simply sits lower, and because its increment is still the larger of the two at
+  $m=800$ the gap between the families is still closing ($0.36\%\to0.28\%\to0.23\%$).
 * **Extrapolation.** A fit $D_m=D_\infty-cm^{-s}$ gives, for $\kappa=4$,
   $D_\infty=1.768$, $c=1.19$, $s=0.273$, residuals $\le0.0025$; for the uniform ladder
   $D_\infty=2.161$, $s=0.116$, which is **inadmissible** ($2.161>2.0968$, the proved Koch ceiling).
   The $\kappa=4$ extrapolation is plausible but should not be trusted: the model is arbitrary, the
   residuals are comparable to the whole gap between the families, and $s$ is fitted to five points.
-  What it does say is that the uniform ladder is in a regime where extrapolation cannot be used at
-  all, while a bounded-unevenness ladder is not.
+  The $m=800$ rung does not help the fit: read locally, the last increment ratio gives
+  $s=-\log_2 0.940=0.089$, against $0.273$ from the five-point fit, so $s$ is not identified at all
+  over the range we can reach and neither $D_\infty=1.77$ nor any other extrapolated value should
+  be quoted.
+  What it does say is only that the $\kappa=4$ fit can at least be made admissible, whereas the
+  uniform one cannot: it is not a licence to read off $D_\infty$.
 * **Noise.** Repeated runs at $m=200$ differ by $0.0016$ ($1.48380$ against $1.48548$), i.e. $0.1\%$;
-  the $m=400$ value is a single run. So the $0.2$–$0.4\%$ gaps at large $m$ are at the edge of what
-  this optimiser resolves, and the trend (shrinking gap) is the part to trust, not the individual
-  numbers.
+  the $m=400$ and $m=800$ values are single runs. So the $0.2$–$0.4\%$ gaps at large $m$ are at the
+  edge of what this optimiser resolves, and the trend (shrinking gap) is the part to trust, not the
+  individual numbers.
 
 ## 9. What exactly is the "stress measure"
 
@@ -356,7 +366,7 @@ minimiser.
 ![the bounded-kappa ladder](../figures/uneven-ladder.png)
 
 `figures/uneven-ladder.png` (from `scripts/plot_uneven_ladder.py`). Left: best $D_m$ against $m$,
-one curve per gap-ratio bound, $\kappa=4$ carried to $m=400$, the polished uniform ladder dashed, and
+one curve per gap-ratio bound, $\kappa=4$ carried to $m=800$, the polished uniform ladder dashed, and
 the i.i.d. family in black. Right: the increment per doubling, $\Delta D$ against $m$, with the
 power-law fit $cm^{-0.27}$ to the $\kappa=4$ ladder as a dotted guide.
 
@@ -365,9 +375,9 @@ Read-offs:
 * at fixed $m\le32$ the ordering in $\kappa$ is strict and monotone (at $m=32$: $1.332, 1.319,
   1.305, 1.287, 1.270, 1.264$ for $\kappa=1,2,4,8,16,32$), i.e. more allowed unevenness, lower $D$;
 * the $\kappa=4$ curve runs into the uniform one as $m$ grows (gap $3.6\%$ at $m=32$, $0.28\%$ at
-  $m=400$) --- the advantage is spent;
-* nothing decelerates enough to extrapolate: the increments fall from $0.086$ to $0.052$ per
-  doubling over $m=24\dots400$ ($\kappa=4$) and from $0.064$ to $0.046$ over $m=40\dots1600$
+  $m=400$, $0.23\%$ at $m=800$) --- the advantage is spent;
+* nothing decelerates enough to extrapolate: the increments fall from $0.086$ to $0.049$ per
+  doubling over $m=24\dots800$ ($\kappa=4$) and from $0.064$ to $0.048$ over $m=40\dots1600$
   (uniform).
 
 **i.i.d. spacings, $m$ up to 400.** $x_i$ drawn uniformly at random and frozen, positions optimised,

@@ -31,6 +31,10 @@ def collect():
     if p.exists():
         for r in json.loads(p.read_text()):
             data.setdefault(r["kappa"], []).append((r["m"], r["D"]))
+    p = ROOT / "results/uneven-kappa4-m800.json"
+    if p.exists():
+        for r in json.loads(p.read_text()):
+            data.setdefault(r["kappa"], []).append((r["m"], r["D"]))
     for k in data:
         data[k] = sorted(set(data[k]))
     return data
@@ -62,14 +66,14 @@ def iid_points():
 
 def main():
     data = collect()
-    fig, (ax, bz) = plt.subplots(1, 2, figsize=(6.6, 2.5),
+    fig, (ax, bz) = plt.subplots(1, 2, figsize=(10.6, 4.0),
                                  gridspec_kw=dict(width_ratios=[1.15, 1]))
     for k in sorted(data):
         ms = [p[0] for p in data[k]]
         Ds = [p[1] for p in data[k]]
-        ax.semilogx(ms, Ds, "o-", ms=2.6, lw=0.9, color=COL[k], label=f"$\\kappa={k}$")
+        ax.semilogx(ms, Ds, "o-", ms=3.6, lw=1.1, color=COL[k], label=f"$\\kappa={k}$")
     ax.semilogx([p[0] for p in UNIFORM_POLISHED], [p[1] for p in UNIFORM_POLISHED],
-                "s--", ms=3.0, lw=0.9, color="0.3", label="uniform, polished")
+                "s--", ms=4.2, lw=1.1, color="0.3", label="uniform, polished")
     iid = iid_points()
     if iid:
         ms = np.array([p[0] for p in iid], float)
@@ -79,31 +83,31 @@ def main():
                 label="i.i.d. spacings (best of draws)", zorder=5)
         ax.errorbar(ms, lo, yerr=[np.zeros_like(lo), hi - lo], fmt="none",
                     ecolor="#000000", elinewidth=0.8, capsize=2.0, zorder=4)
-    ax.set_xlabel("$m$")
-    ax.set_ylabel("best $D_m$")
+    ax.set_xlabel("$m$", fontsize=11)
+    ax.set_ylabel("best $D_m$", fontsize=11)
     ax.grid(alpha=0.25)
-    ax.set_title("bounded gap ratio $\\kappa$: $D$ against $m$", fontsize=7)
-    ax.legend(fontsize=5.4, loc="lower right", ncol=2, handlelength=1.6, labelspacing=0.3)
+    ax.set_title("bounded gap ratio $\\kappa$: $D$ against $m$", fontsize=10)
+    ax.legend(fontsize=7.6, loc="lower right", ncol=2, handlelength=1.8, labelspacing=0.35)
 
     inc4 = increments([p for p in data[4] if p[0] >= 24])
     inc1 = increments(UNIFORM_POLISHED)
     inc32 = increments([p for p in data[32]])
-    bz.semilogx(inc4[:, 0], inc4[:, 1], "o-", ms=2.6, lw=0.9, color=COL[4], label="$\\kappa=4$")
-    bz.semilogx(inc1[:, 0], inc1[:, 1], "s--", ms=3.0, lw=0.9, color="0.3",
+    bz.semilogx(inc4[:, 0], inc4[:, 1], "o-", ms=3.6, lw=1.1, color=COL[4], label="$\\kappa=4$")
+    bz.semilogx(inc1[:, 0], inc1[:, 1], "s--", ms=4.2, lw=1.1, color="0.3",
                 label="uniform, polished")
-    bz.set_xlabel("$m$")
-    bz.set_ylabel("$\\Delta D$ per doubling")
+    bz.set_xlabel("$m$", fontsize=11)
+    bz.set_ylabel("$\\Delta D$ per doubling", fontsize=11)
     bz.grid(alpha=0.25)
-    bz.set_title("the climb barely decelerates", fontsize=7)
+    bz.set_title("the climb barely decelerates", fontsize=10)
     bz.set_ylim(0.04, 0.095)
-    bz.legend(fontsize=5.6, loc="upper right")
+    bz.legend(fontsize=7.8, loc="upper right")
     # guide: the power-law fit to the kappa=4 ladder (Dinf = 1.768, s = 0.273)
-    mm = np.logspace(np.log10(24), np.log10(400), 50)
+    mm = np.logspace(np.log10(24), np.log10(800), 50)
     bz.semilogx(mm, 1.19 * 0.273 * np.log(2) * mm ** (-0.273), ":", lw=0.9, color="0.5",
                 label="fit $cm^{-0.27}$")
     fig.tight_layout()
     out = ROOT / "figures/uneven-ladder.png"
-    fig.savefig(out, dpi=150, facecolor="white", bbox_inches="tight",
+    fig.savefig(out, dpi=170, facecolor="white", bbox_inches="tight",
                 pil_kwargs={"optimize": True})
     print(f"wrote {out.relative_to(ROOT)} ({out.stat().st_size/1024:.0f} kB)")
     for k in sorted(data):
