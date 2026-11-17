@@ -51,19 +51,22 @@ def panel(ax, x, v, title):
     ax.set_title(f"{title}\n$r\\in[{lo:.3f},{hi:.3f}]$, $D={np.nanmax(r)/np.nanmin(r):.4f}$",
                  fontsize=9)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    ax.set_aspect("equal", adjustable="box")
     ax.set_xticks([0, 0.5, 1]); ax.set_yticks([0, 0.5, 1])
     ax.tick_params(labelsize=8)
     ax.set_xlabel("$x$", fontsize=9); ax.set_ylabel("$y$", fontsize=9)
 
 
 def main():
-    fig, axes = plt.subplots(2, 2, figsize=(6.6, 5.6))
+    fig, axes = plt.subplots(2, 2, figsize=(6.3, 6.6))
     z = ec.koch_nodes(5); z = (z - z[0]) / (z[-1] - z[0])
     panel(axes[0, 0], np.linspace(0, 1, len(z)), z, "Koch arc, level 5")
     # the two proved extremal pairs of the Koch arc (and the mirror images)
+    # the images of an extremal pair are (y,x) and (1-x,1-y): r is symmetric, and the Koch
+    # symmetry is F(1-u) = 1 - conj(F(u)).  The mixed images (x,1-y), (1-x,y) are not extremal.
     for (a, b), mk in (((5 / 16, 11 / 16), "o"), ((63 / 256, 321 / 1024), "s")):
-        axes[0, 0].plot([a, 1 - a, a, 1 - a], [b, 1 - b, 1 - b, b], mk, ms=5,
-                        mfc="none", mec="k", mew=0.9)
+        axes[0, 0].plot([a, b, 1 - a, 1 - b], [b, a, 1 - b, 1 - a], mk, ms=5.5,
+                        mfc="none", mec="k", mew=1.0)
 
     p, v, _ = ec.two_piece(t=0.563, level=9)
     o = np.argsort(p)
