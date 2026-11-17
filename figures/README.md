@@ -16,8 +16,9 @@ Koch arc, the two-piece and three-piece reversible arcs (each on its own paramet
 m=800 ladder configuration; each panel normalised to its own range, blue = min, white = geometric
 mean, red = max, with the Koch extremal pairs marked. Figure 3 of the note.
 
-`small-m-optima.png` — the optimal configurations at m=3,4,5, endpoint-gauged with the nodes
-numbered: a single corner (D=1 exactly), an M (1.0628) and a W (1.0931). Figure 4 of the note.
+`small-m-optima.png` — the optimal configurations at m=3,4,5,6, endpoint-gauged with the nodes
+numbered: a single corner (D=1 exactly), an M (1.0628), an arch (1.0931) and a one-sided dip
+(1.1295). Figure 4 of the note.
 
 `block-similarity.png` — the best matches between different parts of the m=1600 configuration, one
 per bin of size ratio. Top: block solid, the matching arc dashed after normalising and turning it

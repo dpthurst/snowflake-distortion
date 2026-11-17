@@ -1,7 +1,7 @@
-"""The optimal configurations at m = 3, 4, 5.
+"""The optimal configurations at m = 3, 4, 5, 6.
 
 m=3 has D = 1 exactly (three points can carry all three ratios equal); m=4 is the closed-form
-optimum of the note; m=5 is the certified one.  Drawn in the endpoint gauge (v_0 = 0, v_{m-1} = 1)
+optimum of the note; m=5 and m=6 are the certified ones.  Drawn in the endpoint gauge (v_0 = 0, v_{m-1} = 1)
 with the chord dotted, the ratios printed underneath, and the nodes marked.
 
     python3 scripts/plot_small_m.py
@@ -41,7 +41,7 @@ def panel(ax, v, D, title):
 
 
 def main():
-    fig, axes = plt.subplots(1, 3, figsize=(6.6, 2.5))
+    fig, axes = plt.subplots(1, 4, figsize=(6.8, 2.1))
     # m = 3: all three ratios equal 2^{-alpha}; an isoceles triangle
     v3 = np.array([0.0, 0.5 + 1j * np.sqrt(3 ** -1 - 0.25), 1.0])
     panel(axes[0], v3, 1.0, "$m=3$: every ratio equal")
@@ -53,7 +53,9 @@ def main():
     # m = 5: the certified optimum
     v5 = np.conj(np.load(ROOT / "results/m5_best.npz")["v"])   # draw it above the chord
     panel(axes[2], v5, ratios(v5).max() / ratios(v5).min(), "$m=5$: four steps $=1/3$")
-    for ax, v in zip(axes, (v3, v4, v5)):
+    v6 = np.conj(np.load(ROOT / "results/m6_best.npz")["v"])
+    panel(axes[3], v6, ratios(v6).max() / ratios(v6).min(), "$m=6$")
+    for ax, v in zip(axes, (v3, v4, v5, v6)):
         r = ratios(core.gauge(v))
         print("  ratios:", np.round(r, 6), " D =", np.round(r.max() / r.min(), 9))
     fig.tight_layout()
