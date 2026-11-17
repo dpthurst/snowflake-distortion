@@ -378,40 +378,72 @@ $m=200$ used to be the arc, which is $0.8\%$ above the S value now recorded ther
 \end{table}
 
 
-\subsection*{What a local block sees}\label{sec:blocks}
+\subsection*{Parts of the curve that repeat}\label{sec:blocks}
 
-Does a piece of a near-optimal configuration reproduce the distortion of the whole? For a
-self-similar arc it must, at the substitution scales: a block that is a copy of the whole carries a
-scaled copy of the whole $r$-field. Checked at level 6, where the four level-1 pieces of the Koch
-polygon each give $D=2.096805160875$ (deviation $2\times10^{-15}$), and for the two-piece arc at
-level 10, whose two pieces give deviations $3.7\times10^{-15}$ and $2.2\times10^{-16}$. A shallower
-block is a copy of a shallower \emph{truncation}, not of the whole, so it returns that truncation's
-value: the level-3 blocks of the Koch polygon give $2.089552$, the level-3 distortion, which is not
-an error but the truncation.
-
-For the numerical ladder this is a property rather than a theorem, and it holds. The exhaustive
-check of \texttt{scripts/check\_block\_distortion.py} tested all $205\,120$ contiguous blocks with
-gap at least $160$ of the stored $m=800$ configuration and found every one reproducing $D$ to
-$2.9\times10^{-6}$ relative, half of them to $10^{-9}$. On the polished $m=800$ configuration it is
-much tighter (Figure~\ref{fig:blocks}): every block of length at least $160$ reproduces $D$ to
-$1.2\times10^{-13}$, and the \emph{median} block is already that accurate at length $40$ --- though
-the worst block of length $40$ is off by $9\%$, so not every block is representative.
+The numerical optima are not self-similar in shape. But parts of one curve do resemble other parts
+of it, sometimes at another scale, and that is what Figure~\ref{fig:similar} shows. The search asks,
+for two index intervals $I=[a,a+L]$ and $J=[c,c+K]$, whether
+\[
+  V(c+Kt)\ \approx\ s\,V(a+Lt)+d,\qquad t\in[0,1],
+\]
+with $s,d\in\mathbb{C}$ --- a similarity carrying the block onto the arc, the parameter taken
+affinely --- and scores it scale free: both blocks are centred and divided by their own diameter and
+only a rotation is fitted, so a residual of $0.10$ means the shapes agree to $10\%$ of the diameter,
+with the size ratio $|s|$ reported separately. (Scoring the raw least-squares fit instead lets a
+small arc match almost anything, because its errors are never amplified; a first version of this
+search did exactly that and produced spurious $3\%$ hits.)
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.72\textwidth]{block-comparison.png}
-  \caption{Relative deviation of the restricted distortion $D_{\rm block}$ from the whole $D$, over
-  all contiguous blocks of the $m=800$ configuration, against block length: the maximum over blocks
-  and the median. The dotted line is the level a self-similar arc attains exactly at its
+  \includegraphics[width=0.95\textwidth]{block-similarity.png}
+  \caption{The best matches between different parts of the $m=1600$ configuration, one per bin of
+  size ratio: the block in blue, the other arc in red dashed after normalising and turning it back.
+  Residuals $0.10$--$0.17$ of the block diameter, at size ratios $0.51$, $0.80$, $1.00$, $1.22$,
+  $1.78$ and rotations up to $136^\circ$.}
+  \label{fig:similar}
+\end{figure}
+
+The systematic search (\texttt{scripts/search\_overlaps.py}) comes with the control that matters.
+Against the \emph{shuffled-turn} surrogates, which have the same step lengths and the same multiset
+of turning angles in random order, and so the same roughness statistics but no sequence: at
+$m=1600$ the real curve reaches residual $0.098$ with $34$ pairs below $0.12$ and $261$ below
+$0.15$, while the surrogates reach $0.164$ and $0.169$ with nothing below $0.12$. So the order of
+the steps matters, and these are not generic features of a rough curve. Two further checks are in the
+earlier reports: at $m=800$ the best residual is $0.114$ ($0.158$ on the coarse shape), and an
+alignment found at $m=800$ survives at $m=1600$ at doubled indices in the zeroth percentile against
+the controls, so it is a property of the sequence and not a finite-size accident.
+
+\paragraph{What a block sees of the distortion.} A different and sharper question about blocks has a
+clean answer. For a self-similar arc a block that is a copy of the whole carries a copy of the whole
+$r$-field, so it must return the same distortion, and it does: at level 6 the four level-1 pieces of
+the Koch polygon each give $D=2.096805160875$ (deviation $2\times10^{-15}$), and the two pieces of
+the two-piece arc at level 10 give $3.7\times10^{-15}$ and $2.2\times10^{-16}$. A shallower block is
+a copy of a shallower \emph{truncation}, so it returns that truncation's value --- the level-3 blocks
+of the Koch polygon give $2.089552$, the level-3 distortion, not an error.
+
+For the numerical ladder this is a property rather than a theorem, and it holds. An exhaustive check
+of all $205\,120$ contiguous blocks with gap at least $160$ of the stored $m=800$ configuration found
+every one reproducing $D$ to $2.9\times10^{-6}$ relative, half of them to $10^{-9}$. On the polished
+$m=800$ configuration it is much tighter (Figure~\ref{fig:blocks}): every block of length at least
+$160$ reproduces $D$ to $1.2\times10^{-13}$, and the \emph{median} block is that accurate already at
+length $40$ --- though the worst block of length $40$ is off by $9\%$, so not every block is
+representative.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.68\textwidth]{block-comparison.png}
+  \caption{Relative deviation of the restricted distortion $D_{\rm block}$ from the whole $D$,
+  over all contiguous blocks of the $m=800$ configuration, against block length: the maximum over
+  blocks and the median. The dotted line is the level a self-similar arc attains exactly at its
   substitution scales.}
   \label{fig:blocks}
 \end{figure}
 
-The reading: the numerical optima are \emph{locally self-similar in distortion} --- every long
-contiguous sub-arc has the same distortion as the whole --- while not being self-similar in shape,
-since their sub-arcs are not similar copies (the best sub-arc similarity residual measured earlier is
-$0.13$). That combination is what the limit object is expected to have, and it is the strongest
-evidence in hand that it is not an exactly self-similar curve.
+This is the combination to keep in mind: distant parts of the curve do \emph{not} agree in shape
+($10\%$ residuals), but \emph{every} long block has the distortion of the whole ($10^{-13}$). The
+numerical optima are locally self-similar in distortion without being self-similar in shape, which
+is what one expects of the limiting object and is the strongest evidence in hand that it is not an
+exactly self-similar curve.
 
 \begin{figure}[t]
   \centering
