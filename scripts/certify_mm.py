@@ -148,7 +148,7 @@ def main():
             print(f"  level {level:2d}: {len(boxes):9d} boxes, {na:8d} below target "
                   f"[{time.time()-t0:.1f}s]", flush=True)
         if na == 0:
-            print(f"CERTIFIED: D_{m} >= {L:.9f}")
+            print(f"CERTIFIED: D_{m} >= {L:.9f}   ({total} boxes, {time.time()-t0:.1f}s)")
             break
         w = (boxes[alive][:, :, 1] - boxes[alive][:, :, 0]).max()
         if w < 1e-12:

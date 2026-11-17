@@ -302,7 +302,7 @@ $m$ & certified window for $D_m$ & width & cost \\
 \midrule
 4 & $[1.0627659230747,\ 1.0627659230764]$ & $1.7\times10^{-12}$ & $54\,163$ boxes, $0.07$\,s \\
 5 & $[1.093090076,\ 1.093091076]$         & $10^{-6}$           & $80$ boxes, $0.7$\,s \\
-6 & $[1.127430051,\ 1.128130050]$         & $7.0\times10^{-4}$  & $5.6\times10^{5}$ boxes, $12$\,s \\
+6 & $[1.127430051,\ 1.128130050]$         & $7.0\times10^{-4}$  & $1.15\times10^{7}$ boxes, $11$\,s \\
 $\ge7$ & fails: $1.5\times10^{6}$ boxes at width $10^{-2}$, bound still below $1.01$ & & \\
 \bottomrule
 \end{tabular}
@@ -321,7 +321,7 @@ configuration was improved. A search of $20\,000$ random starts, each annealed o
 surrogate and then polished by sequential LP on the exact range, converges in every one of them to
 the same configuration, with $D=1.1281300496$ against the $1.129534712$ recorded earlier: that
 lowers the a priori budget $\bar D$ (and with it the a priori box), and the sharper target is what
-the branch-and-bound can then close to $7\times10^{-4}$ in twelve seconds of box arithmetic. The optimum is
+the branch-and-bound can then close to $7\times10^{-4}$ with $1.15\times10^{7}$ boxes in eleven seconds. The optimum is
 rigid, like the $m=5$ one: all five steps have the same ratio and so does the
 end-to-end chord, $|v_i-v_{i+1}|=c$ for every $i$ and $|v_5-v_0|=5^{\alp}c$, and the five pairs at
 spans two and three are the tight maximum ones. It is also a genuine stationary point: an explicit
@@ -639,7 +639,8 @@ $D_\infty$.
 \item The last-named script draws Figures~\ref{fig:arc} and~\ref{fig:gap} from the
   \texttt{arc*.npy} and \texttt{s\_m*.npy} files in \texttt{data/}.
 \item \texttt{scripts/certify\_mm.py} is the certificate of \S\ref{sec:m4} for any $m$; e.g.
-  \texttt{--m 5 --eps 1e-6}, \texttt{--m 6 --eps 7e-4 --Dbar 1.1281300506}. It prints the certified
+  \texttt{--m 5 --eps 1e-6}, \texttt{--m 6 --eps 7e-4 --Dbar 1.1281300506 --maxboxes 12000000}
+  (the last flag is needed: the default budget of three million is not enough at that width). It prints the certified
   window; $m=4$ with \texttt{--m 4 --eps 1e-12} reproduces \texttt{results/m4-global.json}. \texttt{scripts/ladder\_half.py}
   is the $\alp=\tfrac12$ ladder of \S\ref{sec:prior} (results in \texttt{results/ladder-half.json}).
 \item \texttt{scripts/restart\_study.py} re-runs a cheap optimisation from perturbed and resampled

@@ -10,7 +10,7 @@ Boxes are discarded when $\max_{i\ne j}\underline r_i/\overline r_j$ exceeds the
 |---|---|---|---|---|
 | 4 | $[1.0627659230747,\ 1.0627659230764]$ | $1.7\times10^{-12}$ | 54 163 | 0.07 s |
 | 5 | $[1.093090076,\ 1.093091076]$ | $10^{-6}$ | 80 | 0.7 s |
-| 6 | $[1.127430051,\ 1.128130050]$ | $7.0\times10^{-4}$ | $5.6\times10^5$ (peak) | 12 s |
+| 6 | $[1.127430051,\ 1.128130050]$ | $7.0\times10^{-4}$ | $1.15\times10^{7}$ | 11 s |
 | $\ge7$ | fails: $1.5\times10^6$ boxes at $10^{-2}$, bound still below 1.01 | | | |
 
 Upper ends are achieved configurations: at $m=5$ the optimum found here
@@ -46,12 +46,14 @@ Lowering $\bar D$ from $1.129534712$ to $1.1281300506$ shrinks the a priori box,
 then closes the window to $7\times10^{-4}$ instead of $10^{-2}$:
 
 ```
-python3 scripts/certify_mm.py --m 6 --eps 7e-4 --Dbar 1.1281300506
-CERTIFIED: D_6 >= 1.127430051        # level 92, peak 5.6e5 boxes, 12 s
+python3 scripts/certify_mm.py --m 6 --eps 7e-4 --Dbar 1.1281300506 --maxboxes 12000000
+CERTIFIED: D_6 >= 1.127430051   (11497959 boxes, 11.3s)
 ```
 
 The bound is first order in the box width, so this is near the end of what the method gives at
-$m=6$: $\epsilon=6\times10^{-4}$ already exhausts $1.2\times10^7$ boxes. Controls run alongside:
+$m=6$: $\epsilon=6\times10^{-4}$ already exhausts $1.2\times10^7$ boxes, and even at
+$\epsilon=7\times10^{-4}$ the default budget of $3\times10^6$ is not enough --- the run above needs
+`--maxboxes 12000000`, which is why the command carries it. Controls run alongside:
 at $m=5$ the known setting ($\epsilon=10^{-6}$, $\bar D=1.093091076$) still certifies, while a
 target that is false ($D_6\ge1.12815$ with $\bar D=1.1282$) is not certified. The full log is
 `results/m6-certificate.log`, the search record `results/m6-search.json`.
