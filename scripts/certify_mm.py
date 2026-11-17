@@ -28,12 +28,24 @@ def outward(x, down=True, n=4):
 
 
 def gap_intervals(m):
-    """|i-j|^alpha as outward-rounded intervals, one per gap 1..m-1"""
-    out = [None]
-    for g in range(1, m):
-        v = mp.power(g, ALPHA)
-        out.append((outward(v, True, 6), outward(v, False, 6)))
-    return out
+    """(x_j - x_i)^alpha as outward-rounded intervals for the uniform pattern."""
+    return pattern_intervals(list(range(m)))
+
+
+def pattern_intervals(x):
+    """(x_j - x_i)^alpha as outward-rounded intervals, indexed G[i][j] for i < j.
+
+    Pass integer x for the uniform ladder so that the powers stay exact integers^alpha.
+    """
+    x = list(x)
+    m = len(x)
+    G = [[None] * m for _ in range(m)]
+    for i in range(m):
+        for j in range(i + 1, m):
+            v = mp.power(mp.mpf(x[j]) - mp.mpf(x[i]), ALPHA) if not all(
+                isinstance(t, (int, np.integer)) for t in (x[i], x[j])) else mp.power(x[j] - x[i], ALPHA)
+            G[i][j] = (outward(v, True, 6), outward(v, False, 6))
+    return G
 
 
 def inflate(lo, hi, n=3):
@@ -63,8 +75,8 @@ def ratios(boxes, m, G):
     for i in range(m):
         for j in range(i + 1, m):
             if i == 0 and j == m - 1:
-                lo = np.full(nb, 1.0 / G[m - 1][1])
-                hi = np.full(nb, 1.0 / G[m - 1][0])
+                lo = np.full(nb, 1.0 / G[0][m - 1][1])
+                hi = np.full(nb, 1.0 / G[0][m - 1][0])
                 lo_list.append(lo); hi_list.append(hi); continue
             ri = None if i == 0 else (i - 1)
             rj = None if j == m - 1 else (j - 1)
@@ -86,8 +98,7 @@ def ratios(boxes, m, G):
                 relo, rehi = inflate(relo, rehi, 1)
                 imlo, imhi = inflate(imlo, imhi, 1)
             lo, hi = abs_iv(np.asarray(relo), np.asarray(rehi), np.asarray(imlo), np.asarray(imhi))
-            g = j - i
-            lo_list.append(lo / G[g][1]); hi_list.append(hi / G[g][0])
+            lo_list.append(lo / G[i][j][1]); hi_list.append(hi / G[i][j][0])
     lo = np.array(lo_list); hi = np.array(hi_list)
     return inflate(lo, hi, 2)
 
@@ -108,12 +119,12 @@ def initial_box(m, Dbar, G):
     # |v_i - v_j| <= Dbar * g_ij / 3   (since min r >= r(0,m-1)/Dbar = 1/(3 Dbar))
     # r(0,m-1) = 1/g_{m-1} is the reference pair, so every competitor has
     # |v_i - v_j| <= Dbar * g_ij / g_{m-1}
-    ref = G[m - 1][0]
+    ref = G[0][m - 1][0]
     for i in range(1, m - 1):
-        lim = Dbar * G[i][1] / ref
+        lim = Dbar * G[0][i][1] / ref
         lo[2 * (i - 1)], hi[2 * (i - 1)] = -lim, lim
         lo[2 * (i - 1) + 1], hi[2 * (i - 1) + 1] = -lim, lim
-        lim_r = Dbar * G[m - 1 - i][1] / ref     # distance to the endpoint 1
+        lim_r = Dbar * G[i][m - 1][1] / ref     # distance to the endpoint 1
         lo[2 * (i - 1)] = max(lo[2 * (i - 1)], 1.0 - lim_r)
         hi[2 * (i - 1)] = min(hi[2 * (i - 1)], 1.0 + lim_r)
     assert np.all(lo < hi), (lo, hi)
@@ -126,9 +137,19 @@ def main():
     ap.add_argument("--eps", type=float, default=1e-2)
     ap.add_argument("--Dbar", type=float, default=None)
     ap.add_argument("--maxboxes", type=int, default=3_000_000)
+    ap.add_argument("--x", default=None,
+                    help="parameter pattern 0=x0<x1<...<x_{m-1}=1, comma separated; "
+                         "default is the uniform ladder")
     args = ap.parse_args()
     m = args.m
-    G = gap_intervals(m)
+    if args.x:
+        xpat = [float(t) for t in args.x.split(",")]
+        assert len(xpat) == m and xpat[0] == 0.0 and abs(xpat[-1] - 1.0) < 1e-12
+        assert all(b > a for a, b in zip(xpat, xpat[1:])), xpat
+        G = pattern_intervals(xpat)
+    else:
+        xpat = None
+        G = gap_intervals(m)
     if args.Dbar is None:
         v = np.load(ROOT / f"data/m{m}_best.npy")
         i, j = np.triu_indices(m, 1)
@@ -137,6 +158,8 @@ def main():
     Dbar = args.Dbar
     L = Dbar - args.eps
     boxes = initial_box(m, Dbar, G)
+    if xpat is not None:
+        print("pattern x =", xpat)
     print(f"m={m}, Dbar={Dbar:.9f}, target L={L:.9f}, initial box "
           f"{np.round(boxes[0], 3).tolist()}", flush=True)
     t0 = time.time(); total = 1; level = 0

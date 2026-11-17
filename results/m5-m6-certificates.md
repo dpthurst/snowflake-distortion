@@ -19,7 +19,8 @@ $D=1.1281300496046$. Hence
 
 $$D_\infty \ge 1.127430051,$$
 
-up from $1.0627659230$, and from $1.119534712$ as this table stood before the $m=6$ search.
+up from $1.0627659230$, and from $1.119534712$ as this table stood before the $m=6$ search. Allowing
+the parameters to be non-uniform raises it again, to $1.129164878$ (next section).
 
 ## The $m=6$ rung, re-done
 
@@ -76,3 +77,39 @@ at a degenerate box centred on the optimum the bound returns $D$ to machine prec
 A second-order (centred/mean-value) bound would cut the box count by orders of magnitude and might
 bring $m=7,8$ into range; that is the natural next step if the lower bound is to be pushed toward
 the ladder at all.
+
+## Non-uniform parameter patterns
+
+The ladder samples the curve at the uniform parameters $x_i=i/(m-1)$, but the argument that turns
+an $m$-point computation into a bound uses only that the sampled ratios lie between $\inf r_\gamma$
+and $\sup r_\gamma$: for *any* fixed pattern $0=x_0<\dots<x_{m-1}=1$,
+$$D(\gamma)\ \ge\ \frac{\max_{i<j}|\gamma(x_i)-\gamma(x_j)|/(x_j-x_i)^{\alpha}}
+                    {\min_{i<j}|\gamma(x_i)-\gamma(x_j)|/(x_j-x_i)^{\alpha}}
+\ \ge\ D_m(x),$$
+where $D_m(x)$ is the least spread over configurations at that pattern; hence
+$$D_\infty\ \ge\ \sup_x D_m(x),$$
+and the uniform grid is only one candidate.
+
+Searching patterns at each $m$ (`scripts/gap_pattern_search.py`, a few hundred evaluations each,
+then a hill climb on the gaps) and certifying the best with `certify_mm.py --x ...`:
+
+| $m$ | uniform $D_m$ | best pattern found | achieved | certified |
+|---|---|---|---|---|
+| 4 | 1.062765923 | (0, 0.4, 0.6, 1) | 1.074022949 | 1.074021949 |
+| 5 | 1.093091076 | (0, 0.3, 0.45, 0.6, 1) | 1.101853036 | 1.101852036 |
+| 6 | 1.128130050 | (0, 0.2477, 0.4069, 0.5866, 0.7318, 1) | 1.135164878 | 1.129164878 |
+
+The certificates are the same branch-and-bound with $\log(x_j-x_i)^{\alpha}$ in place of
+$\log|i-j|^{\alpha}$; the aim was to see whether the interval bound could be pushed further at these
+$m$ without changing the method otherwise. It can: $+1.06\%$ at $m=4$, $+0.80\%$ at $m=5$, and at
+$m=6$ $+0.62\%$ in the achieved value but only $+0.15\%$ after certification, because the
+first-order bound needs a margin of $6\times10^{-3}$ below the achieved value there
+($16.7\times10^6$ boxes, 17 s). The gain shrinks with $m$, which is what one expects if the uniform
+ladder is asymptotically the right choice.
+
+Postscript, since the first attempt at this went wrong: an early grid scan reported a pattern worth
+$1.0888$ at $m=4$, $2.4\%$ above uniform. It was an artefact --- the annealed optimiser had failed
+from the few starts used per pattern, and the certificate refused to close (achieving only
+$1.0587$). Every number above is reproducible from many starts, and each is certified before being
+quoted; the failed candidate is the reason the search now uses $10^2$ starts per pattern and reports
+the achieved value separately from the certified one.

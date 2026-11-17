@@ -1,0 +1,47 @@
+{
+ "note": "verified pattern values; each certified with certify_mm.py --x (see results/*-pattern-certificate.log)",
+ "patterns": [
+  {
+   "m": 4,
+   "x": [
+    0,
+    0.4,
+    0.6,
+    1
+   ],
+   "uniform": 1.062765923,
+   "achieved": 1.074022949,
+   "certified": 1.074021949,
+   "eps": 1e-06
+  },
+  {
+   "m": 5,
+   "x": [
+    0,
+    0.3,
+    0.45,
+    0.6,
+    1
+   ],
+   "uniform": 1.093091076,
+   "achieved": 1.101853036,
+   "certified": 1.101852036,
+   "eps": 1e-06
+  },
+  {
+   "m": 6,
+   "x": [
+    0,
+    0.2477,
+    0.4069,
+    0.5866,
+    0.7318,
+    1
+   ],
+   "uniform": 1.12813005,
+   "achieved": 1.135164878,
+   "certified": 1.129164878,
+   "eps": 0.006
+  }
+ ]
+}

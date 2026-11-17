@@ -10,7 +10,8 @@ constants sharp (`notes/koch-extremals.pdf`, computer-assisted, with the endpoin
 Lean). Two reversible self-similar arcs sit below it at $2.042$ and $2.0179$ (measured, not
 certified). The first rungs of the finite-$m$ ladder are certified globally by interval
 branch-and-bound: $D_4=1.062765923076\ldots$, $D_5\in[1.093090076,1.093091076]$,
-$D_6\in[1.127430051,1.128130050]$, hence $1.1274\le D_\infty\le2.0968$. Best known rungs climb from
+$D_6\in[1.127430051,1.128130050]$ on the uniform grid and $[1.129164878,1.135164878]$ with
+non-uniform parameter patterns, hence $1.1292\le D_\infty\le2.0968$. Best known rungs climb from
 $1.352$ at $m=40$ to $1.636$ at $m=1600$.
 
 **Open.** Any better lower bound (a second-order bound might reach $m=7,8$); whether either explicit

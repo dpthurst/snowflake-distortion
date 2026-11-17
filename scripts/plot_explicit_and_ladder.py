@@ -138,8 +138,8 @@ def fig_ladder_D():
                 label="best known $D_m$ (S branch),\nbar = gap to the other branch")
     ax.semilogx(ms, arc_at, "s", mfc="white", mec="#2c9c4a", ms=3.2,
                 label="best known, one-sided arc branch")
-    ax.axhline(1.127430051, color="#8b2fa0", lw=1.0, ls=(0, (1, 1)),
-               label="certified: $D_6\geq1.1274$")
+    ax.axhline(1.129164878, color="#8b2fa0", lw=1.0, ls=(0, (1, 1)),
+               label="certified: $D_6\geq1.1292$")
     ax.axhline(KOCK_D, color="#c8342a", lw=1.1, ls="--",
                label=f"Koch $D={KOCK_D:.6f}$ (sharp)")
     ax.axhline(2.04204, color="#e08a2e", lw=1.1, ls=":",
