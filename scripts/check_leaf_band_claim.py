@@ -2,7 +2,7 @@
 from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
-d = np.load(ROOT / '.ultramath/smwh6zmc9/m4/coords_3piece_sym.npz')
+d = np.load(ROOT / 'data/inputs/coords_3piece_sym.npz')
 p, z = d['params'], d['coords']
 delta = np.diff(p)
 keep = delta > 1e-13  # remove only exact shared cell-endpoint parameter records

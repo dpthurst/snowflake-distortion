@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import align_core as core  # noqa: E402
 
 ALPHA = core.ALPHA
-SRC = ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy"
+SRC = ROOT / "data/inputs/s_m800_plain.npy"
 
 
 def koch_nodes(level):

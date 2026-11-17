@@ -19,25 +19,23 @@ import sys
 sys.path.insert(0, str(sys_path))
 import align_core as core  # noqa: E402
 
-U = ROOT / ".ultramath/smwhdqmht/m1"
-M8 = ROOT / ".ultramath/smwh6zmc9/m8"
-SCRATCH = ROOT / ".scratch"
+INPUTS = ROOT / "data/inputs"
 
 SOURCES = {
-    "S-branch m=40": (SCRATCH / "final_m40.npz", "W", 0),
-    "S-branch m=100": (SCRATCH / "final_m100.npz", "W", 0),
-    "S-branch m=150": (SCRATCH / "cert150.npy", None, None),
-    "S-branch m=200": (SCRATCH / "descended_m200.npy", None, None),
-    "S-branch m=400": (U / "s_m400.npy", None, None),
-    "S-branch m=800": (U / "s_m800_plain.npy", None, None),
-    "S-branch m=1600": (U / "s_m1600_plain.npy", None, None),
-    "arc branch m=400": (U / "arc_m400.npy", None, None),
-    "arc branch m=800": (U / "arc_m800.npy", None, None),
-    "arc branch m=1600": (U / "arc_m1600.npy", None, None),
-    "three-piece m=400": (M8 / "cand_m400.npy", None, None),
-    "three-piece m=800": (M8 / "cand_m800.npy", None, None),
-    "three-piece m=1600": (M8 / "cand_m1600.npy", None, None),
-    "smoothed S m=800": (U / "S_m800_smooth.npy", None, None),
+    "S-branch m=40": (INPUTS / "final_m40.npz", "W", 0),
+    "S-branch m=100": (INPUTS / "final_m100.npz", "W", 0),
+    "S-branch m=150": (INPUTS / "cert150.npy", None, None),
+    "S-branch m=200": (INPUTS / "descended_m200.npy", None, None),
+    "S-branch m=400": (INPUTS / "s_m400.npy", None, None),
+    "S-branch m=800": (INPUTS / "s_m800_plain.npy", None, None),
+    "S-branch m=1600": (INPUTS / "s_m1600_plain.npy", None, None),
+    "arc branch m=400": (INPUTS / "arc_m400.npy", None, None),
+    "arc branch m=800": (INPUTS / "arc_m800.npy", None, None),
+    "arc branch m=1600": (INPUTS / "arc_m1600.npy", None, None),
+    "three-piece m=400": (INPUTS / "cand_m400.npy", None, None),
+    "three-piece m=800": (INPUTS / "cand_m800.npy", None, None),
+    "three-piece m=1600": (INPUTS / "cand_m1600.npy", None, None),
+    "smoothed S m=800": (INPUTS / "S_m800_smooth.npy", None, None),
 }
 
 PRESETS = {

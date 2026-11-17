@@ -129,7 +129,7 @@ def resample(v, m):
 
 def starts_for(m, rng):
     out = []
-    srcs = [ROOT / ".scratch/final_m100.npz", ROOT / "results/m200_S.npy",
+    srcs = [ROOT / "data/inputs/final_m100.npz", ROOT / "results/m200_S.npy",
             ROOT / "results/m400_converged.npy"]
     for p in srcs:
         if p.exists():

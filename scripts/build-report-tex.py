@@ -6,7 +6,7 @@ Usage (from the project root):
 
 The Markdown is the master copy; the .tex is generated and the .pdf compiled.
 Run this after every edit to a report's Markdown so that its PDF never lags
-behind.  LaTeX intermediates go to .scratch/report-build/<name>/.
+behind.  LaTeX intermediates go to build/report-tex/<name>/.
 """
 import io, os, re, shutil, subprocess, sys
 
@@ -17,11 +17,11 @@ TITLE = {
 }.get(NAME, NAME.replace('-', ' '))
 
 SRC = 'reports/%s.md' % NAME
-MD = '.scratch/%s-tex.md' % NAME
-RAW = '.scratch/%s-raw.tex' % NAME
+MD = 'build/report-tex/%s-tex.md' % NAME
+RAW = 'build/report-tex/%s-raw.tex' % NAME
 OUT = 'reports/%s.tex' % NAME
 PDF = 'reports/%s.pdf' % NAME
-BUILD = '.scratch/report-build/%s' % NAME
+BUILD = 'build/report-tex/%s' % NAME
 
 # ---- 1. preprocess Markdown for pandoc -------------------------------------
 lines = io.open(SRC, encoding='utf-8').read().split('\n')

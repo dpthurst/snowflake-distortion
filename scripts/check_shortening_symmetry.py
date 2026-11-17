@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy"
+SOURCE = ROOT / "data/inputs/s_m800_plain.npy"
 ALPHA = np.log(3) / np.log(4)
 A, B = 25, 739
 

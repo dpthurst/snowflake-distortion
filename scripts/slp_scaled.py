@@ -13,7 +13,6 @@ from scipy import sparse
 from scipy.optimize import linprog
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".ultramath/smwgx79ya/m8"))
 from slp2 import grad_rows            # noqa: E402
 
 

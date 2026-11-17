@@ -18,7 +18,7 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy"
+SOURCE = ROOT / "data/inputs/s_m800_plain.npy"
 V = np.load(SOURCE)
 assert V.shape == (800,) and np.isfinite(V).all()
 V = (V - V[0]) / (V[-1] - V[0])

@@ -26,7 +26,7 @@ neither known nor excluded.
 | `notes/koch-extremals.{tex,pdf}` | the companion: sharp constants for the Koch parametrisation |
 | `certificate/` | the enclosures behind the companion's two constants, as cited by its §Certification: the lower-bound branch-and-bound, the maximum computation with its output, and the independent minimum-local checks |
 | `figures/` | every figure of both notes, plus `figures/README.md` saying what each one is |
-| `data/` | the node positions behind the figures and Table 1 (S branch, one-sided branch, $m=4,5,6$ optima) |
+| `data/` | the node positions behind the figures and Table 1 (S branch, one-sided branch, $m=4,5,6$ optima), and `data/inputs/` for the other configurations the analysis scripts read |
 | `results/` | working reports and JSON/`.npz` outputs |
 | `scripts/` | the code: curve constructions, the minimax SLP, the certificates, the searches, the plotting |
 | `lean/` | the Lean formalisation of the Koch endpoint value |

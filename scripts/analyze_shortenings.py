@@ -6,11 +6,11 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 ALPHA = np.log(3)/np.log(4)
 FILES = {
-    'S_plain': ROOT/'.ultramath/smwhdqmht/m1/s_m1600_plain.npy',
-    'S_kick': ROOT/'.ultramath/smwhdqmht/m1/s_m1600_kick.npy',
-    'arc': ROOT/'.ultramath/smwhdqmht/m1/arc_m1600.npy',
-    'point_symmetric_200': ROOT/'.ultramath/smwhdqmht/m2/w_smoothS_t2_200.npy',
-    'point_symmetric_400': ROOT/'.ultramath/smwhdqmht/m2/w_smoothS_t2_400.npy',
+    'S_plain': ROOT/'data/inputs/s_m1600_plain.npy',
+    'S_kick': ROOT/'data/inputs/s_m1600_kick.npy',
+    'arc': ROOT/'data/inputs/arc_m1600.npy',
+    'point_symmetric_200': ROOT/'data/inputs/w_smoothS_t2_200.npy',
+    'point_symmetric_400': ROOT/'data/inputs/w_smoothS_t2_400.npy',
 }
 
 def gauge(v):

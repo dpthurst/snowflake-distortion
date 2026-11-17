@@ -21,3 +21,6 @@ __pycache__/
 
 # swarm working directories (huge; the parts worth keeping are copied to certificate/ and data/)
 .ultramath/
+
+# LaTeX/build intermediates from scripts/build-report-tex.py
+build/

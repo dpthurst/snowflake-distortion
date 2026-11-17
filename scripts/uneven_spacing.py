@@ -91,7 +91,7 @@ def surrogate(theta, m, beta, rho, nz, x_fixed=None):
 
 
 def make_start(m, kind, rng):
-    srcs = [ROOT / ".scratch/final_m100.npz", ROOT / "results/m200_S.npy",
+    srcs = [ROOT / "data/inputs/final_m100.npz", ROOT / "results/m200_S.npy",
             ROOT / "results/m400_converged.npy"]
     if kind < len(srcs) and srcs[kind].exists():
         z = np.load(srcs[kind])

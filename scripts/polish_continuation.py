@@ -14,7 +14,6 @@ import numpy as np
 from scipy.optimize import minimize
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".ultramath/smwgx79ya/m8"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import stress_uneven as su            # noqa: E402
 import uneven_spacing as us           # noqa: E402

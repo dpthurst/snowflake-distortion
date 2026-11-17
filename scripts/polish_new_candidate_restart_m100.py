@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-sys.path.insert(0,str(ROOT/'.ultramath/smwgx79ya/m8'))
 from core2 import Problem, norm_shape, supdist
 from slp2 import slp, stress, grad_rows
 from restart_new_candidate_m100 import stats
@@ -40,7 +39,7 @@ r.update(polished=stats(v),tight_max=len(st['pairs_max']),tight_min=len(st['pair
         multiplier_residual_inf=None if residual is None else float(np.max(np.abs(residual))),
         pairs_max=[list(map(int,p)) for p in st['pairs_max']],
         pairs_min=[list(map(int,p)) for p in st['pairs_min']])
-cloud=np.load(ROOT/'.scratch/final_m100.npz',allow_pickle=True)
+cloud=np.load(ROOT/'data/inputs/final_m100.npz',allow_pickle=True)
 old=cloud['W'][np.argmin(cloud['Ds'])]
 for record in records:
     label=record['label']

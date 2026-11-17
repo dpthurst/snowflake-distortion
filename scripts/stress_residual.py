@@ -14,7 +14,6 @@ from scipy import sparse
 from scipy.optimize import linprog
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".ultramath/smwgx79ya/m8"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from core2 import Problem            # noqa: E402
 from slp2 import grad_rows           # noqa: E402
@@ -64,7 +63,7 @@ def main():
               f"{r:10.4f} {na:6d} {nb:6d}")
     for name, path in (("S branch m=200 (certified)", "results/m200_S.npy"),
                        ("S branch m=400 (certified)", "results/m400_converged.npy"),
-                       ("S branch m=1600 (not cert.)", ".ultramath/smwhdqmht/m1/s_m1600_plain.npy")):
+                       ("S branch m=1600 (not cert.)", "data/inputs/s_m1600_plain.npy")):
         p = ROOT / path
         if not p.exists():
             continue

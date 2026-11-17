@@ -1,5 +1,5 @@
 {
-  "source": ".ultramath/smwhdqmht/m1/s_m800_plain.npy",
+  "source": "data/inputs/s_m800_plain.npy",
   "alpha": 0.7924812503605781,
   "definitions": {
     "D": "max |w_i-w_j|/(j-i)^alpha divided by the corresponding min",

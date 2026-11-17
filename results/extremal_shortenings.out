@@ -1,5 +1,5 @@
 {
-  "source": ".ultramath/smwhdqmht/m1/s_m800_plain.npy",
+  "source": "data/inputs/s_m800_plain.npy",
   "alpha": 0.7924812503605781,
   "shape_comparison_interpolant": "linear in original index; shape test only",
   "near_extremal_band_tolerance": 0.02,

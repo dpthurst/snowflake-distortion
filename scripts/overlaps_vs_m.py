@@ -26,10 +26,10 @@ import align_core as core  # noqa: E402
 import search_overlaps as so  # noqa: E402
 
 CURVES = {
-    200: ROOT / ".scratch/descended_m200.npy",
-    400: ROOT / ".ultramath/smwhdqmht/m1/s_m400.npy",
-    800: ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy",
-    1600: ROOT / ".ultramath/smwhdqmht/m1/s_m1600_plain.npy",
+    200: ROOT / "data/inputs/descended_m200.npy",
+    400: ROOT / "data/inputs/s_m400.npy",
+    800: ROOT / "data/inputs/s_m800_plain.npy",
+    1600: ROOT / "data/inputs/s_m1600_plain.npy",
 }
 
 LENGTHS = [0.075, 0.11, 0.15, 0.20, 0.25, 0.325, 0.40]

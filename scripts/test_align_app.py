@@ -26,7 +26,7 @@ import align_core as core  # noqa: E402
 
 NODE = Path.home() / "node/bin/node"
 HTML = ROOT / "app/snowflake-align.html"
-SCRATCH = ROOT / ".scratch"
+SCRATCH = ROOT / "build/test-align-app"   # JS scaffolding for the browser checks
 
 CASES = [
     # whole curve, block source, a, b
@@ -57,7 +57,7 @@ def script_bodies(html):
 
 
 def run_node(core_js, curves, cases):
-    SCRATCH.mkdir(exist_ok=True)
+    SCRATCH.mkdir(parents=True, exist_ok=True)
     exports = ("\nmodule.exports = {ALPHA, VARIANTS, gauge, interpAt, blockAt, wholeAt, knots,\n"
                "  supDiff, rmsDiff, residuals, procrustes, distortion, ladder, diamond,\n"
                "  stripParams, fitCopy, copyResidual, profileAt, fitTranslation,\n"
@@ -258,7 +258,7 @@ def main():
 
     for i, body in enumerate(script_bodies(html)):
         tmp = SCRATCH / f"app_script_{i}.js"
-        SCRATCH.mkdir(exist_ok=True)
+        SCRATCH.mkdir(parents=True, exist_ok=True)
         tmp.write_text(body)
         chk = subprocess.run([str(NODE), "--check", str(tmp)], capture_output=True, text=True)
         if chk.returncode != 0:

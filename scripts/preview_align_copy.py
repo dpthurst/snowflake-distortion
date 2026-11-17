@@ -18,11 +18,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import align_core as core  # noqa: E402
 
-W = np.load(ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy")
+W = np.load(ROOT / "data/inputs/s_m800_plain.npy")
 
 
 def main():
-    S = np.load(ROOT / ".scratch/final_m40.npz")["W"][0]
+    S = np.load(ROOT / "data/inputs/final_m40.npz")["W"][0]
     a, b = 0, len(S) - 1
     fit = core.fit_copy_multires(W, a, b, S)
     s0, s1 = fit["s0"], fit["s1"]

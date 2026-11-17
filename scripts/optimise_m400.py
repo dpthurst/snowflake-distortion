@@ -24,14 +24,12 @@ import numpy as np
 from scipy.optimize import minimize
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".scratch"))
-sys.path.insert(0, str(ROOT / ".ultramath/smwgx79ya/m8"))
 from bigm import phi_grad, V_of, true_dist      # noqa: E402
 from core2 import Problem                       # noqa: E402
 from slp2 import slp, stress                    # noqa: E402
 
-STARTS = {400: ROOT / ".ultramath/smwhdqmht/m1/s_m400.npy",
-          800: ROOT / ".ultramath/smwhdqmht/m1/s_m800_plain.npy"}
+STARTS = {400: ROOT / "data/inputs/s_m400.npy",
+          800: ROOT / "data/inputs/s_m800_plain.npy"}
 
 
 def exact_D(v):

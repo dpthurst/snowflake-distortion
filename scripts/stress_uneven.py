@@ -11,7 +11,6 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".ultramath/smwgx79ya/m8"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from core2 import Problem            # noqa: E402
 from slp2 import slp, stress          # noqa: E402

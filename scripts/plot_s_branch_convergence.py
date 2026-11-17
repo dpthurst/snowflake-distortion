@@ -15,9 +15,9 @@ def render(v, n=500):
     t = np.linspace(0., 1., n)
     return t, np.interp(t, t0, v.real) + 1j*np.interp(t, t0, v.imag)
 
-z = np.load(ROOT/'.scratch/final_m100.npz')
+z = np.load(ROOT/'data/inputs/final_m100.npz')
 old = norm(z['W'][z['Ds'].argmin()])
-root = ROOT/'.ultramath/smwhdqmht/m1'
+root = ROOT/'data/inputs'
 configs = [
     (100, old, '#555555', '$m=100$ stored best'),
     (400, norm(np.load(root/'s_m400.npy')), '#2ca02c', '$m=400$ S'),

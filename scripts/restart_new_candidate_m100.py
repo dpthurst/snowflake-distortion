@@ -12,12 +12,11 @@ import numpy as np
 from scipy.optimize import minimize
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / '.ultramath/smwgx79ya/m8'))
 from core2 import Problem, norm_shape, supdist
 from slp2 import slp, stress, grad_rows
 
 ALPHA = np.log(3.0) / np.log(4.0)
-DATA = np.load(ROOT / '.ultramath/smwh6zmc9/m4/coords_3piece_sym.npz')
+DATA = np.load(ROOT / 'data/inputs/coords_3piece_sym.npz')
 w, b, signs, refl = DATA['w'], DATA['b'], DATA['signs'], DATA['refl']
 a = np.r_[0.0, np.cumsum(w)[:-1]]
 A = np.r_[0j, np.cumsum(signs * b)[:-1]]
@@ -133,7 +132,7 @@ def main():
         (ROOT / 'results/new_candidate_uniform_m100_restarts.json').write_text(
             json.dumps(records, indent=2) + '\n')
         time.sleep(0.05)
-    base = ROOT / '.ultramath/smwgx79ya/m8/v2_100best.npy'
+    base = ROOT / 'data/inputs/v2_100best.npy'
     if base.exists():
         vv = norm_shape(np.load(base))
         print('previously saved best D', stats(vv), flush=True)

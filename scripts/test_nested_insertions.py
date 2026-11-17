@@ -7,7 +7,6 @@ import sys,json,time
 import numpy as np
 from scipy.optimize import minimize
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'.ultramath/smwgx79ya/m8'))
 from core2 import Problem
 A=np.log(3)/np.log(4)
 def stats(v):
@@ -53,7 +52,7 @@ def new_level(previous,name):
  return v
 
 def main():
- z=np.load(ROOT/'.scratch/final_m100.npz');w=z['W'][z['Ds'].argmin()]
+ z=np.load(ROOT/'data/inputs/final_m100.npz');w=z['W'][z['Ds'].argmin()]
  ids=np.rint(np.linspace(0,99,21)).astype(int);v=w[ids]
  v=(v-v[0])/(v[-1]-v[0])
  print('coarse start',stats(v),flush=True)

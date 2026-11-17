@@ -15,7 +15,6 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".scratch"))
 import bigm                                     # noqa: E402
 
 bigm.al = 0.5                                   # the critical exponent
