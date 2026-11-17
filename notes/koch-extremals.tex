@@ -291,15 +291,14 @@ families are independently verified by exact integer arithmetic at each of their
 
 For reproduction, see:
 \begin{itemize}\small
-\item \texttt{.ultramath/smwf70lym/m4/report.md}: lower-bound enclosure, family computations, and
-  the sharp threshold runs ($513$ boxes with no residual at gap $\ge1/2$, $1732$ boxes at gap
-  $\ge1/4$, $5477$ boxes at gap $\ge1/8$).
-\item \texttt{.ultramath/smwf70lym/m7/max/report\_max.md} and \texttt{final2.py}: the complete
-  maximum computation, including the sign-and-rate enclosure and output.
-\item \texttt{.ultramath/smwf70lym/m7/max/output\_max.txt}: output of the maximum certificate.
-\item \texttt{.ultramath/smwf70lym/m1/report.md} and \texttt{.scratch/cells.py}: the independent
-  signed minimum-local certificates (used as a check, not as a substitute for directed intervals
-  everywhere).
+\item \texttt{certificate/lower-bound-enclosure.md}: lower-bound enclosure, family computations,
+  and the sharp threshold runs ($513$ boxes at depth $27$ with no residual at gap $\ge1/2$; and at
+  gap $\ge2^{-10}$, $17372$ boxes with relative slack $10^{-4}$ and no residual).
+\item \texttt{certificate/maximum-enclosure.md}: the complete maximum computation, including the
+  sign-and-rate enclosure and output.
+\item \texttt{certificate/maximum-enclosure-output.txt}: output of the maximum certificate.
+\item \texttt{certificate/minimum-local-checks.md}: the independent signed minimum-local
+  certificates (used as a check, not as a substitute for directed intervals everywhere).
 \end{itemize}
 The historical grid-search evidence alone does not prove the global extrema; it selects the small
 integer configurations which the subsequent exact computation certifies. The splitting of the

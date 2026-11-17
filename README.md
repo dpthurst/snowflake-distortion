@@ -24,6 +24,7 @@ neither known nor excluded.
 |---|---|
 | `notes/improving-koch-extremals.{tex,pdf}` | the main note: explicit arcs, the ladder, the certified rungs, heat maps, repeated blocks |
 | `notes/koch-extremals.{tex,pdf}` | the companion: sharp constants for the Koch parametrisation |
+| `certificate/` | the enclosures behind the companion's two constants, as cited by its §Certification: the lower-bound branch-and-bound, the maximum computation with its output, and the independent minimum-local checks |
 | `figures/` | every figure of both notes, plus `figures/README.md` saying what each one is |
 | `data/` | the node positions behind the figures and Table 1 (S branch, one-sided branch, $m=4,5,6$ optima) |
 | `results/` | working reports and JSON/`.npz` outputs |

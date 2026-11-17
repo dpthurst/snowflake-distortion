@@ -1,0 +1,5 @@
+PART 1: cells 109620, residual 156, min margin on certified cells 3.402e-09  (8.2s)
+        residual region inside the 16 level-10 cells [(3, 271), (3, 272), (4, 271), (4, 272), (15, 259), (15, 260), (16, 259), (16, 260), (259, 15), (259, 16), (260, 15), (260, 16), (271, 3), (271, 4), (272, 3), (272, 4)]
+PART 2: 156 of 156 residual cells closed
+       min margin over part 2: 2.533236364711812e-07 ; exact-equality cells: 16
+MAXIMUM CLOSED: True   (60.8s)
